@@ -1,0 +1,136 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a1924e497ac37414e91f1284e084dc52, type: 3}
+  m_Name: Settings
+  m_EditorClassIdentifier: 
+  enable: 1
+  folderIconSettings:
+  - enable: 1
+    icon: {fileID: 2800000, guid: 9100ae07f3844b644a425dc2faa495b8, type: 3}
+    regex: Resources
+    matchType: 0
+  - enable: 1
+    icon: {fileID: 2800000, guid: 13b91f0a2558c7048ad52ab46cbec5d9, type: 3}
+    regex: Plugins
+    matchType: 0
+  - enable: 1
+    icon: {fileID: 2800000, guid: 512d76f3dccd6f640b4ccc01cb61b756, type: 3}
+    regex: Editor
+    matchType: 0
+  - enable: 1
+    icon: {fileID: 2800000, guid: 3eeb12e1542f9da42815f009b4d9f05d, type: 3}
+    regex: Settings
+    matchType: 0
+  - enable: 1
+    icon: {fileID: 2800000, guid: 39c68489d75f146de9db11d3ef30d50f, type: 3}
+    regex: FBX
+    matchType: 0
+  - enable: 1
+    icon: {fileID: 2800000, guid: 437444504a3c545c288f8459be7c289f, type: 3}
+    regex: '[Gg]esture(|s)'
+    matchType: 0
+  - enable: 1
+    icon: {fileID: 2800000, guid: 4ee50ba7157ca446c89353d4b2812ac4, type: 3}
+    regex: ([Ii]tem(|s)|[Aa]ccessories|[Aa]ccessory)
+    matchType: 0
+  - enable: 1
+    icon: {fileID: 2800000, guid: 6db57a033b2864b49baffe93ebedd7b3, type: 3}
+    regex: (|[Pp]refab)[Vv]ariant(|s)
+    matchType: 0
+  - enable: 1
+    icon: {fileID: 2800000, guid: 4d9888935c9ab46b9884995ff3712eed, type: 3}
+    regex: '[Ww]orld(|s)'
+    matchType: 0
+  - enable: 1
+    icon: {fileID: 2800000, guid: 36c0f6a3ecf9c45a98fd9a268c4bb100, type: 3}
+    regex: '[Mm]ask(|s)'
+    matchType: 0
+  - enable: 1
+    icon: {fileID: 2800000, guid: 5f8da1fb6961f4721b66a63d6e935b63, type: 3}
+    regex: '[Mm]atcap(|s)'
+    matchType: 0
+  - enable: 1
+    icon: {fileID: 2800000, guid: e883a49e0791ffb4da111b699600a550, type: 3}
+    regex: '[Ss]cene(|s)'
+    matchType: 0
+  - enable: 1
+    icon: {fileID: 2800000, guid: 62ddbe7c7b650f349b033ff9fd3d0bff, type: 3}
+    regex: '[Ff]ont(|s)'
+    matchType: 0
+  - enable: 1
+    icon: {fileID: 2800000, guid: 30b6f094fe545f640b5f5da798a13fb8, type: 3}
+    regex: '[Aa]udio(|s)'
+    matchType: 0
+  - enable: 1
+    icon: {fileID: 2800000, guid: d22addf9964ab42878fbea75b8fdbcec, type: 3}
+    regex: (|[Ee][Xx])[Mm]enu
+    matchType: 0
+  - enable: 1
+    icon: {fileID: 2800000, guid: b37da4319a2a50d4ebe3cc38697d9acf, type: 3}
+    regex: '[Ss]prite(|s)'
+    matchType: 0
+  - enable: 1
+    icon: {fileID: 2800000, guid: 78eeb920cc73f444b874a012016e0aba, type: 3}
+    regex: '[Pp]reset(|s)'
+    matchType: 0
+  - enable: 1
+    icon: {fileID: 2800000, guid: bb321d21ec6df16479b3b7ca2912c9c7, type: 3}
+    regex: '[Pp]refab(|s)'
+    matchType: 0
+  - enable: 1
+    icon: {fileID: 2800000, guid: 74cde6ba914024e4f82ecd99596252f0, type: 3}
+    regex: '[Nn]ormal(|[Mm]ap)(|s)'
+    matchType: 0
+  - enable: 1
+    icon: {fileID: 2800000, guid: 6e5375f7dc7dd98459edcd2fb9a3f8b5, type: 3}
+    regex: '[Ss]cript(|s)'
+    matchType: 0
+  - enable: 1
+    icon: {fileID: 2800000, guid: 0e374055bc43e4ff6a53365c3e644a08, type: 3}
+    regex: ([Ss]cript(|s)|[Uu]don(|[Ss]harp))
+    matchType: 0
+  - enable: 1
+    icon: {fileID: 2800000, guid: 2bc839d7e3db2bf478572af026c7b8b4, type: 3}
+    regex: ([Ss]hader(|s)|[Ll]il[Tt]oon)
+    matchType: 1
+  - enable: 1
+    icon: {fileID: 2800000, guid: eab75b706f70aca43b8ff64634c515ee, type: 3}
+    regex: '[Aa]nim(aition(|s)|)'
+    matchType: 1
+  - enable: 1
+    icon: {fileID: 2800000, guid: 89dbba36a0719d24f9287029f9ee6587, type: 3}
+    regex: '[Mm]at(|erial(|s))'
+    matchType: 1
+  - enable: 1
+    icon: {fileID: 2800000, guid: cb4c49e67fb74904287e1799e8b3e47b, type: 3}
+    regex: '[Tt]ex(ture(|s)|)'
+    matchType: 1
+  - enable: 1
+    icon: {fileID: 2800000, guid: 45ff670f2cb66164a8d6e10605691373, type: 3}
+    regex: ([Mm]odel(|s)|[Aa]vatar(|s)|[Cc]haracter(|s)|CHR)
+    matchType: 1
+  - enable: 1
+    icon: {fileID: 2800000, guid: 23d4e023208fb497bb5631be9b2f05fa, type: 3}
+    regex: '[Vv][Rr][Cc](|hat)'
+    matchType: 1
+  - enable: 1
+    icon: {fileID: 2800000, guid: 3221f4672d9fc4e1aae238cc4f4f3b98, type: 3}
+    regex: '[Bb]one(|s)'
+    matchType: 1
+  - enable: 1
+    icon: {fileID: 2800000, guid: fb0be298eaf3441af8e16f5ff12f6169, type: 3}
+    regex: '[Pp][Cc]'
+    matchType: 1
+  - enable: 1
+    icon: {fileID: 2800000, guid: a0c14187e7fd344eabbdfd5d35827ae9, type: 3}
+    regex: '[Qq]uest'
+    matchType: 1
