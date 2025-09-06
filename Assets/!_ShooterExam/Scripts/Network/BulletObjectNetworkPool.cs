@@ -4,7 +4,7 @@ using Fusion;
 using UnityEngine;
 using UnityEngine.Pool;
 
-public class BulletObjectPool : NetworkObjectProviderDefault
+public class BulletObjectNetworkPool : NetworkObjectProviderDefault
 {
     [Tooltip("The objects to be pooled, leave it empty to pool every Network Object spawned")] [SerializeField]
     private List<NetworkObject> _poolableObjects;

@@ -1,23 +1,21 @@
 using System;
 using System.Threading;
 using Cysharp.Threading.Tasks;
+using ExitGames.Client.Photon.StructWrapping;
 using Fusion;
 using UnityEngine;
 
-public class BulletGenerator : NetworkBehaviour
+public class BulletGenerator : MonoBehaviour
 {
-    [SerializeField] private NetworkObject _bulletPrefab;
+    [SerializeField] private BulletObjectPool _bulletObjectPool;
     [SerializeField] private float _generateSpan;
     [SerializeField] private float _shootPower;
     private CancellationToken _token;
 
-    public override void Spawned()
+    private void Start()
     {
         _token = this.GetCancellationTokenOnDestroy();
-        if (HasStateAuthority)
-        {
-            StartGenerateLoop().Forget();
-        }
+        StartGenerateLoop().Forget();
     }
 
     private async UniTask StartGenerateLoop()
@@ -25,10 +23,9 @@ public class BulletGenerator : NetworkBehaviour
         while (!_token.IsCancellationRequested)
         {
             await UniTask.Delay(TimeSpan.FromSeconds(_generateSpan), cancellationToken: _token);
-            Runner.Spawn(_bulletPrefab, this.transform.position, Quaternion.identity, onBeforeSpawned: (_, bullet) =>
-            {
-                bullet.GetComponent<Rigidbody2D>().AddForce(new Vector2(1, 0) * _shootPower, ForceMode2D.Impulse);
-            });
+            var bullet = _bulletObjectPool.GetBullet();
+            bullet.GetComponent<Rigidbody2D>().AddForce(new Vector2(1, 0) * _shootPower, ForceMode2D.Impulse);
+            bullet.transform.position = this.transform.position;
         }
     }
 }
