@@ -38,6 +38,7 @@ MonoBehaviour:
     - Assembly-CSharp
     - Assembly-CSharp-firstpass
     - FangAutoTile
+    - Fusion.Addons.Physics
     - Fusion.Unity
     - UniRx
     - UniRx.Examples
