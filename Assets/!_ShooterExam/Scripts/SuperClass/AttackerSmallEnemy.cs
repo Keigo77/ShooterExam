@@ -1,11 +1,14 @@
 using System.Threading;
+using Cysharp.Threading.Tasks;
 using UnityEngine;
 
 public abstract class AttackerSmallEnemy : Enemy
 {
-    [SerializeField] private GameObject _bulletPrefab;
-    [SerializeField] private float _attackSpan;
-    private CancellationToken _token;
+    [SerializeField] protected GameObject _bulletPrefab;
+    [SerializeField] protected float _bulletSpeed;
+    [SerializeField] protected float _attackSpan;
+    protected CancellationToken _token;
     
+    protected abstract UniTask AttackLoop();
     protected abstract void Attack();
 }

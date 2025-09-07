@@ -3,8 +3,9 @@ using Fusion;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-public class PlayerController : NetworkBehaviour
+public class PlayerController : NetworkBehaviour, ICharacter
 {
+    [Networked] private float Hp { get; set; } = 100;
     [SerializeField] private float _speed;
     
     private Rigidbody2D _rigidbody;
@@ -35,5 +36,25 @@ public class PlayerController : NetworkBehaviour
     private void OnDestroy()
     {
         _inputActions?.Disable();
+    }
+
+    public void Heal()
+    {
+        
+    }
+
+    public void Damage(float damage)
+    {
+        Hp -= damage;
+        if (Hp <= 0)
+        {
+            RpcDeath();
+        }
+    }
+
+    [Rpc(RpcSources.StateAuthority, RpcTargets.All)]
+    public void RpcDeath()
+    {
+        Debug.Log("プレイヤーの死亡");
     }
 }

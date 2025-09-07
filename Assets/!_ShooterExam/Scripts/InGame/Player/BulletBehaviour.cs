@@ -10,7 +10,8 @@ using UnityEngine;
 public class BulletBehaviour : MonoBehaviour
 {
     public BulletObjectPool BulletObjectPoolScript { private get; set; }
-    [SerializeField] private float _existTime;
+    public float BulletPower {private get; set; }
+    [SerializeField] private float _existTime = 6f;
 
     /// <summary>
     /// 弾のSetActiveがtrueになるたびに呼ばれる
@@ -23,5 +24,14 @@ public class BulletBehaviour : MonoBehaviour
     private void ReleaseBullet()
     {
         BulletObjectPoolScript.DeleteBullet(this.gameObject);
+    }
+
+    private void OnTriggerEnter2D(Collider2D collision)
+    {
+        if (collision.CompareTag("Enemy"))
+        {
+            collision.GetComponent<ICharacter>().Damage(BulletPower);
+            Destroy(gameObject);
+        }
     }
 }

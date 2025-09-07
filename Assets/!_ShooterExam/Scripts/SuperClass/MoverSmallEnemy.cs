@@ -35,7 +35,7 @@ public class MoverSmallEnemy : Enemy
 
         while (Mathf.Abs(randMovePos.y - this.transform.position.y) >= 0.5f)
         {
-            randMovePos = new Vector2(Random.Range(_minCameraPos.x * 1.5f, _maxCameraPos.x - 1.0f), Random.Range(_minCameraPos.y + 1.0f, _maxCameraPos.y - 2.5f));
+            randMovePos = new Vector2(Random.Range(_maxCameraPos.x * 0.66f, _maxCameraPos.x - 1.0f), Random.Range(_minCameraPos.y + 1.0f, _maxCameraPos.y - 2.5f));
         }
         this.transform.DOMove(randMovePos, _speed).SetEase(Ease.Linear).SetSpeedBased();
     }

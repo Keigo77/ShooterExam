@@ -29,7 +29,6 @@ public class BulletObjectPool : MonoBehaviour
     // プールに弾があったときの処理
     void OnTakeFromPool(GameObject bullet)
     {
-        Debug.Log(bullet.transform.position);
         bullet.SetActive(true);
     }
     

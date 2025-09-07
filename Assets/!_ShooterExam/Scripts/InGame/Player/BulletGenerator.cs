@@ -25,6 +25,7 @@ public class BulletGenerator : MonoBehaviour
             await UniTask.Delay(TimeSpan.FromSeconds(_generateSpan), cancellationToken: _token);
             var bullet = _bulletObjectPool.GetBullet();
             bullet.GetComponent<Rigidbody2D>().AddForce(new Vector2(1, 0) * _shootPower, ForceMode2D.Impulse);
+            bullet.GetComponent<BulletBehaviour>().BulletPower = _shootPower;
             bullet.transform.position = this.transform.position;
         }
     }
