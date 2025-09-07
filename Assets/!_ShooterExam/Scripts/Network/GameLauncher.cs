@@ -11,15 +11,12 @@ public class GameLauncher : MonoBehaviour, INetworkRunnerCallbacks
     [SerializeField] private GameObject _playerPrefab;
 
     private async void Start() {
-        // NetworkRunnerを生成する
         var networkRunner = Instantiate(_networkRunnerPrefab);
-        // GameLauncherを、NetworkRunnerのコールバック対象に追加する
         networkRunner.AddCallbacks(this);
         // 共有モードのセッションに参加する
         var result = await networkRunner.StartGame(new StartGameArgs {
             GameMode = GameMode.Shared
         });
-        // 結果をコンソールに出力する
         Debug.Log(result);
     }
     

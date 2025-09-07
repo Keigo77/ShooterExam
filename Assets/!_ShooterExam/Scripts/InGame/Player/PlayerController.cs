@@ -5,8 +5,6 @@ using UnityEngine.InputSystem;
 
 public class PlayerController : NetworkBehaviour
 {
-    [SerializeField] private int _hp;
-    [SerializeField] private int _power;
     [SerializeField] private float _speed;
     
     private Rigidbody2D _rigidbody;
