@@ -1,4 +1,6 @@
 using System.Collections.Generic;
+using System.Linq;
+using Cysharp.Threading.Tasks;
 using Fusion;
 using UnityEngine;
 
@@ -8,8 +10,8 @@ public class WaveManager : NetworkBehaviour
     private int _currentWave = 0;
     private int _maxWave;
     
-    private Vector2 _minCameraPos;  // カメラの左下のワールド座標
-    private Vector2 _maxCameraPos;  // カメラの右上のワールド座標
+    private Vector2 _minCameraPos;
+    private Vector2 _maxCameraPos;
 
     public override void Spawned()
     {
@@ -27,15 +29,38 @@ public class WaveManager : NetworkBehaviour
             Debug.LogError("Can't find camera");
         }
         
-        UpdateWave(_currentWave);
+        StartWaveLoop().Forget();
+    }
+    
+    // asyncメソッド名がStartWave()とUpdateWave()で重複していたため、StartWaveLoop()に変更
+    private async UniTask StartWaveLoop()
+    {
+        while (_currentWave < _maxWave)
+        {
+            Debug.Log($"ウェーブ{_currentWave}の開始");
+            await UpdateWave(_currentWave);
+            _currentWave++;
+        }
+        
+        // 追加: 全てのウェーブ終了時のログ
+        Debug.Log("すべてのウェーブが終了しました！");
     }
 
-    private void UpdateWave(int waveNumber)
+    private async UniTask UpdateWave(int waveNumber)
     {
-        foreach (var enemy in _waveDataSO.WaveDatas[_currentWave].Enemies)
+        var enemyPrefabs = _waveDataSO.WaveDatas[waveNumber].Enemies;
+        var enemyList = new List<Enemy>(); 
+        
+        foreach (var enemyPrefab in enemyPrefabs)
         {
-            Runner.Spawn(enemy, GetRandomPos());
+            var enemy = Runner.Spawn(enemyPrefab, GetRandomPos()).GetComponent<Enemy>();
+            enemyList.Add(enemy);
         }
+
+        // 敵が全滅するまで待つ処理
+        await UniTask.WhenAll(enemyList
+            .Select(e => e.OnDeath.ToUniTask(cancellationToken: this.GetCancellationTokenOnDestroy())));
+        Debug.Log($"ウェーブ {waveNumber + 1} の敵をすべて倒しました！");
     }
 
     private Vector2 GetRandomPos()

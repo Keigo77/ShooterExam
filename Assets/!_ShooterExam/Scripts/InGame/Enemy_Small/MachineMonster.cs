@@ -92,6 +92,9 @@ public class MachineMonster : AttackerSmallEnemy, ICharacter
 
     private void DespawnEnemy()
     {
+        // 死亡イベントを流す
+        _onDeath.OnNext(Unit.Default);
+        _onDeath.OnCompleted();
         Runner.Despawn(_networkObject);
     }
     

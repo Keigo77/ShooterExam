@@ -16,7 +16,7 @@ public class EnemyBulletBehaviour : NetworkBehaviour
     private void DespawnBullet()
     {
         // InvokeとOnTriggerで，Despawnした後に実行されるのを防ぐ
-        if (_networkObject != null)
+        if (this.gameObject != null)
         {
             Runner.Despawn(_networkObject);
         }

@@ -13,19 +13,9 @@ MonoBehaviour:
   m_Name: WaveDataSO_Stage1
   m_EditorClassIdentifier: 
   WaveDatas:
-  - waveNumber: 1
+  - WaveNumber: 0
     IsBoss: 0
     Enemies:
-    - {fileID: 3843798205029275297, guid: b5747a4307aaf4834a797965fc1cfe88, type: 3}
-    - {fileID: 3843798205029275297, guid: b5747a4307aaf4834a797965fc1cfe88, type: 3}
-    - {fileID: 3843798205029275297, guid: b5747a4307aaf4834a797965fc1cfe88, type: 3}
-    - {fileID: 3843798205029275297, guid: b5747a4307aaf4834a797965fc1cfe88, type: 3}
-    - {fileID: 3843798205029275297, guid: b5747a4307aaf4834a797965fc1cfe88, type: 3}
-  - waveNumber: 2
-    IsBoss: 0
-    Enemies:
-    - {fileID: 3843798205029275297, guid: b5747a4307aaf4834a797965fc1cfe88, type: 3}
-    - {fileID: 3843798205029275297, guid: b5747a4307aaf4834a797965fc1cfe88, type: 3}
     - {fileID: 3843798205029275297, guid: b5747a4307aaf4834a797965fc1cfe88, type: 3}
     - {fileID: 3843798205029275297, guid: b5747a4307aaf4834a797965fc1cfe88, type: 3}
     - {fileID: 3843798205029275297, guid: b5747a4307aaf4834a797965fc1cfe88, type: 3}
