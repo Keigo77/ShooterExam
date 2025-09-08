@@ -34,7 +34,6 @@ public class MachineMonster : AttackerSmallEnemy, ICharacter
     {
         while (!_token.IsCancellationRequested)
         {
-            Debug.Log("攻撃"); ;
             _animator.SetBool(_animatorIsAttack, true);
             await UniTask.WaitUntil(() => !_animator.GetBool(_animatorIsDead), cancellationToken: _token);
             await UniTask.Delay(TimeSpan.FromSeconds(_attackSpan), cancellationToken: _token);
@@ -96,7 +95,7 @@ public class MachineMonster : AttackerSmallEnemy, ICharacter
 
     private void DespawnEnemy()
     {
-        _tween.Kill();
+        _tween?.Kill();
         // 死亡イベントを流す
         _onDeath.OnNext(Unit.Default);
         _onDeath.OnCompleted();

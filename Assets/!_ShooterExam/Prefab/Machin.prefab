@@ -188,6 +188,7 @@ GameObject:
   - component: {fileID: 5047850497425471135}
   - component: {fileID: -3507821558255849943}
   - component: {fileID: 7468013335896843745}
+  - component: {fileID: 5146791068592647366}
   m_Layer: 9
   m_Name: Machin
   m_TagString: Enemy
@@ -232,6 +233,7 @@ MonoBehaviour:
   NetworkedBehaviours:
   - {fileID: 324817082131717509}
   - {fileID: 5047850497425471135}
+  - {fileID: 5146791068592647366}
   ForceRemoteRenderTimeframe: 0
 --- !u!114 &324817082131717509
 MonoBehaviour:
@@ -337,6 +339,23 @@ BoxCollider2D:
   m_AutoTiling: 0
   m_Size: {x: 0.54353285, y: 0.7859327}
   m_EdgeRadius: 0
+--- !u!114 &5146791068592647366
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5750308002416524019}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 158639473, guid: e725a070cec140c4caffb81624c8c787, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _stateAuthorityChangeErrorCorrectionDelta: 0
+  SyncScale: 0
+  SyncParent: 0
+  _autoAOIOverride: 1
+  DisableSharedModeInterpolation: 0
 --- !u!1 &8267972885325614171
 GameObject:
   m_ObjectHideFlags: 0

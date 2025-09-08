@@ -15,6 +15,11 @@ public class WaveManager : NetworkBehaviour
 
     public override void Spawned()
     {
+        if (!Runner.IsSharedModeMasterClient)
+        {
+            Debug.Log($"{Runner.LocalPlayer}はマスターでない");
+            return;
+        }
         _maxWave = _waveDataSO.WaveDatas.Count;
         // カメラの描写範囲を，ワールド座標で取得
         if (Camera.main != null)
@@ -28,7 +33,7 @@ public class WaveManager : NetworkBehaviour
         {
             Debug.LogError("Can't find camera");
         }
-        
+
         StartWaveLoop().Forget();
     }
     
