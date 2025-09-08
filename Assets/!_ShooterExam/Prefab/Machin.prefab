@@ -246,12 +246,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _enemyId: 0
-  HP: 0
-  Power: 0
+  _Hp: 0
   _bulletPrefab: {fileID: 3225723509399086314, guid: 33dfbe2c5362f411d90a1b0f2ef78a1e, type: 3}
   _bulletSpeed: 5
-  _attackSpan: 1
-  _rotateDuration: 1
+  _attackSpan: 0.3
+  _rotateDuration: 0.5
 --- !u!114 &5047850497425471135
 MonoBehaviour:
   m_ObjectHideFlags: 0

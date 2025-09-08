@@ -10,7 +10,6 @@ public class GameLauncher : MonoBehaviour, INetworkRunnerCallbacks
     [SerializeField] private NetworkRunner _networkRunnerPrefab;
     [SerializeField] private GameObject _waveManager;
     [SerializeField] private GameObject _playerPrefab;
-    [SerializeField] private GameObject _preEnemy;
 
     private async void Start() {
         var networkRunner = Instantiate(_networkRunnerPrefab);
@@ -31,7 +30,6 @@ public class GameLauncher : MonoBehaviour, INetworkRunnerCallbacks
         if (player == runner.LocalPlayer) {
             // 自分自身のアバターをスポーンする
             runner.Spawn(_playerPrefab);
-            runner.Spawn(_preEnemy);
             if (runner.IsSharedModeMasterClient)
             {
                 runner.Spawn(_waveManager);

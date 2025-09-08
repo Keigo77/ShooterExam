@@ -13,6 +13,7 @@ public class MachineMonster : AttackerSmallEnemy, ICharacter
     private Animator _animator;
     private int _animatorIsAttack;
     private int _animatorIsDead;
+    private Tween _tween;
     
     public override void Spawned()
     {
@@ -33,7 +34,9 @@ public class MachineMonster : AttackerSmallEnemy, ICharacter
     {
         while (!_token.IsCancellationRequested)
         {
+            Debug.Log("攻撃"); ;
             _animator.SetBool(_animatorIsAttack, true);
+            await UniTask.WaitUntil(() => !_animator.GetBool(_animatorIsDead), cancellationToken: _token);
             await UniTask.Delay(TimeSpan.FromSeconds(_attackSpan), cancellationToken: _token);
         }
     }
@@ -42,15 +45,16 @@ public class MachineMonster : AttackerSmallEnemy, ICharacter
     {
         if (Runner != null && HasStateAuthority)
         {
-            GenerateBullet(new Vector2(0, 1).normalized);
-            GenerateBullet(new Vector2(1, -1).normalized);
+            GenerateBullet(new Vector2(-1, 1).normalized);
+            GenerateBullet(new Vector2(-1, 0).normalized);
             GenerateBullet(new Vector2(-1, -1).normalized);
         }
     }
 
     private void RandomRotate()
     {
-        this.transform.DOLocalRotate(new Vector3(0, 0, Random.Range(45, 315)), _rotateDuration).SetEase(Ease.Linear);
+        var resultAngle = this.transform.localRotation.eulerAngles + new Vector3(0, 0, Random.Range(-20, 20));
+        _tween = this.transform.DOLocalRotate(resultAngle, _rotateDuration).SetEase(Ease.Linear);
     }
 
     private void GenerateBullet(Vector2 direction)
@@ -92,6 +96,7 @@ public class MachineMonster : AttackerSmallEnemy, ICharacter
 
     private void DespawnEnemy()
     {
+        _tween.Kill();
         // 死亡イベントを流す
         _onDeath.OnNext(Unit.Default);
         _onDeath.OnCompleted();

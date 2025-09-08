@@ -65,6 +65,6 @@ public class WaveManager : NetworkBehaviour
 
     private Vector2 GetRandomPos()
     {
-        return new Vector2(Random.Range(_maxCameraPos.x * 0.66f, _maxCameraPos.x - 1.0f), Random.Range(_minCameraPos.y + 1.0f, _maxCameraPos.y - 2.5f));
+        return new Vector2(Random.Range(_maxCameraPos.x * 0.8f, _maxCameraPos.x - 1.0f), Random.Range(_minCameraPos.y + 1.0f, _maxCameraPos.y - 1.5f));
     }
 }

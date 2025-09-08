@@ -288,7 +288,6 @@ MonoBehaviour:
   _networkRunnerPrefab: {fileID: 1293261701045368026, guid: dbd49fdd8344f412a91f7ad14858a9ec, type: 3}
   _waveManager: {fileID: 7659166894769023240, guid: af981e754035c49d9863d373d2461c32, type: 3}
   _playerPrefab: {fileID: 799990234228722876, guid: a265870592f4447479985602745b4877, type: 3}
-  _preEnemy: {fileID: 5750308002416524019, guid: b5747a4307aaf4834a797965fc1cfe88, type: 3}
 --- !u!4 &1161418895
 Transform:
   m_ObjectHideFlags: 0

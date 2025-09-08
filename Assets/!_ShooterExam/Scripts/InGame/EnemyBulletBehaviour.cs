@@ -16,10 +16,7 @@ public class EnemyBulletBehaviour : NetworkBehaviour
     private void DespawnBullet()
     {
         // InvokeとOnTriggerで，Despawnした後に実行されるのを防ぐ
-        if (this.gameObject != null)
-        {
-            Runner.Despawn(_networkObject);
-        }
+        Runner.Despawn(_networkObject);
     }
     
     private void OnTriggerEnter2D(Collider2D collision)
@@ -27,6 +24,7 @@ public class EnemyBulletBehaviour : NetworkBehaviour
         if (HasStateAuthority && collision.CompareTag("Player"))
         {
             collision.GetComponent<ICharacter>().Damage(BulletPower);
+            CancelInvoke(nameof(DespawnBullet));
             DespawnBullet();
         }
     }
