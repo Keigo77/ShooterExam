@@ -13,21 +13,28 @@ public class MachineMonster : AttackerSmallEnemy, ICharacter
     private Animator _animator;
     private int _animatorIsAttack;
     private int _animatorIsDead;
-    private Tween _tween;
     
     public override async void Spawned()
     {
-        if (Runner.IsSharedModeMasterClient)
+        if (!Runner.IsSharedModeMasterClient) { return; }
+        
+        GetEnemyData();
+        GetToken();
+        _networkObject = this.GetComponent<NetworkObject>();
+        _animator = this.GetComponent<Animator>();
+        _animatorIsAttack = Animator.StringToHash("IsAttack");
+        _animatorIsDead = Animator.StringToHash("IsDead");
+        
+        try
         {
-            GetEnemyData();
-            GetToken();
-            _networkObject = this.GetComponent<NetworkObject>();
-            _animator = this.GetComponent<Animator>();
-            _animatorIsAttack = Animator.StringToHash("IsAttack");
-            _animatorIsDead = Animator.StringToHash("IsDead");
             await MoveInScreen();
-            AttackLoop().Forget();
         }
+        catch (Exception e)
+        {
+            Debug.Log($"{e}\nMoveInScreen()がキャンセルされました");
+        }
+        
+        AttackLoop().Forget();
     }
 
     protected override async UniTask AttackLoop()
@@ -53,7 +60,7 @@ public class MachineMonster : AttackerSmallEnemy, ICharacter
     private void RandomRotate()
     {
         var resultAngle = this.transform.localRotation.eulerAngles + new Vector3(0, 0, Random.Range(-20, 20));
-        _tween = this.transform.DOLocalRotate(resultAngle, _rotateDuration).SetEase(Ease.Linear);
+        NetworkDOTween.MyDORotate(this.transform, resultAngle, _rotateDuration, _token).Forget();
         Debug.Log("回転");
     }
 
@@ -96,7 +103,6 @@ public class MachineMonster : AttackerSmallEnemy, ICharacter
 
     private void DespawnEnemy() // 共通化(Enemy)に定義できそう
     {
-        _tween?.Kill();
         // 死亡イベントを流す
         _onDeath.OnNext(Unit.Default);
         _onDeath.OnCompleted();

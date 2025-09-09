@@ -43,7 +43,7 @@ public class Enemy : NetworkBehaviour
     /// </summary>
     protected async UniTask MoveInScreen()
     {
-        await this.transform.DOMove(spawnPos, _moveInScreenTime)
-            .AsyncWaitForCompletion();
+        NetworkDOTween.MyDOMove(this.transform, spawnPos, _moveInScreenTime, _token).Forget();
+        await UniTask.Delay(TimeSpan.FromSeconds(_moveInScreenTime), cancellationToken: _token);
     }
 }
