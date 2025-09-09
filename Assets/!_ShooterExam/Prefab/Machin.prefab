@@ -247,12 +247,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 826596dbdac804d3db25dbd66d0e33cb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _moveInScreenTime: 3
+  _moveInScreenTime: 1.5
   _enemyId: 0
   _Hp: 0
   _bulletPrefab: {fileID: 3225723509399086314, guid: 33dfbe2c5362f411d90a1b0f2ef78a1e, type: 3}
   _bulletSpeed: 5
-  _attackSpan: 0.3
+  _attackSpan: 2
   _rotateDuration: 0.5
 --- !u!114 &5047850497425471135
 MonoBehaviour:

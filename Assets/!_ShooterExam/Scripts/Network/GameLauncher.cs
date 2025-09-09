@@ -10,6 +10,7 @@ public class GameLauncher : MonoBehaviour, INetworkRunnerCallbacks
     [SerializeField] private NetworkRunner _networkRunnerPrefab;
     [SerializeField] private GameObject _gameManager;
     [SerializeField] private GameObject _playerPrefab;
+    [SerializeField] private GameObject _text;
 
     private async void Start() {
         var networkRunner = Instantiate(_networkRunnerPrefab);
@@ -32,7 +33,10 @@ public class GameLauncher : MonoBehaviour, INetworkRunnerCallbacks
             runner.Spawn(_playerPrefab);
             if (runner.IsSharedModeMasterClient)
             {
-                runner.Spawn(_gameManager);
+                runner.Spawn(_gameManager, onBeforeSpawned: (_, gameManager) =>
+                {
+                    gameManager.GetComponent<WaveManager>()._text = _text;
+                });
             }
         }
     }

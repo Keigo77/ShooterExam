@@ -41,9 +41,9 @@ public class MachineMonster : AttackerSmallEnemy, ICharacter
     {
         while (!_token.IsCancellationRequested)
         {
+            await UniTask.Delay(TimeSpan.FromSeconds(_attackSpan + Random.Range(0.0f, 2.0f)), cancellationToken: _token);
             _animator.SetBool(_animatorIsAttack, true);
             await UniTask.WaitUntil(() => !_animator.GetBool(_animatorIsDead), cancellationToken: _token);
-            await UniTask.Delay(TimeSpan.FromSeconds(_attackSpan), cancellationToken: _token);
         }
     }
 
