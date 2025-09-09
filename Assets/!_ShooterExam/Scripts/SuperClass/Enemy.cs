@@ -1,6 +1,7 @@
 using System;
 using System.Threading;
 using Cysharp.Threading.Tasks;
+using DG.Tweening;
 using Fusion;
 using UniRx;
 using UnityEngine;
@@ -9,13 +10,18 @@ public class Enemy : NetworkBehaviour
 {
     protected readonly Subject<Unit> _onDeath = new Subject<Unit>();
     public IObservable<Unit> OnDeath => _onDeath;
+    protected CancellationToken _token;
+    
+    public Vector2 spawnPos { get; set; }
+    [SerializeField] private float _moveInScreenTime;
+    
     
     [SerializeField] private int _enemyId;
-    protected NetworkObject _networkObject;
     [Networked] public float Hp { get; set; }
     protected float _bulletPower = 0;
-    // 死亡を通知するためのTaskCompletionSource
-    private UniTaskCompletionSource<bool> _deathCompletionSource;
+    
+    protected NetworkObject _networkObject;
+    
     
     
     /// <summary>
@@ -25,5 +31,19 @@ public class Enemy : NetworkBehaviour
     {
         Hp = 20;
         _bulletPower = 10;
+    }
+
+    protected void GetToken()
+    {
+        _token = this.GetCancellationTokenOnDestroy();
+    }
+
+    /// <summary>
+    /// 画面外にスポーンしてから，画面内に横移動で登場させる関数
+    /// </summary>
+    protected async UniTask MoveInScreen()
+    {
+        await this.transform.DOMove(spawnPos, _moveInScreenTime)
+            .AsyncWaitForCompletion();
     }
 }

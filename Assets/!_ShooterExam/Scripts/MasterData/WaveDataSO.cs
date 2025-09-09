@@ -13,5 +13,5 @@ public class WaveData
 {
     public int WaveNumber;
     public bool IsBoss;
-    public NetworkObject[] Enemies;
+    public NetworkObject[] Enemies = new NetworkObject[30];
 }

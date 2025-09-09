@@ -15,17 +15,17 @@ public class MachineMonster : AttackerSmallEnemy, ICharacter
     private int _animatorIsDead;
     private Tween _tween;
     
-    public override void Spawned()
+    public override async void Spawned()
     {
-        GetEnemyData();
-        _networkObject = this.GetComponent<NetworkObject>();
-        _token = this.GetCancellationTokenOnDestroy();
-        _animator = this.GetComponent<Animator>();
-        _animatorIsAttack = Animator.StringToHash("IsAttack");
-        _animatorIsDead = Animator.StringToHash("IsDead");
-        
         if (Runner.IsSharedModeMasterClient)
         {
+            GetEnemyData();
+            GetToken();
+            _networkObject = this.GetComponent<NetworkObject>();
+            _animator = this.GetComponent<Animator>();
+            _animatorIsAttack = Animator.StringToHash("IsAttack");
+            _animatorIsDead = Animator.StringToHash("IsDead");
+            await MoveInScreen();
             AttackLoop().Forget();
         }
     }
@@ -54,6 +54,7 @@ public class MachineMonster : AttackerSmallEnemy, ICharacter
     {
         var resultAngle = this.transform.localRotation.eulerAngles + new Vector3(0, 0, Random.Range(-20, 20));
         _tween = this.transform.DOLocalRotate(resultAngle, _rotateDuration).SetEase(Ease.Linear);
+        Debug.Log("回転");
     }
 
     private void GenerateBullet(Vector2 direction)
@@ -87,13 +88,13 @@ public class MachineMonster : AttackerSmallEnemy, ICharacter
         }
     }
     
-    [Rpc(RpcSources.StateAuthority, RpcTargets.All)]
+    [Rpc(RpcSources.StateAuthority, RpcTargets.All)] // なくてもいい？
     public void RpcDeath()
     {
         _animator.SetBool(_animatorIsDead, true);
     }
 
-    private void DespawnEnemy()
+    private void DespawnEnemy() // 共通化(Enemy)に定義できそう
     {
         _tween?.Kill();
         // 死亡イベントを流す

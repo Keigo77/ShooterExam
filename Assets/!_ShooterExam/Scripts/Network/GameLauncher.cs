@@ -8,7 +8,7 @@ using UnityEngine.Serialization;
 public class GameLauncher : MonoBehaviour, INetworkRunnerCallbacks
 { 
     [SerializeField] private NetworkRunner _networkRunnerPrefab;
-    [SerializeField] private GameObject _waveManager;
+    [SerializeField] private GameObject _gameManager;
     [SerializeField] private GameObject _playerPrefab;
 
     private async void Start() {
@@ -32,7 +32,7 @@ public class GameLauncher : MonoBehaviour, INetworkRunnerCallbacks
             runner.Spawn(_playerPrefab);
             if (runner.IsSharedModeMasterClient)
             {
-                runner.Spawn(_waveManager);
+                runner.Spawn(_gameManager);
             }
         }
     }

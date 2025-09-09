@@ -7,6 +7,8 @@ using UnityEngine;
 public class WaveManager : NetworkBehaviour
 {
     [SerializeField] private WaveDataSO _waveDataSO;
+    [SerializeField] private GameObject[] _spawnPosObj = new GameObject[30];
+    [SerializeField] private float _howSpawnDistance;   // どれだけ画面外にスポーンさせるか
     private int _currentWave = 0;
     private int _maxWave;
     
@@ -15,29 +17,12 @@ public class WaveManager : NetworkBehaviour
 
     public override void Spawned()
     {
-        if (!Runner.IsSharedModeMasterClient)
-        {
-            Debug.Log($"{Runner.LocalPlayer}はマスターでない");
-            return;
-        }
+        if (!Runner.IsSharedModeMasterClient) { return; }
         _maxWave = _waveDataSO.WaveDatas.Count;
-        // カメラの描写範囲を，ワールド座標で取得
-        if (Camera.main != null)
-        {
-            _minCameraPos = Camera.main.ViewportToWorldPoint(new Vector2(0, 0));
-            _maxCameraPos = Camera.main.ScreenToWorldPoint(new Vector2(Screen.width, Screen.height));
-            Debug.Log(_minCameraPos);
-            Debug.Log(_maxCameraPos);
-        }
-        else
-        {
-            Debug.LogError("Can't find camera");
-        }
-
+        
         StartWaveLoop().Forget();
     }
     
-    // asyncメソッド名がStartWave()とUpdateWave()で重複していたため、StartWaveLoop()に変更
     private async UniTask StartWaveLoop()
     {
         while (_currentWave < _maxWave)
@@ -53,23 +38,35 @@ public class WaveManager : NetworkBehaviour
 
     private async UniTask UpdateWave(int waveNumber)
     {
-        var enemyPrefabs = _waveDataSO.WaveDatas[waveNumber].Enemies;
-        var enemyList = new List<Enemy>(); 
+        NetworkObject[] enemyPrefabs = _waveDataSO.WaveDatas[waveNumber].Enemies;
+        var enemyList = new List<Enemy>();
+        int index = 0;
         
         foreach (var enemyPrefab in enemyPrefabs)
         {
-            var enemy = Runner.Spawn(enemyPrefab, GetRandomPos()).GetComponent<Enemy>();
-            enemyList.Add(enemy);
+            if (enemyPrefab == null)
+            {
+                index++;
+                continue;
+            }
+
+            // 一度画面外にスポーンさせ，そこからX軸だけDOTweenで画面内に移動させる．
+            Vector2 enemySpawnPos = _spawnPosObj[index].transform.position;
+            enemySpawnPos.x += _howSpawnDistance;
+            Runner.Spawn(enemyPrefab, enemySpawnPos, onBeforeSpawned: (_, enemyObj) =>
+            {
+                var enemy = enemyObj.GetComponent<Enemy>();
+                // 定位置のpositionを敵に伝える
+                enemy.spawnPos = _spawnPosObj[index].transform.position;
+                enemyList.Add(enemy);
+            });
+            
+            index++;
         }
 
         // 敵が全滅するまで待つ処理
         await UniTask.WhenAll(enemyList
             .Select(e => e.OnDeath.ToUniTask(cancellationToken: this.GetCancellationTokenOnDestroy())));
         Debug.Log($"ウェーブ {waveNumber + 1} の敵をすべて倒しました！");
-    }
-
-    private Vector2 GetRandomPos()
-    {
-        return new Vector2(Random.Range(_maxCameraPos.x * 0.8f, _maxCameraPos.x - 1.0f), Random.Range(_minCameraPos.y + 1.0f, _maxCameraPos.y - 1.5f));
     }
 }
