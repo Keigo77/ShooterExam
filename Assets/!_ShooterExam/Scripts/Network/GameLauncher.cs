@@ -35,7 +35,6 @@ public class GameLauncher : MonoBehaviour, INetworkRunnerCallbacks
             {
                 runner.Spawn(_gameManager, onBeforeSpawned: (_, gameManager) =>
                 {
-                    gameManager.GetComponent<WaveManager>()._text = _text;
                 });
             }
         }

@@ -17,10 +17,15 @@ public class GameManager : NetworkBehaviour
     
     [SerializeField] private Image _playerHealthBar;
     [SerializeField] private Image _bossHealthBar;
+    [SerializeField] private GameObject _preText;
 
     public override void Spawned()
     {
         
     }
-    
+
+    public void ShowText()
+    {
+        _preText.SetActive(true);
+    }
 }

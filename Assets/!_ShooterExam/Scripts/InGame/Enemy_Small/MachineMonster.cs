@@ -16,25 +16,26 @@ public class MachineMonster : AttackerSmallEnemy, ICharacter
     
     public override async void Spawned()
     {
-        if (!Runner.IsSharedModeMasterClient) { return; }
-        
         GetEnemyData();
         GetToken();
         _networkObject = this.GetComponent<NetworkObject>();
         _animator = this.GetComponent<Animator>();
         _animatorIsAttack = Animator.StringToHash("IsAttack");
         _animatorIsDead = Animator.StringToHash("IsDead");
-        
-        try
+
+        if (Runner.IsSharedModeMasterClient)
         {
-            await MoveInScreen();
+            try
+            {
+                await MoveInScreen();
+            }
+            catch (Exception e)
+            {
+                Debug.Log($"{e}\nMoveInScreen()がキャンセルされました");
+            }
+
+            AttackLoop().Forget();
         }
-        catch (Exception e)
-        {
-            Debug.Log($"{e}\nMoveInScreen()がキャンセルされました");
-        }
-        
-        AttackLoop().Forget();
     }
 
     protected override async UniTask AttackLoop()

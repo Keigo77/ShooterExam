@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Cysharp.Threading.Tasks;
 using Fusion;
+using TMPro;
 using UnityEngine;
 
 public class WaveManager : NetworkBehaviour
@@ -9,8 +10,8 @@ public class WaveManager : NetworkBehaviour
     [SerializeField] private WaveDataSO _waveDataSO;
     [SerializeField] private GameObject[] _spawnPosObj = new GameObject[30];
     [SerializeField] private float _howSpawnDistance;   // どれだけ画面外にスポーンさせるか
-
-    public GameObject _text;
+    [SerializeField] private GameManager _gameManager;
+    
     private int _currentWave = 0;
     private int _maxWave;
     
@@ -76,6 +77,6 @@ public class WaveManager : NetworkBehaviour
     [Rpc(RpcSources.StateAuthority, RpcTargets.All)]
     private void RpcShowText()
     {
-        _text.SetActive(true);
+        _gameManager.ShowText();
     }
 }
