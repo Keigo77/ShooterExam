@@ -10,7 +10,6 @@ public class WaveManager : NetworkBehaviour
     [SerializeField] private WaveDataSO _waveDataSO;
     [SerializeField] private GameObject[] _spawnPosObj = new GameObject[30];
     [SerializeField] private float _howSpawnDistance;   // どれだけ画面外にスポーンさせるか
-    [SerializeField] private GameManager _gameManager;
     
     private int _currentWave = 0;
     private int _maxWave;
@@ -71,12 +70,5 @@ public class WaveManager : NetworkBehaviour
         await UniTask.WhenAll(enemyList
             .Select(e => e.OnDeath.ToUniTask(cancellationToken: this.GetCancellationTokenOnDestroy())));
         Debug.Log($"ウェーブ {waveNumber + 1} の敵をすべて倒しました！");
-        RpcShowText();
-    }
-
-    [Rpc(RpcSources.StateAuthority, RpcTargets.All)]
-    private void RpcShowText()
-    {
-        _gameManager.ShowText();
     }
 }

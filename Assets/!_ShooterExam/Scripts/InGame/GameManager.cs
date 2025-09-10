@@ -1,4 +1,5 @@
 using Fusion;
+using UniRx;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -14,18 +15,32 @@ public class GameManager : NetworkBehaviour
     public static GameManager instance;
     [Networked] public float AllPlayerHP { get; set; }
     [Networked] public float BossHP { get; set; }
+    [Networked] public int _numberOfJoinedPlayer { get; set; }
     
-    [SerializeField] private Image _playerHealthBar;
-    [SerializeField] private Image _bossHealthBar;
-    [SerializeField] private GameObject _preText;
-
     public override void Spawned()
     {
         
     }
-
-    public void ShowText()
+    
+    public void AddPlayerHP(float playerHp)
     {
-        _preText.SetActive(true);
+        //AllPlayerHP.Value += playerHp;
+        _numberOfJoinedPlayer++;
+    }
+    
+    public void AddBossHP(float bossHp)
+    {
+        //BossHP.Value += bossHp;
+    }
+
+    public void DamagePlayer(float damage)
+    {
+        //AllPlayerHP.Value -= damage;
+    }
+
+    public void DamageBossHP(float damage)
+    {
+        //BossHP.Value -= damage;
     }
 }
+

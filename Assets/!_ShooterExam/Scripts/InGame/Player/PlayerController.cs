@@ -15,6 +15,7 @@ public class PlayerController : NetworkBehaviour, ICharacter
     public override void Spawned()
     {
         _rigidbody = GetComponent<Rigidbody2D>();
+        GameManager.instance.AddPlayerHP(Hp);
         // 上下左右移動のInputActionを取得
         _inputActions = new InputActions();
         _inputActions.Enable();
