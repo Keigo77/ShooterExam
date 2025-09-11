@@ -19,7 +19,7 @@ public class GameManager : NetworkBehaviour
     
     public override void Spawned()
     {
-        
+        Debug.Log("すぽーん");
     }
     
     public void AddPlayerHP(float playerHp)

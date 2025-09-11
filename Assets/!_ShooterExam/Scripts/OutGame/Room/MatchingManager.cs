@@ -56,6 +56,7 @@ public class MatchingManager : MonoBehaviour, INetworkRunnerCallbacks
             SceneManager.LoadScene(_matchingSceneName);
         }
     }
+
     void INetworkRunnerCallbacks.OnPlayerLeft(NetworkRunner runner, PlayerRef player) {}
     void INetworkRunnerCallbacks.OnInput(NetworkRunner runner, NetworkInput input) {}
     void INetworkRunnerCallbacks.OnInputMissing(NetworkRunner runner, PlayerRef player, NetworkInput input) {}

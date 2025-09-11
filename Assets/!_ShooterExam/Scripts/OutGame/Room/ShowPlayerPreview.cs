@@ -9,7 +9,7 @@ public class ShowPlayerPreview : NetworkBehaviour
 
     public override void Spawned()
     {
-        PlayerInfo.PlayerColor = (PlayerColor)(Runner.SessionInfo.PlayerCount - 1);
+        PlayerInfo.PlayerColor = (PlayerColor)(Runner.SessionInfo.PlayerCount);
         UpdateMyName(MyName.Value);
     }
     

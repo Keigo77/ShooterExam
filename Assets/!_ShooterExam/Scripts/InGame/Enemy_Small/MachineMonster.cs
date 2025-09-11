@@ -62,7 +62,6 @@ public class MachineMonster : AttackerSmallEnemy, ICharacter
     {
         var resultAngle = this.transform.localRotation.eulerAngles + new Vector3(0, 0, Random.Range(-20, 20));
         NetworkDOTween.MyDORotate(this.transform, resultAngle, _rotateDuration, _token).Forget();
-        Debug.Log("回転");
     }
 
     private void GenerateBullet(Vector2 direction)
@@ -77,11 +76,6 @@ public class MachineMonster : AttackerSmallEnemy, ICharacter
     private void FinishAttack()
     {
         _animator.SetBool(_animatorIsAttack, false);
-    }
-
-    public void Heal()
-    {
-        
     }
     
     public void Damage(float damage)
