@@ -2,7 +2,7 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
-public enum PlayerColor
+public enum PlayerColorEnum
 {
     Null = 0,
     Purple = 1,
@@ -14,7 +14,7 @@ public enum PlayerColor
 public class PlayerInfo : MonoBehaviour
 {
     public static string PlayerName { get; private set; }
-    public static PlayerColor PlayerColor { get; set; } = PlayerColor.Null;
+    public static PlayerColorEnum PlayerColor { get; set; } = PlayerColorEnum.Null;
     [SerializeField] private TMP_InputField _playerNameInputField;
 
     private void Start()
