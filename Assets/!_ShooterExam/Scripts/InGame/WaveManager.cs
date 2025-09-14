@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using Cysharp.Threading.Tasks;
 using Fusion;
 using TMPro;
@@ -14,14 +15,15 @@ public class WaveManager : NetworkBehaviour
     private int _currentWave = 0;
     private int _maxWave;
     
-    private Vector2 _minCameraPos;
-    private Vector2 _maxCameraPos;
+   private CancellationToken _token;
 
-    public override void Spawned()
+    public override async void Spawned()
     {
         if (!Runner.IsSharedModeMasterClient) { return; }
         _maxWave = _waveDataSO.WaveDatas.Count;
-        
+        _token = this.GetCancellationTokenOnDestroy();
+
+        await UniTask.WaitUntil(() => GameManager.Instance.CurrentGameState == GameState.Playing, cancellationToken: _token);
         StartWaveLoop().Forget();
     }
     
@@ -41,7 +43,7 @@ public class WaveManager : NetworkBehaviour
     private async UniTask UpdateWave(int waveNumber)
     {
         NetworkObject[] enemyPrefabs = _waveDataSO.WaveDatas[waveNumber].Enemies;
-        var enemyList = new List<Enemy>();
+        var enemyList = new List<EnemyBase>();
         int index = 0;
         
         foreach (var enemyPrefab in enemyPrefabs)
@@ -57,7 +59,7 @@ public class WaveManager : NetworkBehaviour
             enemySpawnPos.x += _howSpawnDistance;
             Runner.Spawn(enemyPrefab, enemySpawnPos, onBeforeSpawned: (_, enemyObj) =>
             {
-                var enemy = enemyObj.GetComponent<Enemy>();
+                var enemy = enemyObj.GetComponent<EnemyBase>();
                 // 定位置のpositionを敵に伝える
                 enemy.spawnPos = _spawnPosObj[index].transform.position;
                 enemyList.Add(enemy);

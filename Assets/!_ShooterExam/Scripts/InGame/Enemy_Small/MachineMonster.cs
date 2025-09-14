@@ -6,7 +6,7 @@ using UniRx;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
-public class MachineMonster : AttackerSmallEnemy, ICharacter
+public class MachineMonster : AttackerSmallEnemyBase, ICharacter
 {
     [SerializeField] private float _rotateDuration;
     
@@ -58,6 +58,9 @@ public class MachineMonster : AttackerSmallEnemy, ICharacter
         }
     }
 
+    /// <summary>
+    /// 攻撃前に，少し回転してから攻撃する．(弾の飛ぶ位置が一定でなくなるようにする)
+    /// </summary>
     private void RandomRotate()
     {
         var resultAngle = this.transform.localRotation.eulerAngles + new Vector3(0, 0, Random.Range(-20, 20));
@@ -78,9 +81,12 @@ public class MachineMonster : AttackerSmallEnemy, ICharacter
         _animator.SetBool(_animatorIsAttack, false);
     }
     
+    /// <summary>
+    /// プレイヤーの弾が当たったら，HPを減らす
+    /// </summary>
     public void Damage(float damage)
     {
-        if (HasStateAuthority && Hp > 0)
+        if (Hp > 0)
         {
             Hp -= damage;
             if (Hp  <= 0)
@@ -90,18 +96,12 @@ public class MachineMonster : AttackerSmallEnemy, ICharacter
         }
     }
     
-    [Rpc(RpcSources.StateAuthority, RpcTargets.All)] // なくてもいい？
-    public void RpcDeath()
+    /// <summary>
+    /// 敵の死亡を，全プレイヤーに通知する
+    /// </summary>
+    [Rpc(RpcSources.All, RpcTargets.All)]
+    private void RpcDeath()
     {
         _animator.SetBool(_animatorIsDead, true);
     }
-
-    private void DespawnEnemy() // 共通化(Enemy)に定義できそう
-    {
-        // 死亡イベントを流す
-        _onDeath.OnNext(Unit.Default);
-        _onDeath.OnCompleted();
-        Runner.Despawn(_networkObject);
-    }
-    
 }

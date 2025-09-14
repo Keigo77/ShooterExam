@@ -2,7 +2,7 @@ using System.Threading;
 using Cysharp.Threading.Tasks;
 using UnityEngine;
 
-public abstract class AttackerSmallEnemy : Enemy
+public abstract class AttackerSmallEnemyBase : EnemyBase
 {
     [SerializeField] protected GameObject _bulletPrefab;
     [SerializeField] protected float _bulletSpeed;

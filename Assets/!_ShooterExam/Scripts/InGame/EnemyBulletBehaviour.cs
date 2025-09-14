@@ -1,31 +1,40 @@
 using Fusion;
 using UnityEngine;
 
+// 弾はホストが生成させてるから，ホストじゃないとでスポーンさせれない
+
+
+
 public class EnemyBulletBehaviour : NetworkBehaviour
 {
-    public float BulletPower { private get; set; }
+    [Networked] public float BulletPower { private get; set; }
     [SerializeField] private float _existTime = 6.0f;
     private NetworkObject _networkObject;
     
     public override void Spawned()
     {
         _networkObject = this.GetComponent<NetworkObject>();
-        Invoke(nameof(DespawnBullet), _existTime);
+        Invoke(nameof(RpcDespawnBullet), _existTime);
     }
     
-    private void DespawnBullet()
+    [Rpc(RpcSources.All, RpcTargets.StateAuthority)]
+    private void RpcDespawnBullet()
     {
-        // InvokeとOnTriggerで，Despawnした後に実行されるのを防ぐ
-        Runner.Despawn(_networkObject);
+        if (HasStateAuthority)
+        {
+            // InvokeとOnTriggerで，Despawnした後に実行されるのを防ぐ
+            CancelInvoke(nameof(RpcDespawnBullet));
+            Runner.Despawn(_networkObject);
+        }
+        
     }
     
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        if (HasStateAuthority && collision.CompareTag("Player"))
+        if (collision.CompareTag("Player") && collision.gameObject.GetComponent<NetworkObject>().HasStateAuthority)
         {
             collision.GetComponent<ICharacter>().Damage(BulletPower);
-            CancelInvoke(nameof(DespawnBullet));
-            DespawnBullet();
+            RpcDespawnBullet();
         }
     }
 }

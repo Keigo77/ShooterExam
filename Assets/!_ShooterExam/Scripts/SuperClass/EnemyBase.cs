@@ -6,7 +6,7 @@ using Fusion;
 using UniRx;
 using UnityEngine;
 
-public class Enemy : NetworkBehaviour
+public class EnemyBase : NetworkBehaviour
 {
     protected readonly Subject<Unit> _onDeath = new Subject<Unit>();
     public IObservable<Unit> OnDeath => _onDeath;
@@ -22,14 +22,12 @@ public class Enemy : NetworkBehaviour
     
     protected NetworkObject _networkObject;
     
-    
-    
     /// <summary>
     /// エクセルのマスタデータから，自身のデータを取得
     /// </summary>
     protected void GetEnemyData()
     {
-        Hp = 20;
+        Hp = 40;
         _bulletPower = 10;
     }
 
@@ -45,5 +43,20 @@ public class Enemy : NetworkBehaviour
     {
         NetworkDOTween.MyDOMove(this.transform, spawnPos, _moveInScreenTime, _token).Forget();
         await UniTask.Delay(TimeSpan.FromSeconds(_moveInScreenTime), cancellationToken: _token);
+    }
+    
+    /// <summary>
+    /// HPが0になったら実行．WaveManagerに死亡を通知し，デスポーンする
+    /// </summary>
+    protected void DespawnEnemy()
+    {
+        this.gameObject.SetActive(false);
+        if (HasStateAuthority)
+        {
+            // 死亡イベントを流す
+            _onDeath.OnNext(Unit.Default);
+            _onDeath.OnCompleted();
+            Runner.Despawn(_networkObject);
+        }
     }
 }

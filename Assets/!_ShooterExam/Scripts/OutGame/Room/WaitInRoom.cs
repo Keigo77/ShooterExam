@@ -1,14 +1,17 @@
 using System;
 using System.Collections.Generic;
+using System.Threading;
 using Cysharp.Threading.Tasks;
 using Fusion;
 using Fusion.Sockets;
 using TMPro;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
 public class WaitInRoom : NetworkBehaviour, INetworkRunnerCallbacks
 {
+    public static int JoinedPlayerCount = 0;
     [SerializeField] private GameObject _battleStartButton;
     [SerializeField] private TextMeshProUGUI _sessionNameText;
     [SerializeField] private GameObject[] _playerPreviewPrefabs;
@@ -22,6 +25,7 @@ public class WaitInRoom : NetworkBehaviour, INetworkRunnerCallbacks
     [Networked, Capacity(4)] private NetworkArray<int> _hasEmptyPlayerIds { get; }
 
     private int _emptyIndex = -1;
+    private CancellationToken _token;
     
     public override void Spawned()
     {
@@ -36,6 +40,7 @@ public class WaitInRoom : NetworkBehaviour, INetworkRunnerCallbacks
         // ホストのみ，バトル開始(ステージセレクトボタンを表示)
         if (HasStateAuthority)
         {
+            _token = this.GetCancellationTokenOnDestroy();
             _battleStartButton.SetActive(true);
         }
         
@@ -50,6 +55,8 @@ public class WaitInRoom : NetworkBehaviour, INetworkRunnerCallbacks
         }
         
         RpcUpdateEmpty(_emptyIndex, false, Runner.LocalPlayer.PlayerId);
+        PlayerInfo.PlayerColor = (PlayerColorEnum)(_emptyIndex + 1);
+        
         // プレビュー(自分のジェット機の色と名前)を表示する
         var previewObj = _playerPreviewPrefabs[_emptyIndex];
         Runner.Spawn(previewObj, previewObj.transform.position, onBeforeSpawned: (_, obj) =>
@@ -64,6 +71,7 @@ public class WaitInRoom : NetworkBehaviour, INetworkRunnerCallbacks
     /// </summary>
     public async void BackHome()
     {
+        Runner.RemoveCallbacks(this);
         await Runner.Shutdown();
         SceneManager.LoadScene(_homeSceneName);
     }
@@ -82,17 +90,20 @@ public class WaitInRoom : NetworkBehaviour, INetworkRunnerCallbacks
     /// 次のシーンに行く．OnPlayerLeftなどが呼び出されないように，コールバックは解除する．
     /// </summary>
     [Rpc(RpcSources.StateAuthority, RpcTargets.All)]
-    public void RpcMoveScene()
+    public async void RpcMoveScene()
     {
+        Runner.RemoveCallbacks(this);
         if (HasStateAuthority)
         {
+            JoinedPlayerCount = Runner.SessionInfo.PlayerCount;
+            await UniTask.Delay(TimeSpan.FromSeconds(2.0f), cancellationToken: _token);
             Runner.LoadScene(_nextScenePath);
         }
-        Runner.RemoveCallbacks(this);
     }
     
     void INetworkRunnerCallbacks.OnPlayerLeft(NetworkRunner runner, PlayerRef player)
     {
+        if (this.gameObject == null) return; // 既に破棄されているなら無視
         // 退出したプレイヤーのプレイヤーIDを取得する
         int leftPlayerIndex = _hasEmptyPlayerIds.IndexOf(player.PlayerId);
          
@@ -108,6 +119,19 @@ public class WaitInRoom : NetworkBehaviour, INetworkRunnerCallbacks
             _hasEmpties.Set(leftPlayerIndex, true);
         }
     }
+
+    /// <summary>
+    /// めっちゃ大事．ないと，次のシーンで退出した時に，ここのOnPlayerLeftが呼ばれる
+    /// </summary>
+    private void OnDisable()
+    {
+        if (Runner != null)
+        {
+            Runner.RemoveCallbacks(this);
+            Debug.Log("remove callback");   
+        }
+    }
+
     
     void INetworkRunnerCallbacks.OnObjectExitAOI(NetworkRunner runner, NetworkObject obj, PlayerRef player) {}
      void INetworkRunnerCallbacks.OnObjectEnterAOI(NetworkRunner runner, NetworkObject obj, PlayerRef player) {}

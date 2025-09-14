@@ -14,7 +14,7 @@ GameObject:
   - component: {fileID: 1014919727074218214}
   - component: {fileID: 6584124900719611736}
   m_Layer: 6
-  m_Name: BlueBullet
+  m_Name: Player1Bullet
   m_TagString: PlayerBullet
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -166,3 +166,4 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _existTime: 6
+  _bulletPlayerColor: 1

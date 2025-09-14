@@ -1,27 +1,30 @@
 using System;
+using Cysharp.Threading.Tasks;
 using Fusion;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
 public class PlayerController : NetworkBehaviour, ICharacter
 {
-    [Networked] private float Hp { get; set; } = 100;
     [SerializeField] private float _speed;
-    
+    private float _hp = 100;
     private Rigidbody2D _rigidbody;
     private InputActions _inputActions;
     private Vector2 _moveDirection;
     
-    public override void Spawned()
+    public override async void Spawned()
     {
         _rigidbody = GetComponent<Rigidbody2D>();
-        GameManager.instance.AddPlayerHP(Hp);
+        
         // 上下左右移動のInputActionを取得
         _inputActions = new InputActions();
         _inputActions.Enable();
         _inputActions.Player.Move.started += OnMove;
         _inputActions.Player.Move.performed += OnMove;
         _inputActions.Player.Move.canceled += OnMove;
+
+        await UniTask.WaitUntil(() => GameManager.Instance != null && GameManager.Instance.IsSpawned);
+        GameManager.Instance.AddPlayerHP(_hp);
     }
 
     private void OnMove(InputAction.CallbackContext context)
@@ -31,6 +34,11 @@ public class PlayerController : NetworkBehaviour, ICharacter
 
     public override void FixedUpdateNetwork()
     {
+        if (GameManager.Instance.CurrentGameState != GameState.Playing)
+        {
+            return;
+        }
+        
         _rigidbody.linearVelocity = _moveDirection * _speed;
     }
 
@@ -39,23 +47,11 @@ public class PlayerController : NetworkBehaviour, ICharacter
         _inputActions?.Disable();
     }
 
-    public void Heal()
-    {
-        
-    }
-
     public void Damage(float damage)
     {
-        Hp -= damage;
-        if (Hp <= 0)
+        if (HasStateAuthority)
         {
-            RpcDeath();
+            GameManager.Instance.RpcDecreasePlayerHpGauge(damage);
         }
-    }
-
-    [Rpc(RpcSources.StateAuthority, RpcTargets.All)]
-    public void RpcDeath()
-    {
-        Debug.Log("プレイヤーの死亡");
     }
 }

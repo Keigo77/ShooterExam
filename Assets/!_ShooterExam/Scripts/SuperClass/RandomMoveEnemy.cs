@@ -2,7 +2,7 @@ using DG.Tweening;
 using Fusion;
 using UnityEngine;
 
-public class MoverSmallEnemy : Enemy
+public class RandomMoveEnemy : MonoBehaviour
 {
     [SerializeField] private float _speed;
     [SerializeField] private float _moveSpan;

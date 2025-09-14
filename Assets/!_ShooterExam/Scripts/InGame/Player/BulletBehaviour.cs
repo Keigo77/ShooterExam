@@ -10,8 +10,9 @@ using UnityEngine;
 public class BulletBehaviour : MonoBehaviour
 {
     public BulletObjectPool BulletObjectPoolScript { private get; set; }
-    public float BulletPower {private get; set; }
+    public float BulletPower { private get; set; }
     [SerializeField] private float _existTime = 6f;
+    [SerializeField] private PlayerColorEnum _bulletPlayerColor; 
 
     /// <summary>
     /// 弾のSetActiveがtrueになるたびに呼ばれる
@@ -26,11 +27,18 @@ public class BulletBehaviour : MonoBehaviour
         BulletObjectPoolScript.DeleteBullet(this.gameObject);
     }
 
+    /// <summary>
+    /// 敵に当たった弾が自分の弾なら，敵にダメージを与える
+    /// </summary>
     private void OnTriggerEnter2D(Collider2D collision)
     {
         if (collision.CompareTag("Enemy"))
         {
-            collision.GetComponent<ICharacter>().Damage(BulletPower);
+            if (_bulletPlayerColor == PlayerInfo.PlayerColor)
+            {
+                Debug.Log($"{BulletPower}のダメージ");
+                collision.GetComponent<ICharacter>().Damage(BulletPower);
+            }
             Destroy(gameObject);
         }
     }
