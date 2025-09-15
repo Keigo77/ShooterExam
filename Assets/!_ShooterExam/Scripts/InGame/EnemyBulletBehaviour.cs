@@ -7,8 +7,9 @@ using UnityEngine;
 
 public class EnemyBulletBehaviour : NetworkBehaviour
 {
-    [Networked] public float BulletPower { private get; set; }
+    [Networked] public float BulletPower { get; set; }
     [SerializeField] private float _existTime = 6.0f;
+    [SerializeField] private GameObject _bulletViewObj;
     private NetworkObject _networkObject;
     
     public override void Spawned()
@@ -17,8 +18,11 @@ public class EnemyBulletBehaviour : NetworkBehaviour
         Invoke(nameof(RpcDespawnBullet), _existTime);
     }
     
+    /// <summary>
+    /// ホストしかでスポーンさせられないため，ホストにデスポーンを要求する．
+    /// </summary>
     [Rpc(RpcSources.All, RpcTargets.StateAuthority)]
-    private void RpcDespawnBullet()
+    public void RpcDespawnBullet()
     {
         if (HasStateAuthority)
         {
@@ -26,15 +30,23 @@ public class EnemyBulletBehaviour : NetworkBehaviour
             CancelInvoke(nameof(RpcDespawnBullet));
             Runner.Despawn(_networkObject);
         }
-        
     }
     
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        if (collision.CompareTag("Player") && collision.gameObject.GetComponent<NetworkObject>().HasStateAuthority)
+        if (collision.CompareTag("Player"))
         {
-            collision.GetComponent<ICharacter>().Damage(BulletPower);
-            RpcDespawnBullet();
+            if (collision.GetComponent<NetworkObject>().HasStateAuthority)
+            {
+                Debug.Log("デスポーン");
+                collision.GetComponent<ICharacter>().Damage(BulletPower);
+                RpcDespawnBullet();
+                _bulletViewObj.SetActive(false);
+            }
+            else
+            {
+                _bulletViewObj.SetActive(false);
+            }
         }
     }
 }

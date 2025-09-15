@@ -36,7 +36,6 @@ public class BulletBehaviour : MonoBehaviour
         {
             if (_bulletPlayerColor == PlayerInfo.PlayerColor)
             {
-                Debug.Log($"{BulletPower}のダメージ");
                 collision.GetComponent<ICharacter>().Damage(BulletPower);
             }
             Destroy(gameObject);

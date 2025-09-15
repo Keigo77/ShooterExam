@@ -64,6 +64,14 @@ PrefabInstance:
       propertyPath: _bulletPrefab
       value: 
       objectReference: {fileID: 5573004921481434890, guid: 80788c100e61b45eca4ecf65d6e59895, type: 3}
+    - target: {fileID: 8418576252605733640, guid: a265870592f4447479985602745b4877, type: 3}
+      propertyPath: m_Size.y
+      value: 0.66634244
+      objectReference: {fileID: 0}
+    - target: {fileID: 8418576252605733640, guid: a265870592f4447479985602745b4877, type: 3}
+      propertyPath: m_Offset.y
+      value: 0.102892965
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
