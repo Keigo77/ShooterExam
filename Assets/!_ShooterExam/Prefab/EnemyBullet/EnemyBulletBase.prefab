@@ -9,10 +9,9 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 3477576733170612203}
-  - component: {fileID: 6285380911974451921}
   - component: {fileID: 9118331813716803884}
-  - component: {fileID: 1566044059638221957}
-  - component: {fileID: 2889226056514152873}
+  - component: {fileID: 8036056241339283231}
+  - component: {fileID: 1213171963239549492}
   m_Layer: 8
   m_Name: EnemyBulletBase
   m_TagString: EnemyBullet
@@ -36,21 +35,6 @@ Transform:
   - {fileID: 1610696801739281885}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &6285380911974451921
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3371886778226909018}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 2e7b0d5fc5ea14f3ba2f1f2a19988473, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _BulletPower: 0
-  _existTime: 6
-  _bulletViewObj: {fileID: 6534464758790163915}
 --- !u!114 &9118331813716803884
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -68,10 +52,9 @@ MonoBehaviour:
   Flags: 262145
   NestedObjects: []
   NetworkedBehaviours:
-  - {fileID: 6285380911974451921}
-  - {fileID: 2889226056514152873}
+  - {fileID: 1213171963239549492}
   ForceRemoteRenderTimeframe: 0
---- !u!50 &1566044059638221957
+--- !u!50 &8036056241339283231
 Rigidbody2D:
   serializedVersion: 5
   m_ObjectHideFlags: 0
@@ -98,7 +81,7 @@ Rigidbody2D:
   m_SleepingMode: 1
   m_CollisionDetection: 0
   m_Constraints: 0
---- !u!114 &2889226056514152873
+--- !u!114 &1213171963239549492
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}

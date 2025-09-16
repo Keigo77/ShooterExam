@@ -3,15 +3,8 @@ using UnityEngine;
 
 // 弾はホストが生成させてるから，ホストじゃないとでスポーンさせれない
 
-
-
-public class EnemyBulletBehaviour : NetworkBehaviour
+public class EnemyBulletBehaviour : EnemyBulletBase
 {
-    [Networked] public float BulletPower { get; set; }
-    [SerializeField] private float _existTime = 6.0f;
-    [SerializeField] private GameObject _bulletViewObj;
-    private NetworkObject _networkObject;
-    
     public override void Spawned()
     {
         _networkObject = this.GetComponent<NetworkObject>();
@@ -38,14 +31,13 @@ public class EnemyBulletBehaviour : NetworkBehaviour
         {
             if (collision.GetComponent<NetworkObject>().HasStateAuthority)
             {
-                Debug.Log("デスポーン");
                 collision.GetComponent<ICharacter>().Damage(BulletPower);
                 RpcDespawnBullet();
-                _bulletViewObj.SetActive(false);
+                this.gameObject.SetActive(false);
             }
             else
             {
-                _bulletViewObj.SetActive(false);
+                this.gameObject.SetActive(false);
             }
         }
     }

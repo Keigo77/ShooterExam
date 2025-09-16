@@ -50,7 +50,7 @@ public class MachineMonster : AttackerSmallEnemyBase, ICharacter
 
     protected override void Attack()
     {
-        if (Runner != null && HasStateAuthority)
+        if (Runner.IsRunning && HasStateAuthority)
         {
             GenerateBullet(new Vector2(-1, 1).normalized);
             GenerateBullet(new Vector2(-1, 0).normalized);

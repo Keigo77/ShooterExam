@@ -7,6 +7,7 @@ using UnityEngine.InputSystem;
 public class PlayerController : NetworkBehaviour, ICharacter
 {
     [SerializeField] private float _speed;
+    private PlayerStatusEffectManager _playerStatusEffectManager;
     private float _hp = 100;
     private Rigidbody2D _rigidbody;
     private InputActions _inputActions;
@@ -14,7 +15,8 @@ public class PlayerController : NetworkBehaviour, ICharacter
     
     public override async void Spawned()
     {
-        _rigidbody = GetComponent<Rigidbody2D>();
+        _rigidbody = this.GetComponent<Rigidbody2D>();
+        _playerStatusEffectManager = this.GetComponent<PlayerStatusEffectManager>();
         
         // 上下左右移動のInputActionを取得
         _inputActions = new InputActions();
@@ -34,10 +36,12 @@ public class PlayerController : NetworkBehaviour, ICharacter
 
     public override void FixedUpdateNetwork()
     {
-        if (GameManager.Instance.CurrentGameState != GameState.Playing)
+        /*
+        if (GameManager.Instance.CurrentGameState != GameState.Playing || _playerStatusEffectManager.PlayerStatusEffects.Contains(StatusEffect.Paralysis))
         {
             return;
         }
+        */
         
         _rigidbody.linearVelocity = _moveDirection * _speed;
     }

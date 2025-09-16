@@ -1,3 +1,7 @@
+using System;
+using System.Collections.Generic;
+using System.Threading;
+using Cysharp.Threading.Tasks;
 using Fusion;
 using UnityEngine;
 using UniRx;
@@ -12,10 +16,38 @@ public enum StatusEffect
 
 public class PlayerStatusEffectManager : NetworkBehaviour
 {
-    public ReactiveProperty<StatusEffect> PlayerStatusEffect { private get; set; } = new ReactiveProperty<StatusEffect>(StatusEffect.None);
+    public List<StatusEffect> PlayerStatusEffects { get; private set; } = new List<StatusEffect>(){StatusEffect.None};
+    [SerializeField] private Sprite[] _statusEffectSprites;
+    [SerializeField] private SpriteRenderer[] _showStatusEffects;
+    private CancellationToken _token;
 
     public override void Spawned()
     {
-        
+        PlayerStatusEffects.Add(StatusEffect.None);
+        _token = this.GetCancellationTokenOnDestroy();
+    }
+
+    /// <summary>
+    /// 敵の弾やアイテムから実行され，プレイヤーに状態異常 or アイテムの効果を付与する．
+    /// </summary>
+    public async UniTask AddStatusEffect(StatusEffect addStatusEffect, float effectTime)
+    {
+        PlayerStatusEffects.Add(addStatusEffect);
+        RpcShowStatusEffectIcon(addStatusEffect);
+        await UniTask.Delay(TimeSpan.FromSeconds(effectTime), cancellationToken: _token);
+        PlayerStatusEffects.Remove(addStatusEffect);
+        RpcDeleteStatusEffectIcon(addStatusEffect);
+    }
+
+    [Rpc(RpcSources.StateAuthority, RpcTargets.All)]
+    private void RpcShowStatusEffectIcon(StatusEffect addStatusEffect)
+    {
+        _showStatusEffects[PlayerStatusEffects.Count - 1].sprite = _statusEffectSprites[(int)addStatusEffect];
+    }
+    
+    [Rpc(RpcSources.StateAuthority, RpcTargets.All)]
+    private void RpcDeleteStatusEffectIcon(StatusEffect addStatusEffect)
+    {
+        _showStatusEffects[PlayerStatusEffects.Count - 1].sprite = null;
     }
 }

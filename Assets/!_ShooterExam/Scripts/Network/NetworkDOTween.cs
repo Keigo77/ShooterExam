@@ -4,10 +4,10 @@ using UnityEngine;
 
 public class NetworkDOTween : MonoBehaviour
 {
-    public static async UniTask MyDOMove(Transform target, Vector3 endValue, float duration, CancellationToken token)
+    public static async UniTask MyDOMove(Transform target, Vector2 endValue, float duration, CancellationToken token)
     {
         // 開始位置と開始時間
-        Vector3 startPos = target.position;
+        Vector2 startPos = target.position;
         float startTime = Time.time;
         float elapsedTime = 0f;
 
@@ -22,7 +22,7 @@ public class NetworkDOTween : MonoBehaviour
             // 現在のフレームにおける新しい位置を計算
             if (target != null)
             {
-                target.position = Vector3.Lerp(startPos, endValue, t);
+                target.position = Vector2.Lerp(startPos, endValue, t);
             }
             
             
