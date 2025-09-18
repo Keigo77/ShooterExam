@@ -18,7 +18,7 @@ public class PlayerStatusEffectManager : NetworkBehaviour
 {
     public List<StatusEffect> PlayerStatusEffects { get; private set; } = new List<StatusEffect>(){StatusEffect.None};
     [SerializeField] private Sprite[] _statusEffectSprites;
-    [SerializeField] private SpriteRenderer[] _showStatusEffects;
+    [SerializeField] private SpriteRenderer[] _showStatusEffectsPos;
     private CancellationToken _token;
 
     public override void Spawned()
@@ -33,21 +33,23 @@ public class PlayerStatusEffectManager : NetworkBehaviour
     public async UniTask AddStatusEffect(StatusEffect addStatusEffect, float effectTime)
     {
         PlayerStatusEffects.Add(addStatusEffect);
-        RpcShowStatusEffectIcon(addStatusEffect);
+        int statusEffectIndex = PlayerStatusEffects.Count - 1;
+        
+        RpcShowStatusEffectIcon(addStatusEffect, statusEffectIndex);
         await UniTask.Delay(TimeSpan.FromSeconds(effectTime), cancellationToken: _token);
         PlayerStatusEffects.Remove(addStatusEffect);
-        RpcDeleteStatusEffectIcon(addStatusEffect);
+        RpcDeleteStatusEffectIcon(statusEffectIndex);
     }
 
     [Rpc(RpcSources.StateAuthority, RpcTargets.All)]
-    private void RpcShowStatusEffectIcon(StatusEffect addStatusEffect)
+    private void RpcShowStatusEffectIcon(StatusEffect addStatusEffect, int index)
     {
-        _showStatusEffects[PlayerStatusEffects.Count - 1].sprite = _statusEffectSprites[(int)addStatusEffect];
+        _showStatusEffectsPos[index].sprite = _statusEffectSprites[(int)addStatusEffect];
     }
     
     [Rpc(RpcSources.StateAuthority, RpcTargets.All)]
-    private void RpcDeleteStatusEffectIcon(StatusEffect addStatusEffect)
+    private void RpcDeleteStatusEffectIcon(int index)
     {
-        _showStatusEffects[PlayerStatusEffects.Count - 1].sprite = null;
+        _showStatusEffectsPos[index].sprite = null;
     }
 }

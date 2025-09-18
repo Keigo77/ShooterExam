@@ -128,7 +128,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _moveInScreenTime: 3
   _enemyId: 0
-  _Hp: 100
+  _Hp: 1000
   _actions:
   - attackType: 0
     beforeWaitTime: 2

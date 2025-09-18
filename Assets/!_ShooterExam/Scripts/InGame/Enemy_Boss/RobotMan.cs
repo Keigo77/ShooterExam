@@ -61,6 +61,7 @@ public class RobotMan : BossBase, ICharacter
             await UniTask.Yield(cancellationToken: _token);
         }
         
+        GameManager.Instance.RpcInitializeBossHpGauge(Hp);
         GetToken();
         AttackLoop().Forget();
     }
@@ -148,13 +149,6 @@ public class RobotMan : BossBase, ICharacter
 
     public void Damage(float damage)
     {
-        if (Hp > 0)
-        {
-            Hp -= damage;
-            if (Hp  <= 0)
-            { 
-                //RpcDeath();
-            }
-        }
+        GameManager.Instance.RpcDecreaseBossHpGauge(damage);
     }
 }

@@ -19,19 +19,24 @@ public class GameManager : NetworkBehaviour, INetworkRunnerCallbacks
 {
     public static GameManager Instance { get; private set; }
     [Networked] public GameState CurrentGameState { get; private set; } = GameState.Stopping;
+    
+    // Hp
     [Networked, OnChangedRender(nameof(UpdatePlayerHpGauge))] private float AllPlayerHP { get; set; } = 0f;
     [Networked] private float MaxPlayersHP { get; set; } = 0f;
-    [Networked] public float BossHP { get; set; } = 0f;
-    private float _bossMaxHP = 0f;
+    [Networked, OnChangedRender(nameof(UpdateBossHpGauge))] private float BossHP { get; set; } = 0f;
+    [Networked] private float MaxBossHP { get; set; } = 0f;
     
+    // UI
     [SerializeField] private Image _playerHpGauge;
     [SerializeField] private Image _bossHpGauge;
     
-    [SerializeField] private UIManager _uiManager;
+    // 始まるまでの処理
     [Networked] private int JoinedPlayerCount { get; set; } = 0;
     private int _nowPlayerCount = 0;
     private CancellationToken _token;
     private bool _isTimeOut = false;
+    
+    // プレイヤーは，これがtrueになってからAddPlayerHpを実行する．f
     public bool IsSpawned = false;
 
     private void Awake()
@@ -68,17 +73,16 @@ public class GameManager : NetworkBehaviour, INetworkRunnerCallbacks
         _isTimeOut = true;
     }
     
+    /// <summary>
+    /// プレイヤーがスポーン時に実行．全体の最大HPを追加し，何人がバトル開始部屋まで入ってきたかチェックする．
+    /// </summary>
     public void AddPlayerHP(float playerHp)
     { 
         AllPlayerHP += playerHp;
         _nowPlayerCount++;
     }
-    
-    public void AddBossHP(float bossHp)
-    {
-        //BossHP.Value += bossHp;
-    }
 
+    // ネットワークプロパティはホストしか変更できないため，プレイヤー全員がホストに通知する．
     [Rpc(RpcSources.All, RpcTargets.StateAuthority)]
     public void RpcDecreasePlayerHpGauge(float damage)
     {
@@ -93,10 +97,23 @@ public class GameManager : NetworkBehaviour, INetworkRunnerCallbacks
         _playerHpGauge.fillAmount = AllPlayerHP / MaxPlayersHP;
     }
 
-    
-    public void DamageBoss(float damage)
+    [Rpc(RpcSources.StateAuthority, RpcTargets.All)]
+    public void RpcInitializeBossHpGauge(float bossHp)
     {
-        //BossHP.Value -= damage;
+        MaxBossHP = BossHP =  bossHp;
+        _bossHpGauge.fillAmount = 1.0f;
+        _bossHpGauge.gameObject.SetActive(true);
+    }
+
+    [Rpc(RpcSources.All, RpcTargets.StateAuthority)]
+    public void RpcDecreaseBossHpGauge(float damage)
+    {
+        BossHP -= damage;
+    }
+    
+    private void UpdateBossHpGauge()
+    {
+        _bossHpGauge.fillAmount = BossHP / MaxBossHP;
     }
     
     void INetworkRunnerCallbacks.OnObjectExitAOI(NetworkRunner runner, NetworkObject obj, PlayerRef player) {}

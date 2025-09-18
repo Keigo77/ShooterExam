@@ -1,7 +1,7 @@
 using Fusion;
 using UnityEngine;
 
-public class HasAnimationEnemuBulletBehaviour : EnemyBulletBase
+public class AnimationEnemuBulletBehaviour : EnemyBulletBase
 {
     [SerializeField] private Rigidbody2D _rigidbody;
     private Animator _animator;
