@@ -15,21 +15,11 @@ public class EnemyBase : NetworkBehaviour
     public Vector2 spawnPos { get; set; }
     [SerializeField] private float _moveInScreenTime;
     
-    
     [SerializeField] private int _enemyId;
     [Networked] public float Hp { get; set; }
-    protected float _bulletPower = 0;
     
     protected NetworkObject _networkObject;
     
-    /// <summary>
-    /// エクセルのマスタデータから，自身のデータを取得
-    /// </summary>
-    protected void GetEnemyData()
-    {
-        Hp = 40;
-        _bulletPower = 10;
-    }
 
     protected void GetToken()
     {

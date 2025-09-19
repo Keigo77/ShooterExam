@@ -249,7 +249,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _moveInScreenTime: 1.5
   _enemyId: 0
-  _Hp: 0
+  _Hp: 10
   _bulletPrefab: {fileID: 5173324007039618097, guid: e9acd09fab32f4221a8b5a44cd70a31a, type: 3}
   _bulletSpeed: 5
   _attackSpan: 2

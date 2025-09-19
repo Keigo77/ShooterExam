@@ -31,7 +31,7 @@ public class RobotMan : BossBase, ICharacter
     [SerializeField] private GameObject _paralysisBulletPrefab;
     [SerializeField] private float _bulletSpeed;
     private GameObject _nowBullet;
-    public List<NetworkObject> _playerObjects = new List<NetworkObject>();
+    private List<NetworkObject> _playerObjects = new List<NetworkObject>();
     
     // アニメーション
     private Animator _animator;
@@ -39,6 +39,7 @@ public class RobotMan : BossBase, ICharacter
 
     public override async void Spawned()
     {
+        _maxBossHp = Hp;
         _animator = this.GetComponent<Animator>();
         _animatorIsAttack = Animator.StringToHash("IsAttack");
         
@@ -61,6 +62,15 @@ public class RobotMan : BossBase, ICharacter
             await UniTask.Yield(cancellationToken: _token);
         }
         
+        try
+        {
+            await MoveInScreen();
+        }
+        catch (Exception e)
+        {
+            Debug.Log($"{e}\nMoveInScreen()がキャンセルされました");
+        }
+        
         GameManager.Instance.RpcInitializeBossHpGauge(Hp);
         GetToken();
         AttackLoop().Forget();
@@ -68,11 +78,20 @@ public class RobotMan : BossBase, ICharacter
 
     private async UniTask AttackLoop()
     {
-        while (!_token.IsCancellationRequested)
+        while (!_token.IsCancellationRequested && Hp > 0)
         {
             foreach (var action in _actions)
             {
-                await UniTask.Delay(TimeSpan.FromSeconds(action.beforeWaitTime), cancellationToken: _token);
+                // Hpが最大値の半分以下なら，攻撃速度が倍になる
+                if (Hp <= _maxBossHp / 2)
+                {
+                    await UniTask.Delay(TimeSpan.FromSeconds(action.beforeWaitTime / 2), cancellationToken: _token);
+                }
+                else
+                {
+                    await UniTask.Delay(TimeSpan.FromSeconds(action.beforeWaitTime), cancellationToken: _token);
+                }
+                
                 switch (action.attackType)
                 {
                     case RobotAttack.NormalAttack:
@@ -134,7 +153,7 @@ public class RobotMan : BossBase, ICharacter
     private void Attack()
     {
         if (!HasStateAuthority) { return; }
-        Debug.Log("Attack");
+        
         var bulletSpawnPos = new Vector2(this.transform.position.x - 2.0f, this.transform.position.y);
         if (Runner.IsRunning)
         {
@@ -149,6 +168,17 @@ public class RobotMan : BossBase, ICharacter
 
     public void Damage(float damage)
     {
-        GameManager.Instance.RpcDecreaseBossHpGauge(damage);
+        if (Hp > 0)
+        {
+            Hp -= damage;
+            GameManager.Instance.RpcUpdateBossHpGauge(_maxBossHp, Hp);
+        }
+        else
+        {
+            // 死亡アニメーションの再生と，ゲーム終了の処理
+            
+        }
     }
+    
+    
 }

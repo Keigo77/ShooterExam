@@ -809,7 +809,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!1 &5999010739669163580
 GameObject:
   m_ObjectHideFlags: 0
@@ -1040,7 +1040,7 @@ PrefabInstance:
     - target: {fileID: 4012298972810677766, guid: 305c934f8a5294902a7a03cf13d15b3e, type: 3}
       propertyPath: _bossHpGauge
       value: 
-      objectReference: {fileID: 9181762436073056005}
+      objectReference: {fileID: 5967419706907973652}
     - target: {fileID: 4012298972810677766, guid: 305c934f8a5294902a7a03cf13d15b3e, type: 3}
       propertyPath: _bossHealthBar
       value: 
@@ -1053,9 +1053,21 @@ PrefabInstance:
       propertyPath: _playerHealthBar
       value: 
       objectReference: {fileID: 6416320760860449182}
+    - target: {fileID: 4012298972810677766, guid: 305c934f8a5294902a7a03cf13d15b3e, type: 3}
+      propertyPath: _bossHpGaugeImage
+      value: 
+      objectReference: {fileID: 9181762436073056005}
+    - target: {fileID: 4012298972810677766, guid: 305c934f8a5294902a7a03cf13d15b3e, type: 3}
+      propertyPath: _playerHpGaugeImage
+      value: 
+      objectReference: {fileID: 6416320760860449182}
     - target: {fileID: 6251997583045122450, guid: 305c934f8a5294902a7a03cf13d15b3e, type: 3}
       propertyPath: SortKey
       value: 2950366180
+      objectReference: {fileID: 0}
+    - target: {fileID: 7644993262302970713, guid: 305c934f8a5294902a7a03cf13d15b3e, type: 3}
+      propertyPath: _howSpawnDistance
+      value: 8
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

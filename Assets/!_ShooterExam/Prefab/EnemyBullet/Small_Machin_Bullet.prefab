@@ -172,7 +172,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2e7b0d5fc5ea14f3ba2f1f2a19988473, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _BulletPower: 0
+  _BulletPower: 5
   _existTime: 6
   _networkObject: {fileID: 1696411853358240327}
 --- !u!114 &8779207373665245535 stripped

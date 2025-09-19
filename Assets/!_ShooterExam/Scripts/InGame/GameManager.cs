@@ -23,12 +23,11 @@ public class GameManager : NetworkBehaviour, INetworkRunnerCallbacks
     // Hp
     [Networked, OnChangedRender(nameof(UpdatePlayerHpGauge))] private float AllPlayerHP { get; set; } = 0f;
     [Networked] private float MaxPlayersHP { get; set; } = 0f;
-    [Networked, OnChangedRender(nameof(UpdateBossHpGauge))] private float BossHP { get; set; } = 0f;
-    [Networked] private float MaxBossHP { get; set; } = 0f;
     
     // UI
-    [SerializeField] private Image _playerHpGauge;
-    [SerializeField] private Image _bossHpGauge;
+    [SerializeField] private Image _playerHpGaugeImage;
+    [SerializeField] private GameObject _bossHpGauge;
+    [SerializeField] private Image _bossHpGaugeImage;
     
     // 始まるまでの処理
     [Networked] private int JoinedPlayerCount { get; set; } = 0;
@@ -94,26 +93,24 @@ public class GameManager : NetworkBehaviour, INetworkRunnerCallbacks
     
     private void UpdatePlayerHpGauge()
     {
-        _playerHpGauge.fillAmount = AllPlayerHP / MaxPlayersHP;
+        _playerHpGaugeImage.fillAmount = AllPlayerHP / MaxPlayersHP;
     }
 
     [Rpc(RpcSources.StateAuthority, RpcTargets.All)]
     public void RpcInitializeBossHpGauge(float bossHp)
     {
-        MaxBossHP = BossHP =  bossHp;
-        _bossHpGauge.fillAmount = 1.0f;
+        _bossHpGaugeImage.fillAmount = 1.0f;
         _bossHpGauge.gameObject.SetActive(true);
     }
-
-    [Rpc(RpcSources.All, RpcTargets.StateAuthority)]
-    public void RpcDecreaseBossHpGauge(float damage)
-    {
-        BossHP -= damage;
-    }
     
-    private void UpdateBossHpGauge()
+    [Rpc(RpcSources.StateAuthority, RpcTargets.All)]
+    public void RpcUpdateBossHpGauge(float maxBossHp, float bossHp)
     {
-        _bossHpGauge.fillAmount = BossHP / MaxBossHP;
+        if (bossHp <= 0)
+        {
+            _bossHpGauge.gameObject.SetActive(false);
+        } 
+        _bossHpGaugeImage.fillAmount = bossHp / maxBossHp;
     }
     
     void INetworkRunnerCallbacks.OnObjectExitAOI(NetworkRunner runner, NetworkObject obj, PlayerRef player) {}

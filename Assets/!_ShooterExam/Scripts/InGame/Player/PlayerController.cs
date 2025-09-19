@@ -36,7 +36,7 @@ public class PlayerController : NetworkBehaviour, ICharacter
 
     public override void FixedUpdateNetwork()
     {
-        if (GameManager.Instance.CurrentGameState != GameState.Playing || _playerStatusEffectManager.PlayerStatusEffects.Contains(StatusEffect.Paralysis))
+        if (GameManager.Instance.CurrentGameState != GameState.Playing || _playerStatusEffectManager.PlayerStatusEffects == StatusEffect.Paralysis)
         {
             _rigidbody.linearVelocity = Vector2.zero;
             return;

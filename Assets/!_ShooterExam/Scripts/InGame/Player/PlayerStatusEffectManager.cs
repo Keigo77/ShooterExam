@@ -16,14 +16,13 @@ public enum StatusEffect
 
 public class PlayerStatusEffectManager : NetworkBehaviour
 {
-    public List<StatusEffect> PlayerStatusEffects { get; private set; } = new List<StatusEffect>(){StatusEffect.None};
+    public StatusEffect PlayerStatusEffects { get; private set; } = StatusEffect.None;
     [SerializeField] private Sprite[] _statusEffectSprites;
-    [SerializeField] private SpriteRenderer[] _showStatusEffectsPos;
+    [SerializeField] private SpriteRenderer _showStatusEffectsPos;
     private CancellationToken _token;
 
     public override void Spawned()
     {
-        PlayerStatusEffects.Add(StatusEffect.None);
         _token = this.GetCancellationTokenOnDestroy();
     }
 
@@ -32,24 +31,39 @@ public class PlayerStatusEffectManager : NetworkBehaviour
     /// </summary>
     public async UniTask AddStatusEffect(StatusEffect addStatusEffect, float effectTime)
     {
-        PlayerStatusEffects.Add(addStatusEffect);
-        int statusEffectIndex = PlayerStatusEffects.Count - 1;
+        PlayerStatusEffects = addStatusEffect;
         
-        RpcShowStatusEffectIcon(addStatusEffect, statusEffectIndex);
-        await UniTask.Delay(TimeSpan.FromSeconds(effectTime), cancellationToken: _token);
-        PlayerStatusEffects.Remove(addStatusEffect);
-        RpcDeleteStatusEffectIcon(statusEffectIndex);
+        RpcShowStatusEffectIcon(addStatusEffect);
+        await UniTask.Delay(TimeSpan.FromSeconds(effectTime * 0.7f), cancellationToken: _token);
+        // 効果時間の7割が経過したら，アイコンを点滅させてから消去
+        RpcDeleteStatusEffectIcon(addStatusEffect, effectTime);
+    }
+
+    /// <summary>
+    /// 付与された状態のアイコンを表示する
+    /// </summary>
+
+    [Rpc(RpcSources.StateAuthority, RpcTargets.All)]
+    private void RpcShowStatusEffectIcon(StatusEffect addStatusEffect)
+    {
+        _showStatusEffectsPos.sprite = _statusEffectSprites[(int)addStatusEffect];
     }
 
     [Rpc(RpcSources.StateAuthority, RpcTargets.All)]
-    private void RpcShowStatusEffectIcon(StatusEffect addStatusEffect, int index)
+    private async void RpcDeleteStatusEffectIcon(StatusEffect statusEffect, float effectTime)
     {
-        _showStatusEffectsPos[index].sprite = _statusEffectSprites[(int)addStatusEffect];
+        int flashingIconCount = 0;
+        while (!_token.IsCancellationRequested && flashingIconCount < 5)
+        {
+            NetworkDOTween.MyDOFade(_showStatusEffectsPos, 0.0f, effectTime * 0.03f, _token).Forget();
+            await UniTask.Delay(TimeSpan.FromSeconds(effectTime * 0.03f), cancellationToken: _token);
+            NetworkDOTween.MyDOFade(_showStatusEffectsPos, 1.0f, effectTime * 0.03f, _token).Forget();
+            await UniTask.Delay(TimeSpan.FromSeconds(effectTime * 0.03f), cancellationToken: _token);
+            flashingIconCount++;
+        }
+
+        PlayerStatusEffects = StatusEffect.None;
+        _showStatusEffectsPos.sprite = null;
     }
     
-    [Rpc(RpcSources.StateAuthority, RpcTargets.All)]
-    private void RpcDeleteStatusEffectIcon(int index)
-    {
-        _showStatusEffectsPos[index].sprite = null;
-    }
 }
