@@ -16,7 +16,7 @@ public enum StatusEffect
 
 public class PlayerStatusEffectManager : NetworkBehaviour
 {
-    public StatusEffect PlayerStatusEffects { get; private set; } = StatusEffect.None;
+    [Networked] public StatusEffect PlayerStatusEffects { get; private set; } = StatusEffect.None;
     [SerializeField] private Sprite[] _statusEffectSprites;
     [SerializeField] private SpriteRenderer _showStatusEffectsPos;
     private CancellationToken _token;

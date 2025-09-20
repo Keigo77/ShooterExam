@@ -33,7 +33,6 @@ public class AnimationEnemuBulletBehaviour : EnemyBulletBase
     {
         if (collision.CompareTag("Player"))
         {
-            Debug.Log("hit");
             _rigidbody.linearVelocity = Vector2.zero;
             _animator.SetBool(_animatorIsHit, true);
             
