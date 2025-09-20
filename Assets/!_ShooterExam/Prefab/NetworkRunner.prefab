@@ -59,4 +59,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   DelayIfSceneManagerIsBusy: 1
   _poolableObjects:
-  - {fileID: -1965093768245129029, guid: 33dfbe2c5362f411d90a1b0f2ef78a1e, type: 3}
+  - {fileID: 1696411853358240327, guid: e9acd09fab32f4221a8b5a44cd70a31a, type: 3}
+  - {fileID: 98092447297016661, guid: adfb0682d550a4a579c2d700bb40f017, type: 3}
+  - {fileID: 98092447297016661, guid: 76c97b17ac20245d38b55666b3eeac35, type: 3}

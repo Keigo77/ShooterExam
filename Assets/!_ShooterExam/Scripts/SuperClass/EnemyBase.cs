@@ -11,13 +11,11 @@ public class EnemyBase : NetworkBehaviour
     protected readonly Subject<Unit> _onDeath = new Subject<Unit>();
     public IObservable<Unit> OnDeath => _onDeath;
     protected CancellationToken _token;
-    
     public Vector2 spawnPos { get; set; }
     [SerializeField] private float _moveInScreenTime;
-    
     [SerializeField] private int _enemyId;
     [Networked] public float Hp { get; set; }
-    
+    [Networked] protected NetworkBool IsSpawned { get; set; } = false;
     protected NetworkObject _networkObject;
     
 

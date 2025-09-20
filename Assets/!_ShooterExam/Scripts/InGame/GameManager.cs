@@ -23,7 +23,7 @@ public class GameManager : NetworkBehaviour, INetworkRunnerCallbacks
     
     // Hp
     [Networked, OnChangedRender(nameof(UpdatePlayerHpGauge))] private float AllPlayerHP { get; set; } = 0f;
-    [Networked] private float MaxPlayersHP { get; set; } = 0f;
+    [Networked] private float MaxPlayersHP { get; set; }
     
     // UI
     [SerializeField] private Slider _playerHpGaugeSlider;
@@ -32,7 +32,7 @@ public class GameManager : NetworkBehaviour, INetworkRunnerCallbacks
     
     // 始まるまでの処理
     [Networked] private int JoinedPlayerCount { get; set; } = 0;
-    public int NowPlayerCount = 0;
+    private int _nowPlayerCount = 0;
     private CancellationToken _token;
     private bool _isTimeOut = false;
     
@@ -45,6 +45,10 @@ public class GameManager : NetworkBehaviour, INetworkRunnerCallbacks
         if (Instance == null)
         {
             Instance = this;
+        }
+        else
+        {
+            Destroy(this.gameObject);
         }
     }
 
@@ -74,7 +78,7 @@ public class GameManager : NetworkBehaviour, INetworkRunnerCallbacks
         try
         {
             await UniTask.WaitUntil(() =>
-                (NowPlayerCount == WaitInRoom.JoinedPlayerCount || _isTimeOut), cancellationToken: _token);
+                (_nowPlayerCount == WaitInRoom.JoinedPlayerCount || _isTimeOut), cancellationToken: _token);
         }
         catch (Exception e)
         {
@@ -83,7 +87,7 @@ public class GameManager : NetworkBehaviour, INetworkRunnerCallbacks
         
         Debug.Log("ゲーム開始");
         CurrentGameState = GameState.Playing;
-        MaxPlayersHP = AllPlayerHP;
+        AllPlayerHP = MaxPlayersHP;
     }
 
     private async UniTask StartTimeoutCount()
@@ -97,7 +101,8 @@ public class GameManager : NetworkBehaviour, INetworkRunnerCallbacks
     /// </summary>
     public void AddPlayerHP(float playerHp)
     { 
-        AllPlayerHP += playerHp;
+        MaxPlayersHP += playerHp;
+        _nowPlayerCount++;
     }
 
     // ネットワークプロパティはホストしか変更できないため，プレイヤー全員がホストに通知する．
@@ -122,7 +127,7 @@ public class GameManager : NetworkBehaviour, INetworkRunnerCallbacks
         _bossHpGaugeSlider.gameObject.SetActive(true);
     }
     
-    [Rpc(RpcSources.StateAuthority, RpcTargets.All)]
+    [Rpc(RpcSources.All, RpcTargets.All)]
     public void RpcUpdateBossHpGauge(float maxBossHp, float bossHp)
     {
         if (bossHp <= 0)

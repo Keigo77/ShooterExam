@@ -67,9 +67,9 @@ public class RobotMan : BossBase, ICharacter
         {
             Debug.Log($"{e}\nMoveInScreen()がキャンセルされました");
         }
-        
+
+        IsSpawned = true;
         GameManager.Instance.RpcInitializeBossHpGauge(Hp);
-        this.GetComponent<BoxCollider2D>().enabled = true;
         GetToken();
         AttackLoop().Forget();
     }
@@ -166,12 +166,12 @@ public class RobotMan : BossBase, ICharacter
 
     public void Damage(float damage)
     {
-        if (Hp > 0)
+        if (IsSpawned && Hp > 0)
         {
             Hp -= damage;
             GameManager.Instance.RpcUpdateBossHpGauge(_maxBossHp, Hp);
         }
-        else
+        else if (Hp <= 0)
         {
             // 死亡アニメーションの再生と，ゲーム終了の処理
             

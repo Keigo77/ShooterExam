@@ -98,7 +98,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 9118331813716803884, guid: 8b5f49078d69245588eee323ac32d32a, type: 3}
       propertyPath: NetworkedBehaviours.Array.size
-      value: 3
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 9118331813716803884, guid: 8b5f49078d69245588eee323ac32d32a, type: 3}
       propertyPath: 'NetworkedBehaviours.Array.data[0]'
@@ -107,7 +107,7 @@ PrefabInstance:
     - target: {fileID: 9118331813716803884, guid: 8b5f49078d69245588eee323ac32d32a, type: 3}
       propertyPath: 'NetworkedBehaviours.Array.data[1]'
       value: 
-      objectReference: {fileID: 6823933785647981321}
+      objectReference: {fileID: 2760595311045821577}
     - target: {fileID: 9118331813716803884, guid: 8b5f49078d69245588eee323ac32d32a, type: 3}
       propertyPath: 'NetworkedBehaviours.Array.data[2]'
       value: 
@@ -127,9 +127,6 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 6534464758790163915, guid: 8b5f49078d69245588eee323ac32d32a, type: 3}
       insertIndex: -1
       addedObject: {fileID: 7663200744275088652}
-    - targetCorrespondingSourceObject: {fileID: 6534464758790163915, guid: 8b5f49078d69245588eee323ac32d32a, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 6823933785647981321}
     - targetCorrespondingSourceObject: {fileID: 6534464758790163915, guid: 8b5f49078d69245588eee323ac32d32a, type: 3}
       insertIndex: -1
       addedObject: {fileID: 5263802098214904556}
@@ -180,24 +177,6 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
---- !u!114 &6823933785647981321
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2700393845321719730}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 506319458, guid: e725a070cec140c4caffb81624c8c787, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  Animator: {fileID: 7663200744275088652}
-  ApplyTiming: 2
-  SyncSettings: 79
-  StateHashes: 00000000beb678eec608708f067dc0aa7b71ff61904dc7dded41f8162a1cce445710f18fbc2cc933c120f6f847e9246c645927ca
-  TriggerHashes: 00000000
-  TotalWords: 1
 --- !u!58 &5263802098214904556
 CircleCollider2D:
   m_ObjectHideFlags: 0
@@ -249,6 +228,7 @@ MonoBehaviour:
   _BulletPower: 10
   _existTime: 6
   _networkObject: {fileID: 98092447297016661}
+  _networkRigidbody: {fileID: 7998570576055179341}
   _rigidbody: {fileID: 1176392115834643814}
 --- !u!1 &5845098227375754531 stripped
 GameObject:

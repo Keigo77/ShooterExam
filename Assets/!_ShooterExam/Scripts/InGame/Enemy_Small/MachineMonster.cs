@@ -33,6 +33,7 @@ public class MachineMonster : AttackerSmallEnemyBase, ICharacter
                 Debug.Log($"{e}　MoveInScreen()がキャンセルされました");
             }
 
+            IsSpawned = true;
             AttackLoop().Forget();
         }
     }
@@ -84,7 +85,7 @@ public class MachineMonster : AttackerSmallEnemyBase, ICharacter
     /// </summary>
     public void Damage(float damage)
     {
-        if (Hp > 0)
+        if (IsSpawned && Hp > 0)
         {
             Hp -= damage;
             if (Hp  <= 0)

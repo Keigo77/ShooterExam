@@ -1,8 +1,10 @@
 using Fusion;
+using Fusion.Addons.Physics;
 using UnityEngine;
 
-public class AnimationEnemuBulletBehaviour : EnemyBulletBase
+public class AnimationEnemyBulletBehaviour : EnemyBulletBase
 {
+    [SerializeField] private NetworkRigidbody2D _networkRigidbody;
     [SerializeField] private Rigidbody2D _rigidbody;
     private Animator _animator;
     private int _animatorIsHit;
@@ -12,30 +14,35 @@ public class AnimationEnemuBulletBehaviour : EnemyBulletBase
         _animator = this.GetComponent<Animator>();
         _animatorIsHit = Animator.StringToHash("IsHit");
         _networkObject = this.GetComponent<NetworkObject>();
-        Invoke(nameof(DespawnBullet), _existTime);
+        _networkRigidbody.enabled = false;
+        Invoke(nameof(RpcDespawnBullet), _existTime);
     }
     
     /// <summary>
     /// ホストしかでスポーンさせられないため，ホストにデスポーンを要求する．
     /// </summary>
-    public void DespawnBullet()
+    [Rpc(RpcSources.All, RpcTargets.StateAuthority)]
+    public void RpcDespawnBullet()
     {
         this.gameObject.SetActive(false);
         if (HasStateAuthority)
         {
             // InvokeとOnTriggerで，Despawnした後に実行されるのを防ぐ
-            CancelInvoke(nameof(DespawnBullet));
+            CancelInvoke(nameof(RpcDespawnBullet));
             Runner.Despawn(_networkObject);
         }
     }
     
+    /// <summary>
+    /// 他プレオヤーがたまに当たっていたら，アニメーションを再生し，非表示にする．
+    /// 本人が当たっていたら，ダメージを反映させる．
+    /// </summary>
     private void OnTriggerEnter2D(Collider2D collision)
     {
         if (collision.CompareTag("Player"))
         {
             _rigidbody.linearVelocity = Vector2.zero;
             _animator.SetBool(_animatorIsHit, true);
-            
             if (collision.GetComponent<NetworkObject>().HasStateAuthority)
             {
                 collision.GetComponent<ICharacter>().Damage(BulletPower);
