@@ -30,7 +30,7 @@ public class MachineMonster : AttackerSmallEnemyBase, ICharacter
             }
             catch (Exception e)
             {
-                Debug.Log($"{e}\nMoveInScreen()がキャンセルされました");
+                Debug.Log($"{e}　MoveInScreen()がキャンセルされました");
             }
 
             AttackLoop().Forget();

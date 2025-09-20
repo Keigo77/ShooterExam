@@ -139,7 +139,6 @@ MonoBehaviour:
   _normalBulletPrefab: {fileID: 5845098227375754531, guid: adfb0682d550a4a579c2d700bb40f017, type: 3}
   _paralysisBulletPrefab: {fileID: 5845098227375754531, guid: 76c97b17ac20245d38b55666b3eeac35, type: 3}
   _bulletSpeed: 10
-  _playerObjects: []
 --- !u!114 &3567331108635014914
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -164,7 +163,7 @@ BoxCollider2D:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 6858240201172053336}
-  m_Enabled: 1
+  m_Enabled: 0
   serializedVersion: 3
   m_Density: 1
   m_Material: {fileID: 0}

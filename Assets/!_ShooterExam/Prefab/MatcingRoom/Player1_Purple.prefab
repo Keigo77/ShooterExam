@@ -206,6 +206,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _myNameText: {fileID: 6406234853417919113}
+  _MyName:
+    _length: 0
+    _data:
+      Data: 00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
 --- !u!114 &4372827912128019930
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -310,8 +314,8 @@ MonoBehaviour:
       m_Calls: []
   m_text: Player1
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
-  m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: 46dd9231c0dd4874f8e3474a40da06f9, type: 2}
+  m_sharedMaterial: {fileID: 2627698081517277131, guid: 46dd9231c0dd4874f8e3474a40da06f9, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []

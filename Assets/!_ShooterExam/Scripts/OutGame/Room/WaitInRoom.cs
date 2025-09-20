@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Threading;
 using Cysharp.Threading.Tasks;
+using DG.Tweening;
 using Fusion;
 using Fusion.Sockets;
 using TMPro;
@@ -18,6 +19,8 @@ public class WaitInRoom : NetworkBehaviour, INetworkRunnerCallbacks
     [SerializeField] private string _homeSceneName;
     [SerializeField] private string _nextScenePath;
     
+    [SerializeField] private TransitionProgressController _transitionProgressController;
+    
     // 1, 2, 3, 4の枠で，どこが空いているかを管理する．trueだと空いてる
     [Networked, Capacity(4)] private NetworkArray<bool> _hasEmpties { get; } 
         = MakeInitializer(new bool[] {true, true, true, true});
@@ -26,9 +29,15 @@ public class WaitInRoom : NetworkBehaviour, INetworkRunnerCallbacks
 
     private int _emptyIndex = -1;
     private CancellationToken _token;
-    
+
+    private void Awake()
+    {
+        _transitionProgressController.Progress = 1f;
+    }
+
     public override void Spawned()
     {
+        _transitionProgressController.FadeOut().Forget();
         Runner.AddCallbacks(this);
         // プライベートルームなら，部屋名を表示
         if (!Runner.SessionInfo.IsVisible)
@@ -61,6 +70,7 @@ public class WaitInRoom : NetworkBehaviour, INetworkRunnerCallbacks
         var previewObj = _playerPreviewPrefabs[_emptyIndex];
         Runner.Spawn(previewObj, previewObj.transform.position, onBeforeSpawned: (_, obj) =>
         {
+            Debug.Log(PlayerInfo.PlayerName);
             obj.GetComponent<ShowPlayerPreview>().MyName = PlayerInfo.PlayerName;
         });
     
@@ -72,7 +82,17 @@ public class WaitInRoom : NetworkBehaviour, INetworkRunnerCallbacks
     public async void BackHome()
     {
         Runner.RemoveCallbacks(this);
-        await Runner.Shutdown();
+        
+        try
+        {
+            await Runner.Shutdown();
+            await _transitionProgressController.FadeIn();
+        }
+        catch (Exception e)
+        {
+            Debug.Log($"{e}　遷移アニメーションがキャンセルされました");
+        }
+        
         SceneManager.LoadScene(_homeSceneName);
     }
 
@@ -87,18 +107,27 @@ public class WaitInRoom : NetworkBehaviour, INetworkRunnerCallbacks
     }
 
     /// <summary>
-    /// 次のシーンに行く．OnPlayerLeftなどが呼び出されないように，コールバックは解除する．
+    /// 次のシーンに行く．
     /// </summary>
     [Rpc(RpcSources.StateAuthority, RpcTargets.All)]
     public async void RpcMoveScene()
     {
-        Runner.RemoveCallbacks(this);
+        try
+        {
+            await _transitionProgressController.FadeIn();
+        }
+        catch (Exception e)
+        {
+            Debug.Log($"{e}　遷移アニメーションがキャンセルされた");
+        }
+        
         if (HasStateAuthority)
         {
             JoinedPlayerCount = Runner.SessionInfo.PlayerCount;
             await UniTask.Delay(TimeSpan.FromSeconds(2.0f), cancellationToken: _token);
             Runner.LoadScene(_nextScenePath);
         }
+        Debug.Log("RpcMoveSceneおわり");
     }
     
     void INetworkRunnerCallbacks.OnPlayerLeft(NetworkRunner runner, PlayerRef player)

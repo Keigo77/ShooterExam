@@ -6,9 +6,6 @@ using UnityEngine;
 using UnityEngine.Serialization;
 using Random = UnityEngine.Random;
 
-
-
-
 public class RobotMan : BossBase, ICharacter
 {
     private enum RobotAttack
@@ -72,6 +69,7 @@ public class RobotMan : BossBase, ICharacter
         }
         
         GameManager.Instance.RpcInitializeBossHpGauge(Hp);
+        this.GetComponent<BoxCollider2D>().enabled = true;
         GetToken();
         AttackLoop().Forget();
     }

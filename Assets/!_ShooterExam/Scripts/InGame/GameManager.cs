@@ -6,6 +6,7 @@ using Fusion;
 using Fusion.Sockets;
 using UniRx;
 using UnityEngine;
+using UnityEngine.Serialization;
 using UnityEngine.UI;
 
 public enum GameState
@@ -25,9 +26,8 @@ public class GameManager : NetworkBehaviour, INetworkRunnerCallbacks
     [Networked] private float MaxPlayersHP { get; set; } = 0f;
     
     // UI
-    [SerializeField] private Image _playerHpGaugeImage;
-    [SerializeField] private GameObject _bossHpGauge;
-    [SerializeField] private Image _bossHpGaugeImage;
+    [SerializeField] private Slider _playerHpGaugeSlider;
+    [SerializeField] private Slider _bossHpGaugeSlider;
     
     // 始まるまでの処理
     [Networked] private int JoinedPlayerCount { get; set; } = 0;
@@ -93,14 +93,14 @@ public class GameManager : NetworkBehaviour, INetworkRunnerCallbacks
     
     private void UpdatePlayerHpGauge()
     {
-        _playerHpGaugeImage.fillAmount = AllPlayerHP / MaxPlayersHP;
+        _playerHpGaugeSlider.value = AllPlayerHP / MaxPlayersHP;
     }
 
     [Rpc(RpcSources.StateAuthority, RpcTargets.All)]
     public void RpcInitializeBossHpGauge(float bossHp)
     {
-        _bossHpGaugeImage.fillAmount = 1.0f;
-        _bossHpGauge.gameObject.SetActive(true);
+        _bossHpGaugeSlider.value = 1.0f;
+        _bossHpGaugeSlider.gameObject.SetActive(true);
     }
     
     [Rpc(RpcSources.StateAuthority, RpcTargets.All)]
@@ -108,9 +108,9 @@ public class GameManager : NetworkBehaviour, INetworkRunnerCallbacks
     {
         if (bossHp <= 0)
         {
-            _bossHpGauge.gameObject.SetActive(false);
+            _bossHpGaugeSlider.gameObject.SetActive(false);
         } 
-        _bossHpGaugeImage.fillAmount = bossHp / maxBossHp;
+        _bossHpGaugeSlider.value = bossHp / maxBossHp;
     }
     
     void INetworkRunnerCallbacks.OnObjectExitAOI(NetworkRunner runner, NetworkObject obj, PlayerRef player) {}
