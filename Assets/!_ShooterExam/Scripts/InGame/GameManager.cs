@@ -28,10 +28,11 @@ public class GameManager : NetworkBehaviour, INetworkRunnerCallbacks
     // UI
     [SerializeField] private Slider _playerHpGaugeSlider;
     [SerializeField] private Slider _bossHpGaugeSlider;
+    [SerializeField] private TransitionProgressController _transitionProgressController;
     
     // 始まるまでの処理
     [Networked] private int JoinedPlayerCount { get; set; } = 0;
-    private int _nowPlayerCount = 0;
+    public int NowPlayerCount = 0;
     private CancellationToken _token;
     private bool _isTimeOut = false;
     
@@ -40,6 +41,7 @@ public class GameManager : NetworkBehaviour, INetworkRunnerCallbacks
 
     private void Awake()
     {
+        _transitionProgressController.Progress = 1.0f;
         if (Instance == null)
         {
             Instance = this;
@@ -49,6 +51,16 @@ public class GameManager : NetworkBehaviour, INetworkRunnerCallbacks
     public override async void Spawned()
     {
         IsSpawned = true;
+
+        try
+        {
+            await _transitionProgressController.FadeOut();
+        }
+        catch (Exception e)
+        {
+            Debug.Log($"{e}　フェードアウトがキャンセルされました");
+        }
+        
         if (!HasStateAuthority)
         {
             return;
@@ -56,11 +68,19 @@ public class GameManager : NetworkBehaviour, INetworkRunnerCallbacks
 
         JoinedPlayerCount = WaitInRoom.JoinedPlayerCount;
         _token = this.GetCancellationTokenOnDestroy();
-        
         // プレイヤー全員が揃うか，10秒経つまで待つ
         StartTimeoutCount().Forget();
-        await UniTask.WaitUntil(() =>
-            (_nowPlayerCount == WaitInRoom.JoinedPlayerCount || _isTimeOut), cancellationToken: _token);
+        
+        try
+        {
+            await UniTask.WaitUntil(() =>
+                (NowPlayerCount == WaitInRoom.JoinedPlayerCount || _isTimeOut), cancellationToken: _token);
+        }
+        catch (Exception e)
+        {
+            Debug.Log($"{e}　プレイヤー入室待ちがキャンセルされました");
+        }
+        
         Debug.Log("ゲーム開始");
         CurrentGameState = GameState.Playing;
         MaxPlayersHP = AllPlayerHP;
@@ -78,7 +98,6 @@ public class GameManager : NetworkBehaviour, INetworkRunnerCallbacks
     public void AddPlayerHP(float playerHp)
     { 
         AllPlayerHP += playerHp;
-        _nowPlayerCount++;
     }
 
     // ネットワークプロパティはホストしか変更できないため，プレイヤー全員がホストに通知する．
