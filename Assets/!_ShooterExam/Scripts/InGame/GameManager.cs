@@ -127,7 +127,7 @@ public class GameManager : NetworkBehaviour, INetworkRunnerCallbacks
         _bossHpGaugeSlider.gameObject.SetActive(true);
     }
     
-    [Rpc(RpcSources.All, RpcTargets.All)]
+    [Rpc(RpcSources.StateAuthority, RpcTargets.All)]
     public void RpcUpdateBossHpGauge(float maxBossHp, float bossHp)
     {
         if (bossHp <= 0)

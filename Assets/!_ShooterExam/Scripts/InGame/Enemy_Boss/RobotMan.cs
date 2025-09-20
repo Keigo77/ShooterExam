@@ -163,13 +163,12 @@ public class RobotMan : BossBase, ICharacter
         
         _animator.SetBool(_animatorIsAttack, false);
     }
-
+    
     public void Damage(float damage)
     {
         if (IsSpawned && Hp > 0)
         {
-            Hp -= damage;
-            GameManager.Instance.RpcUpdateBossHpGauge(_maxBossHp, Hp);
+            RpcBossDamage(damage);
         }
         else if (Hp <= 0)
         {
@@ -178,5 +177,11 @@ public class RobotMan : BossBase, ICharacter
         }
     }
     
+    [Rpc(RpcSources.All, RpcTargets.StateAuthority)]
+    private void RpcBossDamage(float damage)
+    {
+        Hp -= damage;
+        GameManager.Instance.RpcUpdateBossHpGauge(_maxBossHp, Hp);
+    }
     
 }
