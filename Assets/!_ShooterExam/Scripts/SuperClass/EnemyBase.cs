@@ -22,6 +22,7 @@ public class EnemyBase : NetworkBehaviour
     protected void GetToken()
     {
         _token = this.GetCancellationTokenOnDestroy();
+        _networkObject = this.GetComponent<NetworkObject>();
     }
 
     /// <summary>
@@ -38,7 +39,7 @@ public class EnemyBase : NetworkBehaviour
     /// </summary>
     protected void DespawnEnemy()
     {
-        this.gameObject.SetActive(false);
+        //this.gameObject.SetActive(false);
         if (HasStateAuthority)
         {
             // 死亡イベントを流す

@@ -33,12 +33,14 @@ public class RobotMan : BossBase, ICharacter
     // アニメーション
     private Animator _animator;
     private int _animatorIsAttack;
+    private int _animatorIsDead;
 
     public override async void Spawned()
     {
         _maxBossHp = Hp;
         _animator = this.GetComponent<Animator>();
         _animatorIsAttack = Animator.StringToHash("IsAttack");
+        _animatorIsDead = Animator.StringToHash("IsDead");
         
         if (!HasStateAuthority)
         {
@@ -80,6 +82,11 @@ public class RobotMan : BossBase, ICharacter
         {
             foreach (var action in _actions)
             {
+                if (Hp <= 0)
+                {
+                    return;
+                }
+                
                 // Hpが最大値の半分以下なら，攻撃速度が倍になる
                 if (Hp <= _maxBossHp / 2)
                 {
@@ -170,10 +177,11 @@ public class RobotMan : BossBase, ICharacter
         {
             RpcBossDamage(damage);
         }
-        else if (Hp <= 0)
+        else if (Hp - damage <= 0)
         {
-            // 死亡アニメーションの再生と，ゲーム終了の処理
-            
+            // 死亡アニメーションの再生
+            _animator.SetBool(_animatorIsDead, true);
+            _animator.SetBool(_animatorIsAttack, false);
         }
     }
     

@@ -17,7 +17,6 @@ public class MachineMonster : AttackerSmallEnemyBase, ICharacter
     public override async void Spawned()
     {
         GetToken();
-        _networkObject = this.GetComponent<NetworkObject>();
         _animator = this.GetComponent<Animator>();
         _animatorIsAttack = Animator.StringToHash("IsAttack");
         _animatorIsDead = Animator.StringToHash("IsDead");
@@ -40,7 +39,7 @@ public class MachineMonster : AttackerSmallEnemyBase, ICharacter
 
     protected override async UniTask AttackLoop()
     {
-        while (!_token.IsCancellationRequested)
+        while (!_token.IsCancellationRequested && Hp > 0)
         {
             await UniTask.Delay(TimeSpan.FromSeconds(_attackSpan + Random.Range(0.0f, 2.0f)), cancellationToken: _token);
             _animator.SetBool(_animatorIsAttack, true);
@@ -87,20 +86,28 @@ public class MachineMonster : AttackerSmallEnemyBase, ICharacter
     {
         if (IsSpawned && Hp > 0)
         {
-            Hp -= damage;
-            if (Hp  <= 0)
-            { 
-                RpcDeath();
-            }
+            RpcDamage(damage);
         }
+        else if (Hp - damage <= 0)
+        {
+            // 死亡アニメーションの再生
+            _animator.SetBool(_animatorIsAttack, false);
+            _animator.SetBool(_animatorIsDead, true);
+        }
+    }
+
+    [Rpc(RpcSources.All, RpcTargets.StateAuthority)]
+    private void RpcDamage(float damage)
+    {
+        Hp -= damage;
     }
     
     /// <summary>
     /// 敵の死亡を，全プレイヤーに通知する
     /// </summary>
-    [Rpc(RpcSources.All, RpcTargets.All)]
-    private void RpcDeath()
+    private void Death()
     {
+        _animator.SetBool(_animatorIsAttack, false);
         _animator.SetBool(_animatorIsDead, true);
     }
 }

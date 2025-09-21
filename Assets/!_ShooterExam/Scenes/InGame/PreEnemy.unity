@@ -319,6 +319,18 @@ PrefabInstance:
       propertyPath: m_IsActive
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 8565778052675037517, guid: a2725d66b08f846b4ac50b553f622af4, type: 3}
+      propertyPath: StateHashes.Array.size
+      value: 7
+      objectReference: {fileID: 0}
+    - target: {fileID: 8565778052675037517, guid: a2725d66b08f846b4ac50b553f622af4, type: 3}
+      propertyPath: 'StateHashes.Array.data[5]'
+      value: 364696300
+      objectReference: {fileID: 0}
+    - target: {fileID: 8565778052675037517, guid: a2725d66b08f846b4ac50b553f622af4, type: 3}
+      propertyPath: 'StateHashes.Array.data[6]'
+      value: -1436838327
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []

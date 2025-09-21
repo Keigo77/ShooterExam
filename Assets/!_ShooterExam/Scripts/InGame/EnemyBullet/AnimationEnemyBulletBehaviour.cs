@@ -13,7 +13,7 @@ public class AnimationEnemyBulletBehaviour : EnemyBulletBase
     {
         _animator = this.GetComponent<Animator>();
         _animatorIsHit = Animator.StringToHash("IsHit");
-        _networkObject = this.GetComponent<NetworkObject>();
+        // trueのまま速度を0にすると，他プレイヤーのも0になるため，enableをflaseにする
         _networkRigidbody.enabled = false;
         Invoke(nameof(RpcDespawnBullet), _existTime);
     }

@@ -7,8 +7,10 @@ public class EnemyBulletBehaviour : EnemyBulletBase
 {
     public override void Spawned()
     {
-        _networkObject = this.GetComponent<NetworkObject>();
-        Invoke(nameof(RpcDespawnBullet), _existTime);
+        if (HasStateAuthority)
+        {
+            Invoke(nameof(RpcDespawnBullet), _existTime);
+        }
     }
     
     /// <summary>
