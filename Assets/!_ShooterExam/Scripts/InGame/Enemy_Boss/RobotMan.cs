@@ -142,7 +142,7 @@ public class RobotMan : BossBase, ICharacter
         await UniTask.Delay(TimeSpan.FromSeconds(0.3f), cancellationToken: _token);
         
         _animator.SetBool(_animatorIsAttack, true);
-        await UniTask.WaitUntil(() => !_animator.GetBool(_animatorIsAttack));
+        await UniTask.WaitUntil(() => !_animator.GetBool(_animatorIsAttack), cancellationToken: _token);
     }
 
     /// <summary>

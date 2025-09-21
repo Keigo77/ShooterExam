@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
@@ -13,7 +14,8 @@ public class WaveManager : NetworkBehaviour
     [SerializeField] private float _howSpawnDistance;   // どれだけ画面外にスポーンさせるか
     [SerializeField] private AudioClip _smallEnemyBgm;
     [SerializeField] private AudioClip _bossBgm;
-    
+    [SerializeField] private ShowImageManager  _showImageManager;
+     
     private int _currentWave = 0;
     private int _maxWave;
     
@@ -26,7 +28,16 @@ public class WaveManager : NetworkBehaviour
         _maxWave = _waveDataSO.WaveDatas.Count;
         _token = this.GetCancellationTokenOnDestroy();
 
-        await UniTask.WaitUntil(() => GameManager.Instance.CurrentGameState == GameState.Playing, cancellationToken: _token);
+        try
+        {
+            await UniTask.WaitUntil(() => GameManager.Instance.CurrentGameState == GameState.Playing,
+                cancellationToken: _token);
+        }
+        catch (Exception e)
+        {
+            Debug.LogWarning($"{e}　ゲーム開始待ちをキャンセルしました");
+        }
+        
         StartWaveLoop().Forget();
     }
     
@@ -51,7 +62,8 @@ public class WaveManager : NetworkBehaviour
 
         if (_waveDataSO.WaveDatas[waveNumber].IsBoss)
         {
-            AudioSingleton.Instance.PlayBgm(_bossBgm);    
+            AudioSingleton.Instance.PlayBgm(_bossBgm);
+            await _showImageManager.ShowImage(ImageType.WaringImage, 2.0f);
         }
         
         foreach (var enemyPrefab in enemyPrefabs)

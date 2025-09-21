@@ -129,7 +129,6 @@ public class WaitInRoom : NetworkBehaviour, INetworkRunnerCallbacks
             await UniTask.Delay(TimeSpan.FromSeconds(2.0f), cancellationToken: _token);
             Runner.LoadScene(_nextScenePath);
         }
-        Debug.Log("RpcMoveSceneおわり");
     }
     
     void INetworkRunnerCallbacks.OnPlayerLeft(NetworkRunner runner, PlayerRef player)
@@ -162,7 +161,6 @@ public class WaitInRoom : NetworkBehaviour, INetworkRunnerCallbacks
             Debug.Log("remove callback");   
         }
     }
-
     
     void INetworkRunnerCallbacks.OnObjectExitAOI(NetworkRunner runner, NetworkObject obj, PlayerRef player) {}
      void INetworkRunnerCallbacks.OnObjectEnterAOI(NetworkRunner runner, NetworkObject obj, PlayerRef player) {}

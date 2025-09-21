@@ -29,6 +29,7 @@ public class GameManager : NetworkBehaviour, INetworkRunnerCallbacks
     [SerializeField] private Slider _playerHpGaugeSlider;
     [SerializeField] private Slider _bossHpGaugeSlider;
     [SerializeField] private TransitionProgressController _transitionProgressController;
+    [SerializeField] private ShowImageManager _showImageManager;
     
     // 始まるまでの処理
     [Networked] private int JoinedPlayerCount { get; set; } = 0;
@@ -55,15 +56,7 @@ public class GameManager : NetworkBehaviour, INetworkRunnerCallbacks
     public override async void Spawned()
     {
         IsSpawned = true;
-
-        try
-        {
-            await _transitionProgressController.FadeOut();
-        }
-        catch (Exception e)
-        {
-            Debug.Log($"{e}　フェードアウトがキャンセルされました");
-        }
+        _transitionProgressController.FadeOut().Forget();
         
         if (!HasStateAuthority)
         {
@@ -79,10 +72,13 @@ public class GameManager : NetworkBehaviour, INetworkRunnerCallbacks
         {
             await UniTask.WaitUntil(() =>
                 (_nowPlayerCount == WaitInRoom.JoinedPlayerCount || _isTimeOut), cancellationToken: _token);
+            RpcDeleteTransition();
+            await UniTask.WaitUntil(() => _transitionProgressController.Progress == 0f, cancellationToken: _token);
+            await _showImageManager.ShowImage(ImageType.StartImage, 1.5f);
         }
         catch (Exception e)
         {
-            Debug.Log($"{e}　プレイヤー入室待ちがキャンセルされました");
+            Debug.LogWarning($"{e}　ゲーム開始前の処理がキャンセルされました");
         }
         
         Debug.Log("ゲーム開始");
@@ -90,7 +86,13 @@ public class GameManager : NetworkBehaviour, INetworkRunnerCallbacks
         AllPlayerHP = MaxPlayersHP;
     }
 
-    private async UniTask StartTimeoutCount()
+    [Rpc(RpcSources.StateAuthority, RpcTargets.All)]
+    private void RpcDeleteTransition()
+    {
+        _transitionProgressController.FadeOut().Forget();
+    }
+    
+    private async UniTaskVoid StartTimeoutCount()
     {
         await UniTask.Delay(TimeSpan.FromSeconds(10.0f), cancellationToken: _token);
         _isTimeOut = true;
