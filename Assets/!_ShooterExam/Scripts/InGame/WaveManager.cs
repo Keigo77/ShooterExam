@@ -11,6 +11,8 @@ public class WaveManager : NetworkBehaviour
     [SerializeField] private WaveDataSO _waveDataSO;
     [SerializeField] private GameObject[] _spawnPosObj = new GameObject[30];
     [SerializeField] private float _howSpawnDistance;   // どれだけ画面外にスポーンさせるか
+    [SerializeField] private AudioClip _smallEnemyBgm;
+    [SerializeField] private AudioClip _bossBgm;
     
     private int _currentWave = 0;
     private int _maxWave;
@@ -19,6 +21,7 @@ public class WaveManager : NetworkBehaviour
 
     public override async void Spawned()
     {
+        AudioSingleton.Instance.PlayBgm(_smallEnemyBgm);
         if (!Runner.IsSharedModeMasterClient) { return; }
         _maxWave = _waveDataSO.WaveDatas.Count;
         _token = this.GetCancellationTokenOnDestroy();
@@ -45,6 +48,11 @@ public class WaveManager : NetworkBehaviour
         NetworkObject[] enemyPrefabs = _waveDataSO.WaveDatas[waveNumber].Enemies;
         var enemyList = new List<EnemyBase>();
         int index = 0;
+
+        if (_waveDataSO.WaveDatas[waveNumber].IsBoss)
+        {
+            AudioSingleton.Instance.PlayBgm(_bossBgm);    
+        }
         
         foreach (var enemyPrefab in enemyPrefabs)
         {

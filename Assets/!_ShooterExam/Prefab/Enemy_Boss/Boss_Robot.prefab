@@ -131,14 +131,14 @@ MonoBehaviour:
   _Hp: 1000
   _actions:
   - attackType: 0
-    beforeWaitTime: 2
+    beforeWaitTime: 1.5
   - attackType: 0
-    beforeWaitTime: 2
+    beforeWaitTime: 1.5
   - attackType: 1
     beforeWaitTime: 1
   _normalBulletPrefab: {fileID: 5845098227375754531, guid: adfb0682d550a4a579c2d700bb40f017, type: 3}
   _paralysisBulletPrefab: {fileID: 5845098227375754531, guid: 76c97b17ac20245d38b55666b3eeac35, type: 3}
-  _bulletSpeed: 10
+  _bulletSpeed: 15
 --- !u!114 &3567331108635014914
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -40,6 +40,18 @@ public class AudioSingleton : MonoBehaviour
             _audioSources[0].Play();
         }
     }
+
+    public void PlayBgm(AudioClip bgmClip)
+    {
+        _audioSources[0].Stop();
+        _audioSources[0].clip = bgmClip;
+        _audioSources[0].Play();
+    }
+    
+    public void PlayButtonSe(AudioClip clip)
+    {
+        _audioSources[1].PlayOneShot(clip);
+    }
     
     private void OnDestroy()
     {
