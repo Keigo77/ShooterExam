@@ -1138,6 +1138,7 @@ MonoBehaviour:
   _matchingSceneName: MatchingRoom
   _loadingPanel: {fileID: 985041482}
   _transitionProgressController: {fileID: 323345494}
+  _bgmClip: {fileID: 8300000, guid: 57f44312da7084acb978640cec824c2f, type: 3}
 --- !u!4 &1260404413
 Transform:
   m_ObjectHideFlags: 0

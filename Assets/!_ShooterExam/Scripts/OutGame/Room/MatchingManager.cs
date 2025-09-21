@@ -20,6 +20,7 @@ public class MatchingManager : MonoBehaviour
     
     [SerializeField] private GameObject _loadingPanel;
     [SerializeField] private TransitionProgressController _transitionProgressController;
+    [SerializeField] private AudioClip _bgmClip;
     private CancellationToken _token;
 
     private void Awake()
@@ -29,6 +30,7 @@ public class MatchingManager : MonoBehaviour
     
     private void Start()
     {
+        AudioSingleton.Instance.PlayBgm(_bgmClip);
         _transitionProgressController.FadeOut().Forget();
         _token = this.GetCancellationTokenOnDestroy();
     }

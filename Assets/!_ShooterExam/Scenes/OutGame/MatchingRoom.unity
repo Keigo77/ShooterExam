@@ -774,6 +774,7 @@ MonoBehaviour:
   _homeSceneName: Home
   _nextScenePath: Assets/!_ShooterExam/Scenes/InGame/PreStage.unity
   _transitionProgressController: {fileID: 1471417346}
+  _bgmClip: {fileID: 8300000, guid: 57f44312da7084acb978640cec824c2f, type: 3}
 --- !u!1 &1133837309
 GameObject:
   m_ObjectHideFlags: 0

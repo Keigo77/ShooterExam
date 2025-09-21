@@ -20,6 +20,7 @@ public class WaitInRoom : NetworkBehaviour, INetworkRunnerCallbacks
     [SerializeField] private string _nextScenePath;
     
     [SerializeField] private TransitionProgressController _transitionProgressController;
+    [SerializeField] private AudioClip _bgmClip;
     
     // 1, 2, 3, 4の枠で，どこが空いているかを管理する．trueだと空いてる
     [Networked, Capacity(4)] private NetworkArray<bool> _hasEmpties { get; } 
@@ -37,6 +38,7 @@ public class WaitInRoom : NetworkBehaviour, INetworkRunnerCallbacks
 
     public override void Spawned()
     {
+        AudioSingleton.Instance.PlayBgm(_bgmClip);
         _transitionProgressController.FadeOut().Forget();
         Runner.AddCallbacks(this);
         // プライベートルームなら，部屋名を表示
