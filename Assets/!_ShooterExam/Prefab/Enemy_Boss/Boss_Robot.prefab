@@ -127,7 +127,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _Hp: 100
-  _deathSeClip: {fileID: 8300000, guid: 856ffe825323b43a8900c98b471dbd7d, type: 3}
+  _deathSeClip: {fileID: 8300000, guid: 53044d22695064deca4d4cc4761c80ae, type: 3}
   _enemyId: 0
   _moveInScreenTime: 3
   _actions:
@@ -140,7 +140,7 @@ MonoBehaviour:
   _normalBulletPrefab: {fileID: 5845098227375754531, guid: adfb0682d550a4a579c2d700bb40f017, type: 3}
   _paralysisBulletPrefab: {fileID: 5845098227375754531, guid: 76c97b17ac20245d38b55666b3eeac35, type: 3}
   _bulletSpeed: 11
-  _attackClip: {fileID: 8300000, guid: 687572ef4066b4f4fb093eac3499bad6, type: 3}
+  _attackClip: {fileID: 8300000, guid: 856ffe825323b43a8900c98b471dbd7d, type: 3}
 --- !u!114 &3567331108635014914
 MonoBehaviour:
   m_ObjectHideFlags: 0

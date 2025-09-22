@@ -100,6 +100,5 @@ public class Machine : AttackerSmallEnemyBase, ICharacter
     private void RpcDamage(float damage)
     {
         Hp -= damage;
-        Debug.Log(Hp);
     }
 }
