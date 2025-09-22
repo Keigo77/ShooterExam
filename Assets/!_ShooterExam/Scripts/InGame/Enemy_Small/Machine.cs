@@ -6,7 +6,7 @@ using UniRx;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
-public class MachineMonster : AttackerSmallEnemyBase, ICharacter
+public class Machine : AttackerSmallEnemyBase, ICharacter
 {
     [SerializeField] private float _rotateDuration;
     
@@ -91,7 +91,6 @@ public class MachineMonster : AttackerSmallEnemyBase, ICharacter
         else if (Hp - damage <= 0)
         {
             // 死亡アニメーションの再生
-            _animator.SetBool(_animatorIsAttack, false);
             _animator.SetBool(_animatorIsDead, true);
         }
     }
@@ -100,14 +99,5 @@ public class MachineMonster : AttackerSmallEnemyBase, ICharacter
     private void RpcDamage(float damage)
     {
         Hp -= damage;
-    }
-    
-    /// <summary>
-    /// 敵の死亡を，全プレイヤーに通知する
-    /// </summary>
-    private void Death()
-    {
-        _animator.SetBool(_animatorIsAttack, false);
-        _animator.SetBool(_animatorIsDead, true);
     }
 }

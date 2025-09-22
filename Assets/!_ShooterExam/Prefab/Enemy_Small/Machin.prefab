@@ -247,9 +247,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 826596dbdac804d3db25dbd66d0e33cb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _moveInScreenTime: 1.5
-  _enemyId: 0
   _Hp: 10
+  _deathSeClip: {fileID: 8300000, guid: 53044d22695064deca4d4cc4761c80ae, type: 3}
+  _enemyId: 0
+  _moveInScreenTime: 1.5
   _bulletPrefab: {fileID: 5173324007039618097, guid: e9acd09fab32f4221a8b5a44cd70a31a, type: 3}
   _bulletSpeed: 5
   _attackSpan: 2

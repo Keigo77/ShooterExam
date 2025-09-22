@@ -27,6 +27,7 @@ public class RobotMan : BossBase, ICharacter
     [SerializeField] private GameObject _normalBulletPrefab;
     [SerializeField] private GameObject _paralysisBulletPrefab;
     [SerializeField] private float _bulletSpeed;
+    [SerializeField] private AudioClip _attackClip;
     private GameObject _nowBullet;
     private List<NetworkObject> _playerObjects = new List<NetworkObject>();
     
@@ -157,6 +158,7 @@ public class RobotMan : BossBase, ICharacter
     /// </summary>
     private void Attack()
     {
+        AudioSingleton.Instance.PlaySe(_attackClip);
         if (!HasStateAuthority) { return; }
         
         var bulletSpawnPos = new Vector2(this.transform.position.x - 2.0f, this.transform.position.y);
@@ -181,7 +183,6 @@ public class RobotMan : BossBase, ICharacter
         {
             // 死亡アニメーションの再生
             _animator.SetBool(_animatorIsDead, true);
-            _animator.SetBool(_animatorIsAttack, false);
         }
     }
     

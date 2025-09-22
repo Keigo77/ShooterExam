@@ -41,7 +41,7 @@ public class AudioSingleton : MonoBehaviour
         _bgmAudioSource.Play();
     }
     
-    public void PlayButtonSe(AudioClip clip)
+    public void PlaySe(AudioClip clip)
     {
         _seAudioSource.PlayOneShot(clip);
     }

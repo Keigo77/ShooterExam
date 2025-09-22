@@ -132,11 +132,11 @@ public class GameManager : NetworkBehaviour, INetworkRunnerCallbacks
     [Rpc(RpcSources.StateAuthority, RpcTargets.All)]
     public void RpcUpdateBossHpGauge(float maxBossHp, float bossHp)
     {
+        _bossHpGaugeSlider.value = bossHp / maxBossHp;
         if (bossHp <= 0)
         {
             _bossHpGaugeSlider.gameObject.SetActive(false);
         } 
-        _bossHpGaugeSlider.value = bossHp / maxBossHp;
     }
     
     void INetworkRunnerCallbacks.OnObjectExitAOI(NetworkRunner runner, NetworkObject obj, PlayerRef player) {}

@@ -8,15 +8,16 @@ using UnityEngine;
 
 public class EnemyBase : NetworkBehaviour
 {
-    protected readonly Subject<Unit> _onDeath = new Subject<Unit>();
-    public IObservable<Unit> OnDeath => _onDeath;
-    protected CancellationToken _token;
-    public Vector2 spawnPos { get; set; }
-    [SerializeField] private float _moveInScreenTime;
-    [SerializeField] private int _enemyId;
     [Networked] public float Hp { get; set; }
     [Networked] protected NetworkBool IsSpawned { get; set; } = false;
-    protected NetworkObject _networkObject;
+    public Vector2 spawnPos { get; set; }
+    public IObservable<Unit> OnDeath => _onDeath;
+    [SerializeField] private AudioClip _deathSeClip;
+    [SerializeField] private int _enemyId;
+    [SerializeField] private float _moveInScreenTime;
+    protected CancellationToken _token;
+    private readonly Subject<Unit> _onDeath = new Subject<Unit>();
+    private NetworkObject _networkObject;
     
 
     protected void GetToken()
@@ -37,9 +38,8 @@ public class EnemyBase : NetworkBehaviour
     /// <summary>
     /// HPが0になったら実行．WaveManagerに死亡を通知し，デスポーンする
     /// </summary>
-    protected void DespawnEnemy()
+    private void DespawnEnemy()
     {
-        //this.gameObject.SetActive(false);
         if (HasStateAuthority)
         {
             // 死亡イベントを流す
@@ -47,5 +47,10 @@ public class EnemyBase : NetworkBehaviour
             _onDeath.OnCompleted();
             Runner.Despawn(_networkObject);
         }
+    }
+
+    private void PlayDeathSe()
+    {
+        AudioSingleton.Instance.PlaySe(_deathSeClip);
     }
 }

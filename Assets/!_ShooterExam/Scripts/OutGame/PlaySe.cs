@@ -4,6 +4,6 @@ public class PlaySe : MonoBehaviour
 {
     public void PlayButtonSe(AudioClip seClip)
     {
-        AudioSingleton.Instance.PlayButtonSe(seClip);
+        AudioSingleton.Instance.PlaySe(seClip);
     }
 }
