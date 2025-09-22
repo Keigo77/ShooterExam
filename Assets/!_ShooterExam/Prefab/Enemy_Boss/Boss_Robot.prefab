@@ -127,7 +127,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _Hp: 100
-  _deathSeClip: {fileID: 8300000, guid: ee178ab5630014e3e942d0cf950144f2, type: 3}
+  _deathSeClip: {fileID: 8300000, guid: 856ffe825323b43a8900c98b471dbd7d, type: 3}
   _enemyId: 0
   _moveInScreenTime: 3
   _actions:
