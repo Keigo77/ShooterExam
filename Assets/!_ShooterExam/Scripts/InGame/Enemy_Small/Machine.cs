@@ -68,9 +68,10 @@ public class Machine : AttackerSmallEnemyBase, ICharacter
 
     private void GenerateBullet(Vector2 direction)
     {
+        Vector2 shotDirection = transform.TransformDirection(direction);
         Runner.Spawn(_bulletPrefab, this.transform.position, onBeforeSpawned: (_, bullet) =>
         {
-            bullet.GetComponent<Rigidbody2D>().AddForce(direction * _bulletSpeed, ForceMode2D.Impulse);
+            bullet.GetComponent<Rigidbody2D>().AddForce(shotDirection * _bulletSpeed, ForceMode2D.Impulse);
         });
     }
     
@@ -99,5 +100,6 @@ public class Machine : AttackerSmallEnemyBase, ICharacter
     private void RpcDamage(float damage)
     {
         Hp -= damage;
+        Debug.Log(Hp);
     }
 }
