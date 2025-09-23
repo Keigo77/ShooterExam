@@ -62,7 +62,7 @@ public class WaveManager : NetworkBehaviour
 
         if (_waveDataSO.WaveDatas[waveNumber].IsBoss)
         {
-            AudioSingleton.Instance.PlayBgm(_bossBgm);
+            RpcChangeBossBgm();
             await _showImageManager.ShowImage(ImageType.WaringImage, 2.0f);
         }
         
@@ -92,5 +92,11 @@ public class WaveManager : NetworkBehaviour
         await UniTask.WhenAll(enemyList
             .Select(e => e.OnDeath.ToUniTask(cancellationToken: this.GetCancellationTokenOnDestroy())));
         Debug.Log($"ウェーブ {waveNumber + 1} の敵をすべて倒しました！");
+    }
+
+    [Rpc(RpcSources.StateAuthority, RpcTargets.All)]
+    private void RpcChangeBossBgm()
+    {
+        AudioSingleton.Instance.PlayBgm(_bossBgm);
     }
 }
