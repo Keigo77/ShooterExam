@@ -89,16 +89,15 @@ public class Machine : AttackerSmallEnemyBase, ICharacter
         {
             RpcDamage(damage);
         }
-        else if (Hp - damage <= 0)
-        {
-            // 死亡アニメーションの再生
-            _animator.SetBool(_animatorIsDead, true);
-        }
     }
 
     [Rpc(RpcSources.All, RpcTargets.StateAuthority)]
     private void RpcDamage(float damage)
     {
         Hp -= damage;
+        if (Hp <= 0)
+        {
+            _animator.SetBool(_animatorIsDead, true);
+        }
     }
 }

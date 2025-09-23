@@ -179,11 +179,6 @@ public class RobotMan : BossBase, ICharacter
         {
             RpcBossDamage(damage);
         }
-        else if (Hp - damage <= 0)
-        {
-            // 死亡アニメーションの再生
-            _animator.SetBool(_animatorIsDead, true);
-        }
     }
     
     [Rpc(RpcSources.All, RpcTargets.StateAuthority)]
@@ -191,6 +186,11 @@ public class RobotMan : BossBase, ICharacter
     {
         Hp -= damage;
         GameManager.Instance.RpcUpdateBossHpGauge(_maxBossHp, Hp);
+        if (Hp <= 0)
+        {
+            // 死亡アニメーションの再生
+            _animator.SetBool(_animatorIsDead, true);
+        }
     }
     
 }
