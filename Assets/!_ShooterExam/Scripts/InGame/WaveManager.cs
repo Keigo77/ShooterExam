@@ -50,8 +50,8 @@ public class WaveManager : NetworkBehaviour
             _currentWave++;
         }
         
-        // 追加: 全てのウェーブ終了時のログ
         Debug.Log("すべてのウェーブが終了しました！");
+        RpcClear();
     }
 
     private async UniTask UpdateWave(int waveNumber)
@@ -98,5 +98,21 @@ public class WaveManager : NetworkBehaviour
     private void RpcChangeBossBgm()
     {
         AudioSingleton.Instance.PlayBgm(_bossBgm);
+    }
+
+    [Rpc(RpcSources.StateAuthority, RpcTargets.All)]
+    private async void RpcClear()
+    {
+        try
+        {
+            await UniTask.Delay(TimeSpan.FromSeconds(1.0f), cancellationToken: _token);
+            await _showImageManager.ShowImage(ImageType.ClearImage, 2.0f);
+        }
+        catch (Exception e)
+        {
+            Debug.LogWarning($"{e} クリア処理がキャンセルされました");
+        }
+        
+        // クリア画面へ遷移
     }
 }
