@@ -2507,7 +2507,7 @@ PrefabInstance:
     - target: {fileID: 7644993262302970713, guid: 305c934f8a5294902a7a03cf13d15b3e, type: 3}
       propertyPath: _bossBgm
       value: 
-      objectReference: {fileID: 8300000, guid: 1d17fd6dc9f184649b53046720ad5f98, type: 3}
+      objectReference: {fileID: 8300000, guid: fc3dbd5577b554dbebbbfbaec09d5724, type: 3}
     - target: {fileID: 7644993262302970713, guid: 305c934f8a5294902a7a03cf13d15b3e, type: 3}
       propertyPath: _smallEnemyBgm
       value: 

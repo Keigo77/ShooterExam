@@ -248,7 +248,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _Hp: 10
-  _deathSeClip: {fileID: 8300000, guid: 53044d22695064deca4d4cc4761c80ae, type: 3}
+  _deathSeClip: {fileID: 8300000, guid: 4dc31b0cc973644b493bf66055bdaa88, type: 3}
   _enemyId: 0
   _moveInScreenTime: 1.5
   _bulletPrefab: {fileID: 5173324007039618097, guid: e9acd09fab32f4221a8b5a44cd70a31a, type: 3}
