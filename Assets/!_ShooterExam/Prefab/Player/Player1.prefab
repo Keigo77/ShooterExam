@@ -46,8 +46,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _bulletObjectPool: {fileID: 4761751485146938828}
   _playerStatusEffectManager: {fileID: 2626383631516765657}
-  _generateSpan: 0.15
+  _generateSpan: 0.2
   _shootPower: 5
+  _bulletSpeed: 9
 --- !u!1 &799990234228722876
 GameObject:
   m_ObjectHideFlags: 0
@@ -231,6 +232,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f8310432599a34001b15b4fb12b8e793, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _PlayerStatusEffects: 0
   _statusEffectSprites:
   - {fileID: 0}
   - {fileID: 395672018297170279, guid: aee0f9938448b44feb8a7ef077cf5ab4, type: 3}

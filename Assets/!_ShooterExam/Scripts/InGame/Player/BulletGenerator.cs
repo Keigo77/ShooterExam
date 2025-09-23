@@ -11,6 +11,7 @@ public class BulletGenerator : MonoBehaviour
     [SerializeField] private PlayerStatusEffectManager _playerStatusEffectManager;
     [SerializeField] private float _generateSpan;
     [SerializeField] private float _shootPower;
+    [SerializeField] private float _bulletSpeed;
     private CancellationToken _token;
 
     private void Start()
@@ -31,7 +32,7 @@ public class BulletGenerator : MonoBehaviour
             }
             
             var bullet = _bulletObjectPool.GetBullet();
-            bullet.GetComponent<Rigidbody2D>().AddForce(new Vector2(1, 0) * _shootPower, ForceMode2D.Impulse);
+            bullet.GetComponent<Rigidbody2D>().AddForce(new Vector2(1, 0) * _bulletSpeed, ForceMode2D.Impulse);
             bullet.GetComponent<BulletBehaviour>().BulletPower = _shootPower;
             bullet.transform.position = this.transform.position;
         }
