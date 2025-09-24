@@ -5,6 +5,7 @@ using Cysharp.Threading.Tasks;
 using Fusion;
 using UnityEngine;
 using UniRx;
+using Exception = System.Exception;
 
 public enum StatusEffect
 {
@@ -36,9 +37,10 @@ public class PlayerStatusEffectManager : NetworkBehaviour
         if (PlayerStatusEffects == addStatusEffect)
         {
             cts.Cancel();
+            cts  = new CancellationTokenSource();
+            _token = cts.Token;
         }
         PlayerStatusEffects = addStatusEffect;
-        
         RpcShowStatusEffectIcon(addStatusEffect);
         await UniTask.Delay(TimeSpan.FromSeconds(effectTime * 0.7f), cancellationToken: _token);
         // 効果時間の7割が経過したら，アイコンを点滅させてから消去
@@ -64,16 +66,21 @@ public class PlayerStatusEffectManager : NetworkBehaviour
         int flashingIconCount = 0;
         while (!_token.IsCancellationRequested && flashingIconCount < 5)
         {
-            NetworkDOTween.MyDOFade(_showStatusEffectsPos, 0.0f, effectTime * 0.03f, _token).Forget();
-            await UniTask.Delay(TimeSpan.FromSeconds(effectTime * 0.03f), cancellationToken: _token);
-            NetworkDOTween.MyDOFade(_showStatusEffectsPos, 1.0f, effectTime * 0.03f, _token).Forget();
-            await UniTask.Delay(TimeSpan.FromSeconds(effectTime * 0.03f), cancellationToken: _token);
+            try
+            {
+                NetworkDOTween.MyDOFade(_showStatusEffectsPos, 0.0f, effectTime * 0.03f, _token).Forget();
+                await UniTask.Delay(TimeSpan.FromSeconds(effectTime * 0.03f), cancellationToken: _token);
+                NetworkDOTween.MyDOFade(_showStatusEffectsPos, 1.0f, effectTime * 0.03f, _token).Forget();
+                await UniTask.Delay(TimeSpan.FromSeconds(effectTime * 0.03f), cancellationToken: _token);
+            }
+            catch (Exception e)
+            {
+                _showStatusEffectsPos.color = new Color(1, 1, 1, 1);
+                Debug.Log($"状態異常の効果時間をリセットしました．{e} ");
+                return;
+            }
+            
             flashingIconCount++;
-        }
-
-        if (_token.IsCancellationRequested)
-        {
-            return;
         }
         
         PlayerStatusEffects = StatusEffect.None;
