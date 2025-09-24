@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using Cysharp.Threading.Tasks;
 using Fusion;
+using Fusion.Addons.Physics;
 using UnityEngine;
 using UnityEngine.Serialization;
 using Random = UnityEngine.Random;
@@ -166,6 +167,7 @@ public class RobotMan : BossBase, ICharacter
         {
             Runner.Spawn(_nowBullet, bulletSpawnPos, onBeforeSpawned: (_, bullet) =>
             {
+                bullet.GetComponent<NetworkRigidbody2D>().enabled = true;
                 bullet.GetComponent<Rigidbody2D>().AddForce(new Vector2(-1, 0).normalized * _bulletSpeed, ForceMode2D.Impulse);
             });
         }

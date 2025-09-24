@@ -35,11 +35,6 @@ public class EnemyBulletBehaviour : EnemyBulletBase
             {
                 collision.GetComponent<ICharacter>().Damage(BulletPower);
                 RpcDespawnBullet();
-                this.gameObject.SetActive(false);
-            }
-            else
-            {
-                this.gameObject.SetActive(false);
             }
         }
     }

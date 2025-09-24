@@ -24,7 +24,6 @@ public class AnimationEnemyBulletBehaviour : EnemyBulletBase
     [Rpc(RpcSources.All, RpcTargets.StateAuthority)]
     public void RpcDespawnBullet()
     {
-        this.gameObject.SetActive(false);
         if (HasStateAuthority)
         {
             // InvokeとOnTriggerで，Despawnした後に実行されるのを防ぐ

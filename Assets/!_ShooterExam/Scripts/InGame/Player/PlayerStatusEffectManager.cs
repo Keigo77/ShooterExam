@@ -19,11 +19,13 @@ public class PlayerStatusEffectManager : NetworkBehaviour
     [Networked] public StatusEffect PlayerStatusEffects { get; private set; } = StatusEffect.None;
     [SerializeField] private Sprite[] _statusEffectSprites;
     [SerializeField] private SpriteRenderer _showStatusEffectsPos;
+    private CancellationTokenSource cts; 
     private CancellationToken _token;
 
     public override void Spawned()
     {
-        _token = this.GetCancellationTokenOnDestroy();
+        cts  = new CancellationTokenSource();
+        _token = cts.Token;
     }
 
     /// <summary>
@@ -31,6 +33,10 @@ public class PlayerStatusEffectManager : NetworkBehaviour
     /// </summary>
     public async UniTask AddStatusEffect(StatusEffect addStatusEffect, float effectTime)
     {
+        if (PlayerStatusEffects == addStatusEffect)
+        {
+            cts.Cancel();
+        }
         PlayerStatusEffects = addStatusEffect;
         
         RpcShowStatusEffectIcon(addStatusEffect);
@@ -49,6 +55,9 @@ public class PlayerStatusEffectManager : NetworkBehaviour
         _showStatusEffectsPos.sprite = _statusEffectSprites[(int)addStatusEffect];
     }
 
+    /// <summary>
+    /// 状態異常の効果が切れる前に，状態異常アイコンを5回点滅させる．
+    /// </summary>
     [Rpc(RpcSources.StateAuthority, RpcTargets.All)]
     private async void RpcDeleteStatusEffectIcon(StatusEffect statusEffect, float effectTime)
     {
@@ -62,6 +71,11 @@ public class PlayerStatusEffectManager : NetworkBehaviour
             flashingIconCount++;
         }
 
+        if (_token.IsCancellationRequested)
+        {
+            return;
+        }
+        
         PlayerStatusEffects = StatusEffect.None;
         _showStatusEffectsPos.sprite = null;
     }
