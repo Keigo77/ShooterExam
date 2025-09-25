@@ -83,8 +83,6 @@ public class WaitInRoom : NetworkBehaviour, INetworkRunnerCallbacks
     /// </summary>
     public async void BackHome()
     {
-        Runner.RemoveCallbacks(this);
-        
         await Runner.Shutdown(); 
         await _transitionProgressController.FadeIn();
         SceneManager.LoadScene(_homeSceneName);
@@ -118,32 +116,21 @@ public class WaitInRoom : NetworkBehaviour, INetworkRunnerCallbacks
     
     void INetworkRunnerCallbacks.OnPlayerLeft(NetworkRunner runner, PlayerRef player)
     {
-        if (this.gameObject == null) return; // 既に破棄されているなら無視
-        // 退出したプレイヤーのプレイヤーIDを取得する
-        int leftPlayerIndex = _hasEmptyPlayerIds.IndexOf(player.PlayerId);
-         
         // 退出したプレイヤーがホストなら，全員が退出する
-        if (leftPlayerIndex == 0)
+        if (player.PlayerId == 1)
         {
+            Debug.Log("ホストが退出");
+            //TODO:エラー管理のシングルトンの，シーン遷移関数を実行する
             BackHome();
+            return;
         }
+        
+        Debug.Log("ホスト以外が退出");
          
         // ホストでないなら，そのプレイヤーがいた枠に空きを作る．
-        if (HasStateAuthority)
+        if (SceneManager.GetActiveScene().name == "MatchingRoom")
         {
-            _hasEmpties.Set(leftPlayerIndex, true);
-        }
-    }
-
-    /// <summary>
-    /// めっちゃ大事．ないと，次のシーンで退出した時に，ここのOnPlayerLeftが呼ばれる
-    /// </summary>
-    private void OnDisable()
-    {
-        if (Runner != null)
-        {
-            Runner.RemoveCallbacks(this);
-            Debug.Log("remove callback");   
+            _hasEmpties.Set(_hasEmptyPlayerIds.IndexOf(player.PlayerId), true);
         }
     }
     

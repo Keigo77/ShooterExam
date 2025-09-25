@@ -22,7 +22,7 @@ public class StageSelectManager : NetworkBehaviour
     public async void RpcSelectStage(int stageNumber)
     {
         StageNumber = stageNumber;
-        await _transitionProgressController.FadeOut();
+        await _transitionProgressController.FadeIn();
         if (HasStateAuthority)
         {
             Runner.LoadScene($"Stage{stageNumber}");

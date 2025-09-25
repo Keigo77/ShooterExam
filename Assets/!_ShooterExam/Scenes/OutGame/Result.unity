@@ -772,7 +772,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &672144816
 RectTransform:
   m_ObjectHideFlags: 0
@@ -1321,7 +1321,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &1216998651
 RectTransform:
   m_ObjectHideFlags: 0
@@ -1821,7 +1821,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &1383310665
 RectTransform:
   m_ObjectHideFlags: 0
@@ -2120,6 +2120,11 @@ MonoBehaviour:
   _remainHpText: {fileID: 941730148}
   _retryButton: {fileID: 662416451}
   _returnStageSelectButton: {fileID: 184345952}
+  _stageRankDatas: {fileID: 11400000, guid: 257d0d1c846d44d7ab6df82c315df0c2, type: 2}
+  _starImageObjects:
+  - {fileID: 1383310664}
+  - {fileID: 672144815}
+  - {fileID: 1216998650}
 --- !u!4 &1603791980
 Transform:
   m_ObjectHideFlags: 0

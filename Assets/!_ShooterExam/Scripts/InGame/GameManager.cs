@@ -4,6 +4,7 @@ using System.Threading;
 using Cysharp.Threading.Tasks;
 using Fusion;
 using Fusion.Sockets;
+using NUnit.Framework;
 using UniRx;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -167,8 +168,11 @@ public class GameManager : NetworkBehaviour, INetworkRunnerCallbacks
         ClearTime = clearTime;
         RemainHpPercentage = AllPlayerHP / MaxPlayersHP;
         await _transitionProgressController.FadeIn();
-        
-        SceneManager.LoadScene("Result");
+
+        if (HasStateAuthority)
+        {
+            Runner.LoadScene("Result");
+        }
     }
     
     void INetworkRunnerCallbacks.OnObjectExitAOI(NetworkRunner runner, NetworkObject obj, PlayerRef player) {}
