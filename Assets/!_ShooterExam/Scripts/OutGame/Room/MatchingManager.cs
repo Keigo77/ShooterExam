@@ -76,6 +76,5 @@ public class MatchingManager : MonoBehaviour
         await UniTask.WaitUntil(() => runner.IsRunning, cancellationToken: _token);
         _loadingPanel.SetActive(false);
         await _transitionProgressController.FadeIn();
-        //SceneManager.LoadScene(_matchingSceneName);
     }
 }

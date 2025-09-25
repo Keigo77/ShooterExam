@@ -24,7 +24,8 @@ public class WaveManager : NetworkBehaviour
     public override async void Spawned()
     {
         AudioSingleton.Instance.PlayBgm(_smallEnemyBgm);
-        if (!Runner.IsSharedModeMasterClient) { return; }
+        if (!HasStateAuthority) { return; }
+        
         _maxWave = _waveDataSO.WaveDatas.Count;
         _token = this.GetCancellationTokenOnDestroy();
 
@@ -51,7 +52,7 @@ public class WaveManager : NetworkBehaviour
         }
         
         Debug.Log("すべてのウェーブが終了しました！");
-        RpcClear();
+        GameManager.Instance.CurrentGameState = GameState.Clear;
     }
 
     private async UniTask UpdateWave(int waveNumber)
@@ -98,21 +99,5 @@ public class WaveManager : NetworkBehaviour
     private void RpcChangeBossBgm()
     {
         AudioSingleton.Instance.PlayBgm(_bossBgm);
-    }
-
-    [Rpc(RpcSources.StateAuthority, RpcTargets.All)]
-    private async void RpcClear()
-    {
-        try
-        {
-            await UniTask.Delay(TimeSpan.FromSeconds(1.0f), cancellationToken: _token);
-            await _showImageManager.ShowImage(ImageType.ClearImage, 2.0f);
-        }
-        catch (Exception e)
-        {
-            Debug.LogWarning($"{e} クリア処理がキャンセルされました");
-        }
-        
-        // クリア画面へ遷移
     }
 }

@@ -48,6 +48,7 @@ public class ShowImageManager : NetworkBehaviour
                 _clearImageAnimator.SetBool(_animatorIsDelete, true);
                 break;
         }
+        await UniTask.Delay(TimeSpan.FromSeconds(1.0f), cancellationToken: _token);
     }
 
     [Rpc(RpcSources.StateAuthority, RpcTargets.All)]

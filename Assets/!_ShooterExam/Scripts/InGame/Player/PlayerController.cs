@@ -26,7 +26,7 @@ public class PlayerController : NetworkBehaviour, ICharacter
         _inputActions.Player.Move.canceled += OnMove;
 
         await UniTask.WaitUntil(() => GameManager.Instance != null && GameManager.Instance.IsSpawned);
-        GameManager.Instance.AddPlayerHP(_hp);
+        GameManager.Instance.AddPlayerHp(_hp);
     }
 
     private void OnMove(InputAction.CallbackContext context)

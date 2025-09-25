@@ -6,6 +6,7 @@ using Fusion;
 using Fusion.Sockets;
 using UniRx;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.Serialization;
 using UnityEngine.UI;
 
@@ -13,13 +14,13 @@ public enum GameState
 {
     Stopping,
     Playing,
-    Finished
+    Clear
 }
 
 public class GameManager : NetworkBehaviour, INetworkRunnerCallbacks
 {
     public static GameManager Instance { get; private set; }
-    [Networked] public GameState CurrentGameState { get; private set; } = GameState.Stopping;
+    [Networked] public GameState CurrentGameState { get; set; } = GameState.Stopping;
     
     // Hp
     [Networked, OnChangedRender(nameof(UpdatePlayerHpGauge))] private float AllPlayerHP { get; set; } = 0f;
@@ -37,8 +38,13 @@ public class GameManager : NetworkBehaviour, INetworkRunnerCallbacks
     private CancellationToken _token;
     private bool _isTimeOut = false;
     
-    // プレイヤーは，これがtrueになってからAddPlayerHpを実行する．f
+    // プレイヤーは，これがtrueになってからAddPlayerHpを実行する．
     public bool IsSpawned = false;
+    
+    // リザルト
+    private int _startTick;
+    public static float ClearTime { get; private set; }= 0f;
+    public static float RemainHpPercentage { get; private set; }= 0f;
 
     private void Awake()
     {
@@ -55,6 +61,8 @@ public class GameManager : NetworkBehaviour, INetworkRunnerCallbacks
 
     public override async void Spawned()
     {
+        ClearTime = 0f;
+        RemainHpPercentage = 0f;
         IsSpawned = true;
         _transitionProgressController.FadeOut().Forget();
         
@@ -83,7 +91,28 @@ public class GameManager : NetworkBehaviour, INetworkRunnerCallbacks
         
         Debug.Log("ゲーム開始");
         CurrentGameState = GameState.Playing;
+        _startTick = Runner.Tick;
         AllPlayerHP = MaxPlayersHP;
+        
+        try
+        {
+            await UniTask.WaitUntil(() => CurrentGameState == GameState.Clear, cancellationToken: _token);
+        }
+        catch (Exception e)
+        {
+            Debug.LogWarning($"{e}　ステージクリア待ちがキャンセルされました");
+        }
+
+        StageClear().Forget();
+    }
+
+    public override void Render()
+    {
+        if (CurrentGameState == GameState.Playing)
+        {
+            ClearTime = (Runner.Tick - _startTick) * Runner.DeltaTime;
+            Debug.Log(ClearTime);
+        }
     }
 
     [Rpc(RpcSources.StateAuthority, RpcTargets.All)]
@@ -101,7 +130,7 @@ public class GameManager : NetworkBehaviour, INetworkRunnerCallbacks
     /// <summary>
     /// プレイヤーがスポーン時に実行．全体の最大HPを追加し，何人がバトル開始部屋まで入ってきたかチェックする．
     /// </summary>
-    public void AddPlayerHP(float playerHp)
+    public void AddPlayerHp(float playerHp)
     { 
         MaxPlayersHP += playerHp;
         _nowPlayerCount++;
@@ -111,9 +140,10 @@ public class GameManager : NetworkBehaviour, INetworkRunnerCallbacks
     [Rpc(RpcSources.All, RpcTargets.StateAuthority)]
     public void RpcDecreasePlayerHpGauge(float damage)
     {
-        if (HasStateAuthority)
+        if (HasStateAuthority && AllPlayerHP > 0)
         {
             AllPlayerHP -= damage;
+            AllPlayerHP = Math.Max(AllPlayerHP, 0f);
         }
     }
     
@@ -137,6 +167,33 @@ public class GameManager : NetworkBehaviour, INetworkRunnerCallbacks
         {
             _bossHpGaugeSlider.gameObject.SetActive(false);
         } 
+    }
+
+    private async UniTask StageClear()
+    {
+        await UniTask.Delay(TimeSpan.FromSeconds(1.0f), cancellationToken: _token);
+        await _showImageManager.ShowImage(ImageType.ClearImage, 2.0f);
+        
+        RpcMoveResultScene(ClearTime);
+    }
+
+    [Rpc(RpcSources.StateAuthority, RpcTargets.All)]
+    private async void RpcMoveResultScene(float clearTime)
+    {
+        ClearTime = clearTime;
+        RemainHpPercentage = AllPlayerHP / MaxPlayersHP;
+        Debug.Log(ClearTime);
+
+        try
+        {
+            await _transitionProgressController.FadeIn();
+        }
+        catch (Exception e)
+        {
+            Debug.LogWarning($"リザルト画面遷移時のフェードインがキャンセルされました．{e}");
+        }
+        
+        SceneManager.LoadScene("Result");
     }
     
     void INetworkRunnerCallbacks.OnObjectExitAOI(NetworkRunner runner, NetworkObject obj, PlayerRef player) {}
