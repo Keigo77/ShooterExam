@@ -76,33 +76,18 @@ public class GameManager : NetworkBehaviour, INetworkRunnerCallbacks
         // プレイヤー全員が揃うか，10秒経つまで待つ
         StartTimeoutCount().Forget();
         
-        try
-        {
-            await UniTask.WaitUntil(() =>
+        await UniTask.WaitUntil(() =>
                 (_nowPlayerCount == WaitInRoom.JoinedPlayerCount || _isTimeOut), cancellationToken: _token);
             RpcDeleteTransition();
-            await UniTask.WaitUntil(() => _transitionProgressController.Progress == 0f, cancellationToken: _token);
-            await _showImageManager.ShowImage(ImageType.StartImage, 1.5f);
-        }
-        catch (Exception e)
-        {
-            Debug.LogWarning($"{e}　ゲーム開始前の処理がキャンセルされました");
-        }
-        
+        await UniTask.WaitUntil(() => _transitionProgressController.Progress == 0f, cancellationToken: _token);
+        await _showImageManager.ShowImage(ImageType.StartImage, 1.5f);
+
         Debug.Log("ゲーム開始");
         CurrentGameState = GameState.Playing;
         _startTick = Runner.Tick;
         AllPlayerHP = MaxPlayersHP;
+        await UniTask.WaitUntil(() => CurrentGameState == GameState.Clear, cancellationToken: _token);
         
-        try
-        {
-            await UniTask.WaitUntil(() => CurrentGameState == GameState.Clear, cancellationToken: _token);
-        }
-        catch (Exception e)
-        {
-            Debug.LogWarning($"{e}　ステージクリア待ちがキャンセルされました");
-        }
-
         StageClear().Forget();
     }
 
@@ -111,7 +96,6 @@ public class GameManager : NetworkBehaviour, INetworkRunnerCallbacks
         if (CurrentGameState == GameState.Playing)
         {
             ClearTime = (Runner.Tick - _startTick) * Runner.DeltaTime;
-            Debug.Log(ClearTime);
         }
     }
 
@@ -182,16 +166,7 @@ public class GameManager : NetworkBehaviour, INetworkRunnerCallbacks
     {
         ClearTime = clearTime;
         RemainHpPercentage = AllPlayerHP / MaxPlayersHP;
-        Debug.Log(ClearTime);
-
-        try
-        {
-            await _transitionProgressController.FadeIn();
-        }
-        catch (Exception e)
-        {
-            Debug.LogWarning($"リザルト画面遷移時のフェードインがキャンセルされました．{e}");
-        }
+        await _transitionProgressController.FadeIn();
         
         SceneManager.LoadScene("Result");
     }

@@ -18,7 +18,7 @@ EditorBuildSettings:
     path: Assets/!_ShooterExam/Scenes/OutGame/StageSelect.unity
     guid: d3c4b5e231f3a4af2a6d9e8df5ec3d65
   - enabled: 1
-    path: Assets/!_ShooterExam/Scenes/InGame/PreStage.unity
+    path: Assets/!_ShooterExam/Scenes/InGame/Stage1.unity
     guid: 47afbe5efeeb84f4598df3bd58e74328
   - enabled: 1
     path: Assets/!_ShooterExam/Scenes/OutGame/Result.unity

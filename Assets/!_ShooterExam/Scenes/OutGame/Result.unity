@@ -233,7 +233,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6307344720189337048, guid: 8d142b6aeaebfd04ab0af27e99f8de9d, type: 3}
       propertyPath: m_Name
-      value: ButtonOutlineYellow
+      value: ReturnStageSelectButton
+      objectReference: {fileID: 0}
+    - target: {fileID: 6307344720189337048, guid: 8d142b6aeaebfd04ab0af27e99f8de9d, type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -243,6 +247,11 @@ PrefabInstance:
 --- !u!224 &184345951 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 1552377827738450714, guid: 8d142b6aeaebfd04ab0af27e99f8de9d, type: 3}
+  m_PrefabInstance: {fileID: 184345950}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1 &184345952 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 6307344720189337048, guid: 8d142b6aeaebfd04ab0af27e99f8de9d, type: 3}
   m_PrefabInstance: {fileID: 184345950}
   m_PrefabAsset: {fileID: 0}
 --- !u!1 &276051628
@@ -482,8 +491,8 @@ RectTransform:
   - {fileID: 1312627470}
   - {fileID: 941730147}
   - {fileID: 1061710926}
-  - {fileID: 184345951}
   - {fileID: 662416450}
+  - {fileID: 184345951}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
@@ -725,7 +734,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6307344720189337048, guid: 8c9e814b00ddbfc45ad1149871a25f19, type: 3}
       propertyPath: m_Name
-      value: ButtonOutlineRed
+      value: RetryButton
+      objectReference: {fileID: 0}
+    - target: {fileID: 6307344720189337048, guid: 8c9e814b00ddbfc45ad1149871a25f19, type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -735,6 +748,11 @@ PrefabInstance:
 --- !u!224 &662416450 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 1552377827738450714, guid: 8c9e814b00ddbfc45ad1149871a25f19, type: 3}
+  m_PrefabInstance: {fileID: 662416449}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1 &662416451 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 6307344720189337048, guid: 8c9e814b00ddbfc45ad1149871a25f19, type: 3}
   m_PrefabInstance: {fileID: 662416449}
   m_PrefabAsset: {fileID: 0}
 --- !u!1 &672144815
@@ -1075,7 +1093,7 @@ GameObject:
   - component: {fileID: 1113958255}
   - component: {fileID: 1113958254}
   m_Layer: 5
-  m_Name: StageName
+  m_Name: StageNameText
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1097,8 +1115,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -532, y: 346}
-  m_SizeDelta: {x: 648.8214, y: 219.0982}
+  m_AnchoredPosition: {x: -455.36398, y: 365.992}
+  m_SizeDelta: {x: 802.0934, y: 179.1142}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1113958254
 MonoBehaviour:
@@ -1120,7 +1138,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Stage1
+  m_text: Stage99
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 46dd9231c0dd4874f8e3474a40da06f9, type: 2}
   m_sharedMaterial: {fileID: 2627698081517277131, guid: 46dd9231c0dd4874f8e3474a40da06f9, type: 2}
@@ -2075,6 +2093,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1603791980}
   - component: {fileID: 1603791979}
+  - component: {fileID: 1603791981}
   m_Layer: 0
   m_Name: ResultManager
   m_TagString: Untagged
@@ -2096,8 +2115,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _transitionProgressController: {fileID: 1471417346}
   _resultBgm: {fileID: 8300000, guid: 5c29e0652d3e84465a35adf7baa463d9, type: 3}
+  _stageNameText: {fileID: 1113958254}
   _clearTimeText: {fileID: 276051630}
   _remainHpText: {fileID: 941730148}
+  _retryButton: {fileID: 662416451}
+  _returnStageSelectButton: {fileID: 184345952}
 --- !u!4 &1603791980
 Transform:
   m_ObjectHideFlags: 0
@@ -2113,6 +2135,25 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1603791981
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1603791978}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: -1552182283, guid: e725a070cec140c4caffb81624c8c787, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  SortKey: 3005735888
+  ObjectInterest: 1
+  Flags: 131073
+  NestedObjects: []
+  NetworkedBehaviours:
+  - {fileID: 1603791979}
+  ForceRemoteRenderTimeframe: 0
 --- !u!1 &1632157490
 GameObject:
   m_ObjectHideFlags: 0
@@ -2555,9 +2596,9 @@ SceneRoots:
   m_Roots:
   - {fileID: 1254587660}
   - {fileID: 1471417345}
+  - {fileID: 1603791980}
   - {fileID: 451135213}
   - {fileID: 1133837311}
   - {fileID: 2134504952}
   - {fileID: 1632157492}
   - {fileID: 1746302020}
-  - {fileID: 1603791980}

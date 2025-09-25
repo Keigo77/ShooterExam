@@ -17,7 +17,7 @@ public class WaitInRoom : NetworkBehaviour, INetworkRunnerCallbacks
     [SerializeField] private TextMeshProUGUI _sessionNameText;
     [SerializeField] private GameObject[] _playerPreviewPrefabs;
     [SerializeField] private string _homeSceneName;
-    [SerializeField] private string _nextScenePath;
+    [SerializeField] private string _nextSceneName;
     
     [SerializeField] private TransitionProgressController _transitionProgressController;
     [SerializeField] private AudioClip _bgmClip;
@@ -85,16 +85,8 @@ public class WaitInRoom : NetworkBehaviour, INetworkRunnerCallbacks
     {
         Runner.RemoveCallbacks(this);
         
-        try
-        {
-            await Runner.Shutdown();
-            await _transitionProgressController.FadeIn();
-        }
-        catch (Exception e)
-        {
-            Debug.Log($"{e}　遷移アニメーションがキャンセルされました");
-        }
-        
+        await Runner.Shutdown(); 
+        await _transitionProgressController.FadeIn();
         SceneManager.LoadScene(_homeSceneName);
     }
 
@@ -114,20 +106,13 @@ public class WaitInRoom : NetworkBehaviour, INetworkRunnerCallbacks
     [Rpc(RpcSources.StateAuthority, RpcTargets.All)]
     public async void RpcMoveScene()
     {
-        try
-        {
-            await _transitionProgressController.FadeIn();
-        }
-        catch (Exception e)
-        {
-            Debug.Log($"{e}　遷移アニメーションがキャンセルされた");
-        }
-        
+        await _transitionProgressController.FadeIn();
         if (HasStateAuthority)
         {
+            Runner.SessionInfo.IsVisible = false;
             JoinedPlayerCount = Runner.SessionInfo.PlayerCount;
             await UniTask.Delay(TimeSpan.FromSeconds(2.0f), cancellationToken: _token);
-            Runner.LoadScene(_nextScenePath);
+            Runner.LoadScene(_nextSceneName);
         }
     }
     

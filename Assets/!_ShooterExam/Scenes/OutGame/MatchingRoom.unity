@@ -136,7 +136,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &254016815
 RectTransform:
   m_ObjectHideFlags: 0
@@ -772,7 +772,7 @@ MonoBehaviour:
   - {fileID: 6298991196752495063, guid: 754b7d17494b54b3991fa394cfb21f64, type: 3}
   - {fileID: 5917286842835334536, guid: 8381d1820e66f428c91d56ffd97c895f, type: 3}
   _homeSceneName: Home
-  _nextScenePath: Assets/!_ShooterExam/Scenes/InGame/PreStage.unity
+  _nextSceneName: StageSelect
   _transitionProgressController: {fileID: 1471417346}
   _bgmClip: {fileID: 8300000, guid: 57f44312da7084acb978640cec824c2f, type: 3}
 --- !u!1 &1133837309
@@ -1367,8 +1367,8 @@ SceneRoots:
   m_Roots:
   - {fileID: 1254587660}
   - {fileID: 1471417345}
-  - {fileID: 451135213}
   - {fileID: 1090516257}
+  - {fileID: 451135213}
   - {fileID: 1133837311}
   - {fileID: 2134504952}
   - {fileID: 1632157492}

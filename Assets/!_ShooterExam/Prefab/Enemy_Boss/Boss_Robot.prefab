@@ -126,7 +126,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bbbde0db4b00a4b90925b982153be885, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _Hp: 100
+  _Hp: 1000
   _deathSeClip: {fileID: 8300000, guid: 940b4e5c37e984ac581e99814f675448, type: 3}
   _enemyId: 0
   _moveInScreenTime: 3
@@ -136,7 +136,7 @@ MonoBehaviour:
   - attackType: 0
     beforeWaitTime: 1.5
   - attackType: 1
-    beforeWaitTime: 0.6
+    beforeWaitTime: 1
   _normalBulletPrefab: {fileID: 5845098227375754531, guid: adfb0682d550a4a579c2d700bb40f017, type: 3}
   _paralysisBulletPrefab: {fileID: 5845098227375754531, guid: 76c97b17ac20245d38b55666b3eeac35, type: 3}
   _bulletSpeed: 11

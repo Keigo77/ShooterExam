@@ -16,6 +16,7 @@ public class MatchingManager : MonoBehaviour
     [SerializeField] private NetworkRunner _networkRunnerPrefab;
     [SerializeField] private TMP_InputField _inputRoomNameField;
     [SerializeField] private int _matchingSceneIndex;
+    [SerializeField] private int _testSceneIndex;
     [SerializeField] private string _matchingSceneName;
     
     [SerializeField] private GameObject _loadingPanel;
@@ -60,6 +61,20 @@ public class MatchingManager : MonoBehaviour
         var result = await networkRunner.StartGame(new StartGameArgs {
             GameMode = GameMode.Shared,
             Scene = SceneRef.FromIndex(_matchingSceneIndex),
+            SessionName = _inputRoomNameField.text,
+            IsVisible = false,
+            PlayerCount = 4,
+        });
+        Debug.Log(result);
+    }
+    
+    public async void TestMatching() {
+        var networkRunner = Instantiate(_networkRunnerPrefab);
+        ShowLoadingPanel(networkRunner).Forget();
+        PlayerInfo.PlayerColor = PlayerColorEnum.Purple;
+        var result = await networkRunner.StartGame(new StartGameArgs {
+            GameMode = GameMode.Shared,
+            Scene = SceneRef.FromIndex(_testSceneIndex),
             SessionName = _inputRoomNameField.text,
             IsVisible = false,
             PlayerCount = 4,
