@@ -9,11 +9,15 @@ public class StageSelectManager : NetworkBehaviour
     [SerializeField] private TransitionProgressController _transitionProgressController;
     [SerializeField] private AudioClip _stageSelectBgm;
     [SerializeField] private TextMeshProUGUI _waitText;
+
+    private void Awake()
+    {
+        _transitionProgressController.Progress = 1.0f;
+    }
     
     public override void Spawned()
     {
         AudioSingleton.Instance.PlayBgm(_stageSelectBgm);
-        _transitionProgressController.Progress = 1.0f;
         _transitionProgressController.FadeOut().Forget();
         _waitText.text = HasStateAuthority ? "Other players are waiting..." : "Host is selecting stage...";
     }

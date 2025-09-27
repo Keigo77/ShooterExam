@@ -83,7 +83,7 @@ public class MatchingManager : MonoBehaviour
             PlayerCount = 4,
         });
         Debug.Log(result);
-        CheckResult(networkRunner, result, "PreEnemy").Forget();
+        CheckResult(networkRunner, result, "Stage1").Forget();
     }
 
     /// <summary>
