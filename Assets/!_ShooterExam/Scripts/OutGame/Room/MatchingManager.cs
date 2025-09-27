@@ -41,14 +41,14 @@ public class MatchingManager : MonoBehaviour
     /// </summary>
     public async void StartRandomMatching() {
         var networkRunner = Instantiate(_networkRunnerPrefab);
-        ShowLoadingPanel(networkRunner).Forget();
+        _loadingPanel.SetActive(true);
         
         var result = await networkRunner.StartGame(new StartGameArgs {
             GameMode = GameMode.Shared,
-            Scene = SceneRef.FromIndex(_matchingSceneIndex),
             PlayerCount = 4,
         });
         Debug.Log(result);
+        CheckResult(networkRunner, result, "MatchingRoom").Forget();
     }
     
     /// <summary>
@@ -56,40 +56,52 @@ public class MatchingManager : MonoBehaviour
     /// </summary>
     public async void StartPrivateMatching() {
         var networkRunner = Instantiate(_networkRunnerPrefab);
-        ShowLoadingPanel(networkRunner).Forget();
+        _loadingPanel.SetActive(true);
+
+        var result = await networkRunner.StartGame(new StartGameArgs {
+            GameMode = GameMode.Shared,
+            SessionName = _inputRoomNameField.text,
+            IsVisible = false,
+            PlayerCount = 4,
+        });
+        Debug.Log(result);
+        CheckResult(networkRunner, result, "MatchingRoom").Forget();
+    }
+    
+    /// <summary>
+    /// 敵の挙動などを確認するためのテスト用ボタン
+    /// </summary>
+    public async void TestMatching() {
+        var networkRunner = Instantiate(_networkRunnerPrefab);
+        _loadingPanel.SetActive(true);
+        PlayerInfo.PlayerColor = PlayerColorEnum.Purple;
         
         var result = await networkRunner.StartGame(new StartGameArgs {
             GameMode = GameMode.Shared,
-            Scene = SceneRef.FromIndex(_matchingSceneIndex),
             SessionName = _inputRoomNameField.text,
             IsVisible = false,
             PlayerCount = 4,
         });
         Debug.Log(result);
-    }
-    
-    public async void TestMatching() {
-        var networkRunner = Instantiate(_networkRunnerPrefab);
-        ShowLoadingPanel(networkRunner).Forget();
-        PlayerInfo.PlayerColor = PlayerColorEnum.Purple;
-        var result = await networkRunner.StartGame(new StartGameArgs {
-            GameMode = GameMode.Shared,
-            Scene = SceneRef.FromIndex(_testSceneIndex),
-            SessionName = _inputRoomNameField.text,
-            IsVisible = false,
-            PlayerCount = 4,
-        });
-        Debug.Log(result);
+        CheckResult(networkRunner, result, "PreEnemy").Forget();
     }
 
     /// <summary>
-    /// 部屋に入ったらLoadingパネルを削除し，シーン遷移アニメーションを再生後にシーン遷移
+    /// 部屋の作成を実行し，成功したらマッチングルームへ，失敗したら，エラーパネルを表示する．
     /// </summary>
-    private async UniTask ShowLoadingPanel(NetworkRunner runner)
+    private async UniTask CheckResult(NetworkRunner runner, StartGameResult result, string sceneName)
     {
-        _loadingPanel.SetActive(true);
-        await UniTask.WaitUntil(() => runner.IsRunning, cancellationToken: _token);
         _loadingPanel.SetActive(false);
-        await _transitionProgressController.FadeIn();
+        if (result.Ok)
+        {
+            // StartGameでもシーン遷移できるが，遷移アニメーションを再生しきれないため，runner.LoadSceneで遷移する
+            await _transitionProgressController.FadeIn();
+            runner.LoadScene(sceneName);
+        } 
+        else 
+        {
+            ErrorSingleton.Instance.ShowErrorPanel(ErrorType.NetworkConnectFailed);
+        }
     }
+    
 }

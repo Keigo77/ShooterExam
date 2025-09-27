@@ -7,6 +7,7 @@ using Fusion;
 using Fusion.Sockets;
 using TMPro;
 using Unity.VisualScripting;
+using UnityEditor.PackageManager;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -120,8 +121,8 @@ public class WaitInRoom : NetworkBehaviour, INetworkRunnerCallbacks
         if (player.PlayerId == 1)
         {
             Debug.Log("ホストが退出");
-            //TODO:エラー管理のシングルトンの，シーン遷移関数を実行する
-            BackHome();
+            SceneManager.LoadScene("Home");
+            ErrorSingleton.Instance.ShowErrorPanel(ErrorType.HostDisconnected);
             return;
         }
         
@@ -139,11 +140,30 @@ public class WaitInRoom : NetworkBehaviour, INetworkRunnerCallbacks
      void INetworkRunnerCallbacks.OnPlayerJoined(NetworkRunner runner, PlayerRef player) {}
      void INetworkRunnerCallbacks.OnInput(NetworkRunner runner, NetworkInput input) {}
      void INetworkRunnerCallbacks.OnInputMissing(NetworkRunner runner, PlayerRef player, NetworkInput input) {}
-     void INetworkRunnerCallbacks.OnShutdown(NetworkRunner runner, ShutdownReason shutdownReason) {}
+
+     void INetworkRunnerCallbacks.OnShutdown(NetworkRunner runner, ShutdownReason shutdownReason)
+     {
+         ErrorSingleton.Instance.ShowErrorPanel(ErrorType.NetworkConnectFailed);
+         SceneManager.LoadScene("Home");
+         Debug.Log($"OnShutdown．{shutdownReason}");
+     }
      void INetworkRunnerCallbacks.OnConnectedToServer(NetworkRunner runner) {}
-     void INetworkRunnerCallbacks.OnDisconnectedFromServer(NetworkRunner runner, NetDisconnectReason reason) {}
+
+     void INetworkRunnerCallbacks.OnDisconnectedFromServer(NetworkRunner runner, NetDisconnectReason reason)
+     {
+         ErrorSingleton.Instance.ShowErrorPanel(ErrorType.DisconnectedFromServer);
+         SceneManager.LoadScene("Home");
+         Debug.Log($"OnDisconnectedFromServer．{reason}");
+     }
      void INetworkRunnerCallbacks.OnConnectRequest(NetworkRunner runner, NetworkRunnerCallbackArgs.ConnectRequest request, byte[] token) {}
-     void INetworkRunnerCallbacks.OnConnectFailed(NetworkRunner runner, NetAddress remoteAddress, NetConnectFailedReason reason) {}
+
+     void INetworkRunnerCallbacks.OnConnectFailed(NetworkRunner runner, NetAddress remoteAddress,
+         NetConnectFailedReason reason)
+     {
+         ErrorSingleton.Instance.ShowErrorPanel(ErrorType.NetworkConnectFailed);
+         SceneManager.LoadScene("Home");
+         Debug.Log($"OnConnectFailed．{reason}");
+     }
      void INetworkRunnerCallbacks.OnUserSimulationMessage(NetworkRunner runner, SimulationMessagePtr message) {}
      void INetworkRunnerCallbacks.OnSessionListUpdated(NetworkRunner runner, List<SessionInfo> sessionList) {}
      void INetworkRunnerCallbacks.OnCustomAuthenticationResponse(NetworkRunner runner, Dictionary<string, object> data) {}
