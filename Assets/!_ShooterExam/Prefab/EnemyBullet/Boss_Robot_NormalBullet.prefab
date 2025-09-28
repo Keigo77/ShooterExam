@@ -169,7 +169,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b00a1ef7e645147689eee1b0167a840f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _BulletPower: 10
+  _BulletPower: 9
   _existTime: 6
   _networkObject: {fileID: 98092447297016661}
   _networkRigidbody: {fileID: 7998570576055179341}

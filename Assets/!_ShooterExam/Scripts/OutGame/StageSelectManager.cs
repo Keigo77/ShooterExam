@@ -9,6 +9,7 @@ public class StageSelectManager : NetworkBehaviour
     [SerializeField] private TransitionProgressController _transitionProgressController;
     [SerializeField] private AudioClip _stageSelectBgm;
     [SerializeField] private TextMeshProUGUI _waitText;
+    [SerializeField] private GameObject _clientWaitPanel;
 
     private void Awake()
     {
@@ -19,7 +20,15 @@ public class StageSelectManager : NetworkBehaviour
     {
         AudioSingleton.Instance.PlayBgm(_stageSelectBgm);
         _transitionProgressController.FadeOut().Forget();
-        _waitText.text = HasStateAuthority ? "Other players are waiting..." : "Host is selecting stage...";
+        if (HasStateAuthority)
+        {
+            _waitText.text = "Other players are waiting...";
+        }
+        else
+        {
+            _waitText.gameObject.SetActive(false);
+            _clientWaitPanel.SetActive(true);
+        }
     }
 
     [Rpc(RpcSources.StateAuthority, RpcTargets.All)]

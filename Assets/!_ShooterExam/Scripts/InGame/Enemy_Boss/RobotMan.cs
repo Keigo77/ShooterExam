@@ -63,14 +63,7 @@ public class RobotMan : BossBase, ICharacter
             await UniTask.Yield(cancellationToken: _token);
         }
         
-        try
-        {
-            await MoveInScreen();
-        }
-        catch (Exception e)
-        {
-            Debug.Log($"{e}\nMoveInScreen()がキャンセルされました");
-        }
+        await MoveInScreen();
 
         IsSpawned = true;
         GameManager.Instance.RpcInitializeBossHpGauge(Hp);

@@ -8,7 +8,8 @@ public enum ImageType
 {
     StartImage,
     WaringImage,
-    ClearImage
+    ClearImage,
+    GameOverImage
 }
 
 public class ShowImageManager : NetworkBehaviour
@@ -21,6 +22,10 @@ public class ShowImageManager : NetworkBehaviour
     
     [SerializeField] private GameObject _clearImageObj;
     [SerializeField] private Animator _clearImageAnimator;
+
+    [SerializeField] private GameObject _gameOverImageObj;
+    [SerializeField] private Animator _gameOverImageAnimator;
+    
     private int _animatorIsDelete;
     private CancellationToken _token;
 
@@ -47,6 +52,13 @@ public class ShowImageManager : NetworkBehaviour
                 await UniTask.Delay(TimeSpan.FromSeconds(duration), cancellationToken: _token);
                 _clearImageAnimator.SetBool(_animatorIsDelete, true);
                 break;
+            case ImageType.GameOverImage:
+                await UniTask.Delay(TimeSpan.FromSeconds(duration), cancellationToken: _token);
+                _gameOverImageAnimator.SetBool(_animatorIsDelete, true);
+                break;
+            default:
+                Debug.LogError("Unknown image type");
+                break;
         }
         await UniTask.Delay(TimeSpan.FromSeconds(1.0f), cancellationToken: _token);
     }
@@ -64,6 +76,12 @@ public class ShowImageManager : NetworkBehaviour
                 break;
             case ImageType.ClearImage:
                 _clearImageObj.SetActive(true);
+                break;
+            case ImageType.GameOverImage:
+                _gameOverImageObj.SetActive(true);
+                break;
+            default:
+                Debug.LogError("Unknown image type");
                 break;
         }
     }

@@ -13,7 +13,7 @@ using UnityEngine.SceneManagement;
 
 public class WaitInRoom : NetworkBehaviour, INetworkRunnerCallbacks
 {
-    public static int JoinedPlayerCount = 0;
+    public static int JoinedPlayerCount = 1;
     [SerializeField] private GameObject _battleStartButton;
     [SerializeField] private TextMeshProUGUI _sessionNameText;
     [SerializeField] private GameObject[] _playerPreviewPrefabs;
@@ -84,6 +84,7 @@ public class WaitInRoom : NetworkBehaviour, INetworkRunnerCallbacks
     /// </summary>
     public async void BackHome()
     {
+        Runner.RemoveCallbacks(this);
         await Runner.Shutdown(); 
         await _transitionProgressController.FadeIn();
         SceneManager.LoadScene(_homeSceneName);

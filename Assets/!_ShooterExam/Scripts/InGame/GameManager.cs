@@ -15,37 +15,41 @@ public enum GameState
 {
     Stopping,
     Playing,
-    Clear
+    Clear,
+    GameOver
 }
 
-public class GameManager : NetworkBehaviour, INetworkRunnerCallbacks
+public class GameManager : NetworkBehaviour
 {
     public static GameManager Instance { get; private set; }
     [Networked] public GameState CurrentGameState { get; set; } = GameState.Stopping;
-    
+
     // Hp
-    [Networked, OnChangedRender(nameof(UpdatePlayerHpGauge))] private float AllPlayerHP { get; set; } = 0f;
+    [Networked, OnChangedRender(nameof(UpdatePlayerHpGauge))]
+    private float AllPlayerHP { get; set; } = 0f;
+
     [Networked] private float MaxPlayersHP { get; set; }
-    
+    [SerializeField] private bool _isTestMode = false;
+
     // UI
     [SerializeField] private Slider _playerHpGaugeSlider;
     [SerializeField] private Slider _bossHpGaugeSlider;
     [SerializeField] private TransitionProgressController _transitionProgressController;
     [SerializeField] private ShowImageManager _showImageManager;
-    
+
     // 始まるまでの処理
     [Networked] private int JoinedPlayerCount { get; set; } = 0;
     private int _nowPlayerCount = 0;
     private CancellationToken _token;
     private bool _isTimeOut = false;
-    
+
     // プレイヤーは，これがtrueになってからAddPlayerHpを実行する．
     public bool IsSpawned = false;
-    
+
     // リザルト
     private int _startTick;
-    public static float ClearTime { get; private set; }= 0f;
-    public static float RemainHpPercentage { get; private set; }= 0f;
+    public static float ClearTime { get; private set; } = 0f;
+    public static float RemainHpPercentage { get; private set; } = 0f;
 
     private void Awake()
     {
@@ -66,7 +70,7 @@ public class GameManager : NetworkBehaviour, INetworkRunnerCallbacks
         RemainHpPercentage = 0f;
         IsSpawned = true;
         _transitionProgressController.FadeOut().Forget();
-        
+
         if (!HasStateAuthority)
         {
             return;
@@ -78,8 +82,8 @@ public class GameManager : NetworkBehaviour, INetworkRunnerCallbacks
         StartTimeoutCount().Forget();
         
         await UniTask.WaitUntil(() =>
-                (_nowPlayerCount == WaitInRoom.JoinedPlayerCount || _isTimeOut), cancellationToken: _token);
-            RpcDeleteTransition();
+            (_nowPlayerCount == WaitInRoom.JoinedPlayerCount || _isTimeOut), cancellationToken: _token);
+        RpcDeleteTransition();
         await UniTask.WaitUntil(() => _transitionProgressController.Progress == 0f, cancellationToken: _token);
         await _showImageManager.ShowImage(ImageType.StartImage, 1.5f);
 
@@ -87,6 +91,7 @@ public class GameManager : NetworkBehaviour, INetworkRunnerCallbacks
         CurrentGameState = GameState.Playing;
         _startTick = Runner.Tick;
         AllPlayerHP = MaxPlayersHP;
+
         await UniTask.WaitUntil(() => CurrentGameState == GameState.Clear, cancellationToken: _token);
         
         StageClear().Forget();
@@ -105,33 +110,41 @@ public class GameManager : NetworkBehaviour, INetworkRunnerCallbacks
     {
         _transitionProgressController.FadeOut().Forget();
     }
-    
+
     private async UniTaskVoid StartTimeoutCount()
     {
         await UniTask.Delay(TimeSpan.FromSeconds(10.0f), cancellationToken: _token);
         _isTimeOut = true;
     }
-    
+
     /// <summary>
     /// プレイヤーがスポーン時に実行．全体の最大HPを追加し，何人がバトル開始部屋まで入ってきたかチェックする．
     /// </summary>
     public void AddPlayerHp(float playerHp)
-    { 
+    {
         MaxPlayersHP += playerHp;
         _nowPlayerCount++;
     }
 
     // ネットワークプロパティはホストしか変更できないため，プレイヤー全員がホストに通知する．
     [Rpc(RpcSources.All, RpcTargets.StateAuthority)]
-    public void RpcDecreasePlayerHpGauge(float damage)
+    public async void RpcDecreasePlayerHpGauge(float damage)
     {
         if (HasStateAuthority && AllPlayerHP > 0)
         {
             AllPlayerHP -= damage;
             AllPlayerHP = Math.Max(AllPlayerHP, 0f);
         }
+        
+        if (HasStateAuthority && AllPlayerHP <= 0 && CurrentGameState == GameState.Playing && !_isTestMode)
+        {
+            CurrentGameState = GameState.GameOver;
+            await _showImageManager.ShowImage(ImageType.GameOverImage, 1.5f);
+
+            RpcMoveGameOverScene();
+        }
     }
-    
+
     private void UpdatePlayerHpGauge()
     {
         _playerHpGaugeSlider.value = AllPlayerHP / MaxPlayersHP;
@@ -143,7 +156,7 @@ public class GameManager : NetworkBehaviour, INetworkRunnerCallbacks
         _bossHpGaugeSlider.value = 1.0f;
         _bossHpGaugeSlider.gameObject.SetActive(true);
     }
-    
+
     [Rpc(RpcSources.StateAuthority, RpcTargets.All)]
     public void RpcUpdateBossHpGauge(float maxBossHp, float bossHp)
     {
@@ -151,15 +164,18 @@ public class GameManager : NetworkBehaviour, INetworkRunnerCallbacks
         if (bossHp <= 0)
         {
             _bossHpGaugeSlider.gameObject.SetActive(false);
-        } 
+        }
     }
 
     private async UniTask StageClear()
     {
-        await UniTask.Delay(TimeSpan.FromSeconds(1.0f), cancellationToken: _token);
-        await _showImageManager.ShowImage(ImageType.ClearImage, 2.0f);
-        
-        RpcMoveResultScene(ClearTime);
+        if (CurrentGameState == GameState.Clear)
+        {
+            await UniTask.Delay(TimeSpan.FromSeconds(1.0f), cancellationToken: _token);
+            await _showImageManager.ShowImage(ImageType.ClearImage, 1.5f);
+
+            RpcMoveResultScene(ClearTime);
+        }
     }
 
     [Rpc(RpcSources.StateAuthority, RpcTargets.All)]
@@ -168,32 +184,22 @@ public class GameManager : NetworkBehaviour, INetworkRunnerCallbacks
         ClearTime = clearTime;
         RemainHpPercentage = AllPlayerHP / MaxPlayersHP;
         await _transitionProgressController.FadeIn();
-
+        
         if (HasStateAuthority)
         {
             Runner.LoadScene("Result");
         }
     }
-    
-    void INetworkRunnerCallbacks.OnObjectExitAOI(NetworkRunner runner, NetworkObject obj, PlayerRef player) {}
-    void INetworkRunnerCallbacks.OnObjectEnterAOI(NetworkRunner runner, NetworkObject obj, PlayerRef player) {}
 
-    void INetworkRunnerCallbacks.OnPlayerJoined(NetworkRunner runner, PlayerRef player) {}
-    void INetworkRunnerCallbacks.OnPlayerLeft(NetworkRunner runner, PlayerRef player) {}
-    void INetworkRunnerCallbacks.OnInput(NetworkRunner runner, NetworkInput input) {}
-    void INetworkRunnerCallbacks.OnInputMissing(NetworkRunner runner, PlayerRef player, NetworkInput input) {}
-    void INetworkRunnerCallbacks.OnShutdown(NetworkRunner runner, ShutdownReason shutdownReason) {}
-    void INetworkRunnerCallbacks.OnConnectedToServer(NetworkRunner runner) {}
-    void INetworkRunnerCallbacks.OnDisconnectedFromServer(NetworkRunner runner, NetDisconnectReason reason) {}
-    void INetworkRunnerCallbacks.OnConnectRequest(NetworkRunner runner, NetworkRunnerCallbackArgs.ConnectRequest request, byte[] token) {}
-    void INetworkRunnerCallbacks.OnConnectFailed(NetworkRunner runner, NetAddress remoteAddress, NetConnectFailedReason reason) {}
-    void INetworkRunnerCallbacks.OnUserSimulationMessage(NetworkRunner runner, SimulationMessagePtr message) {}
-    void INetworkRunnerCallbacks.OnSessionListUpdated(NetworkRunner runner, List<SessionInfo> sessionList) {}
-    void INetworkRunnerCallbacks.OnCustomAuthenticationResponse(NetworkRunner runner, Dictionary<string, object> data) {}
-    void INetworkRunnerCallbacks.OnHostMigration(NetworkRunner runner, HostMigrationToken hostMigrationToken) {}
-    void INetworkRunnerCallbacks.OnReliableDataReceived(NetworkRunner runner, PlayerRef player, ReliableKey key, ArraySegment<byte> data) {}
-    void INetworkRunnerCallbacks.OnReliableDataProgress(NetworkRunner runner, PlayerRef player, ReliableKey key, float progress) {}
-    void INetworkRunnerCallbacks.OnSceneLoadDone(NetworkRunner runner) {}
-    void INetworkRunnerCallbacks.OnSceneLoadStart(NetworkRunner runner) {}
+    [Rpc(RpcSources.StateAuthority, RpcTargets.All)]
+    private async void RpcMoveGameOverScene()
+    {
+        await _transitionProgressController.FadeIn();
+
+        if (HasStateAuthority)
+        {
+            Runner.LoadScene("StageSelect");
+        }
+    }
 }
 

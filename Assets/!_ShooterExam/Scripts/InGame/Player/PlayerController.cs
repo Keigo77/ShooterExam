@@ -54,7 +54,7 @@ public class PlayerController : NetworkBehaviour, ICharacter
 
     public void Damage(float damage)
     {
-        if (HasStateAuthority)
+        if (HasStateAuthority && GameManager.Instance.CurrentGameState == GameState.Playing)
         {
             GameManager.Instance.RpcDecreasePlayerHpGauge(damage);
         }
