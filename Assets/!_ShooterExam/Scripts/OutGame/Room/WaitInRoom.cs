@@ -30,6 +30,7 @@ public class WaitInRoom : NetworkBehaviour, INetworkRunnerCallbacks
         = MakeInitializer(new bool[] {true, true, true, true});
     // 1, 2, 3, 4の枠を埋めてるプレイヤーIDを管理する．
     [Networked, Capacity(4)] private NetworkArray<int> _hasEmptyPlayerIds { get; }
+    [Networked, Capacity(4), UnitySerializeField] private NetworkDictionary<int, string> _playerNames => default;
 
     private int _emptyIndex = -1;
     private CancellationToken _token;
@@ -68,7 +69,7 @@ public class WaitInRoom : NetworkBehaviour, INetworkRunnerCallbacks
             }
         }
         
-        RpcUpdateEmpty(_emptyIndex, false, Runner.LocalPlayer.PlayerId);
+        RpcUpdateEmpty(_emptyIndex, false, Runner.LocalPlayer.PlayerId, PlayerInfo.PlayerName);
         PlayerInfo.PlayerColor = (PlayerColorEnum)(_emptyIndex + 1);
         
         // プレビュー(自分のジェット機の色と名前)を表示する
@@ -96,8 +97,9 @@ public class WaitInRoom : NetworkBehaviour, INetworkRunnerCallbacks
     /// 自分が参加したことをホストに通知する．
     /// </summary>
     [Rpc(RpcSources.All, RpcTargets.StateAuthority)]
-    private void RpcUpdateEmpty(int index, bool exist, int playerId)
+    private void RpcUpdateEmpty(int index, bool exist, int playerId, string playerName)
     {
+        _playerNames.Add(playerId, playerName);
         _hasEmpties.Set(index, exist);
         _hasEmptyPlayerIds.Set(index, playerId);
     }
@@ -112,9 +114,18 @@ public class WaitInRoom : NetworkBehaviour, INetworkRunnerCallbacks
         if (HasStateAuthority)
         {
             Runner.SessionInfo.IsVisible = false;
+            await GetPlayerNames();
             JoinedPlayerCount = Runner.SessionInfo.PlayerCount;
             await UniTask.Delay(TimeSpan.FromSeconds(2.0f), cancellationToken: _token);
             Runner.LoadScene(_nextSceneName);
+        }
+    }
+
+    private async UniTask GetPlayerNames()
+    {
+        foreach (var player in _playerNames)
+        {
+            ErrorSingleton.Instance.PlayerNames.Add(player.Key, player.Value);
         }
     }
     
@@ -123,18 +134,20 @@ public class WaitInRoom : NetworkBehaviour, INetworkRunnerCallbacks
         // 退出したプレイヤーがホストなら，全員が退出する
         if (player.PlayerId == 1)
         {
-            Debug.Log("ホストが退出");
             SceneManager.LoadScene("Home");
             ErrorSingleton.Instance.ShowErrorPanel(ErrorType.HostDisconnected);
             return;
         }
-        
-        Debug.Log("ホスト以外が退出");
          
-        // ホストでないなら，そのプレイヤーがいた枠に空きを作る．
+        // ホストでないかつ，マッチングルームシーンなら，そのプレイヤーがいた枠に空きを作る．
         if (SceneManager.GetActiveScene().name == "MatchingRoom")
         {
             _hasEmpties.Set(_hasEmptyPlayerIds.IndexOf(player.PlayerId), true);
+            _playerNames.Remove(player.PlayerId);
+        }
+        else
+        {
+            ErrorSingleton.Instance.ShowExitPlayerName(player.PlayerId).Forget();
         }
     }
     
@@ -143,7 +156,7 @@ public class WaitInRoom : NetworkBehaviour, INetworkRunnerCallbacks
 
     async void INetworkRunnerCallbacks.OnPlayerJoined(NetworkRunner runner, PlayerRef player)
     {
-        Debug.Log("プレイヤー入室");
+        
         if (HasStateAuthority)
         {
             _startButton.interactable = false;

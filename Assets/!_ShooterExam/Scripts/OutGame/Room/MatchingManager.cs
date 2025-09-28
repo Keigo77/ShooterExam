@@ -97,12 +97,12 @@ public class MatchingManager : MonoBehaviour
     /// </summary>
     private void CheckResult(NetworkRunner runner, StartGameResult result)
     {
+        _loadingPanel.SetActive(false);
         if (!result.Ok)
         {
             ErrorSingleton.Instance.ShowErrorPanel(ErrorType.NetworkConnectFailed);
             _transitionProgressController.FadeOut().Forget();
         }
-        _loadingPanel.SetActive(false);
     }
     
 }

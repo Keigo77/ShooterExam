@@ -15,6 +15,7 @@ public class ResultManager : NetworkBehaviour
     [SerializeField] private TextMeshProUGUI _remainHpText;
     [SerializeField] private GameObject _retryButton;
     [SerializeField] private GameObject _returnStageSelectButton;
+    [SerializeField] private GameObject _clientTextObj;
     
     // 星
     [SerializeField] private StageRankBasisSO _stageRankDatas;
@@ -26,6 +27,9 @@ public class ResultManager : NetworkBehaviour
         _transitionProgressController.Progress = 1.0f;
     }
 
+    /// <summary>
+    /// ホストはリトライボタンとステージセレクトボタンを表示．クライアントはテキストを表示．
+    /// </summary>
     public override void Spawned()
     {
         if (HasStateAuthority)
@@ -40,6 +44,9 @@ public class ResultManager : NetworkBehaviour
         ShowResultDetail();
     }
 
+    /// <summary>
+    /// ステージ名・クリアタイム・残ったHPを表示し，最終スコアを元にスターを表示する．
+    /// </summary>
     private void ShowResultDetail()
     {
         _stageNameText.text = $"Stage{_stageNumber}";
@@ -47,9 +54,12 @@ public class ResultManager : NetworkBehaviour
         _clearTimeText.text = $"{clearTime / 60:D2} : {clearTime % 60:D2}";
         _remainHpText.text = $"{(int)GameManager.RemainHpPercentage}%";
         
-        ShowRank(CalucScore(clearTime, (int)GameManager.RemainHpPercentage));
+        ShowRank(CalcScore(clearTime, (int)GameManager.RemainHpPercentage));
     }
-
+    
+    /// <summary>
+    /// スコアに応じて，スターの数を決め，表示させる．
+    /// </summary>
     private void ShowRank(int score)
     {
         int starCount = 0;
@@ -73,7 +83,12 @@ public class ResultManager : NetworkBehaviour
         }
     }
 
-    private int CalucScore(int clearTime, int remainHp)
+    /// <summary>
+    /// クリアタイム80%，残量HPを20%，計100点で評価する．
+    /// クリアタイムは，80点満点のクリアタイムと，0点のクリアタイムをScriptableObjectから取得し，線形的に減点されるように計算．
+    /// HPスコアは，残量HPが60%以上なら20点満点．60%未満は，0%を0点として線形的に減点．
+    /// </summary>
+    private int CalcScore(int clearTime, int remainHp)
     {
         int score = 0;
         int clearTimeScore = 0;
@@ -84,7 +99,7 @@ public class ResultManager : NetworkBehaviour
 
         if (clearTime <= maxClearTimeScore)
         {
-            clearTimeScore = 80;
+            clearTimeScore = 80;    // 満点
         }
         else if (clearTime <= minClearTimeScore)
         {
@@ -93,7 +108,7 @@ public class ResultManager : NetworkBehaviour
         }
         else
         {
-            clearTimeScore = 0;
+            clearTimeScore = 0;     // 最低クリア時間より遅ければ，0点．
         }
 
         if (remainHp >= 60)
@@ -109,7 +124,7 @@ public class ResultManager : NetworkBehaviour
         Debug.Log($"クリアスコア{clearTimeScore}，HPスコア{remainHpScore}，計{clearTimeScore + remainHpScore}");
         return score = clearTimeScore + remainHpScore;
     }
-
+    
     [Rpc(RpcSources.StateAuthority, RpcTargets.All)]
     public async void RpcRetryButtonClicked()
     {
