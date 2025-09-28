@@ -110,15 +110,23 @@ public class ResultManager : NetworkBehaviour
         return score = clearTimeScore + remainHpScore;
     }
 
-    public async void RetryButtonClicked()
+    [Rpc(RpcSources.StateAuthority, RpcTargets.All)]
+    public async void RpcRetryButtonClicked()
     {
         await _transitionProgressController.FadeIn();
-        Runner.LoadScene($"Stage{_stageNumber}");
+        if (HasStateAuthority)
+        {
+            Runner.LoadScene($"Stage{_stageNumber}");
+        }
     }
     
-    public async void StageSelectButtonClicked()
+    [Rpc(RpcSources.StateAuthority, RpcTargets.All)]
+    public async void RpcStageSelectButtonClicked()
     {
         await _transitionProgressController.FadeIn();
-        Runner.LoadScene("StageSelect");
+        if (HasStateAuthority)
+        {
+            Runner.LoadScene("StageSelect");
+        }
     }
 }

@@ -2,6 +2,7 @@ using Cysharp.Threading.Tasks;
 using Fusion;
 using TMPro;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class StageSelectManager : NetworkBehaviour
 {
@@ -35,11 +36,18 @@ public class StageSelectManager : NetworkBehaviour
     public async void RpcSelectStage(int stageNumber)
     {
         StageNumber = stageNumber;
-        Debug.Log(StageNumber);
         await _transitionProgressController.FadeIn();
         if (HasStateAuthority)
         {
+            WaitInRoom.JoinedPlayerCount = Runner.SessionInfo.PlayerCount;
             Runner.LoadScene($"Stage{stageNumber}");
         }
+    }
+
+    public async void ExitButtonClicked()
+    {
+        await Runner.Shutdown();
+        await _transitionProgressController.FadeIn();
+        SceneManager.LoadScene("Home");
     }
 }

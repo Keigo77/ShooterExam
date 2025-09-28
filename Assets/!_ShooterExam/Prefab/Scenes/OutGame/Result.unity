@@ -257,7 +257,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8890709409475363035, guid: 8d142b6aeaebfd04ab0af27e99f8de9d, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
-      value: StageSelectButtonClicked
+      value: RpcStageSelectButtonClicked
       objectReference: {fileID: 0}
     - target: {fileID: 8890709409475363035, guid: 8d142b6aeaebfd04ab0af27e99f8de9d, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
@@ -786,7 +786,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8890709409475363035, guid: 8c9e814b00ddbfc45ad1149871a25f19, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
-      value: RetryButtonClicked
+      value: RpcRetryButtonClicked
       objectReference: {fileID: 0}
     - target: {fileID: 8890709409475363035, guid: 8c9e814b00ddbfc45ad1149871a25f19, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName

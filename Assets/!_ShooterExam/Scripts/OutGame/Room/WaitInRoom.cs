@@ -10,6 +10,7 @@ using Unity.VisualScripting;
 using UnityEditor.PackageManager;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 
 public class WaitInRoom : NetworkBehaviour, INetworkRunnerCallbacks
 {
@@ -19,6 +20,7 @@ public class WaitInRoom : NetworkBehaviour, INetworkRunnerCallbacks
     [SerializeField] private GameObject[] _playerPreviewPrefabs;
     [SerializeField] private string _homeSceneName;
     [SerializeField] private string _nextSceneName;
+    [SerializeField] private Button _startButton;
     
     [SerializeField] private TransitionProgressController _transitionProgressController;
     [SerializeField] private AudioClip _bgmClip;
@@ -137,40 +139,54 @@ public class WaitInRoom : NetworkBehaviour, INetworkRunnerCallbacks
     }
     
     void INetworkRunnerCallbacks.OnObjectExitAOI(NetworkRunner runner, NetworkObject obj, PlayerRef player) {}
-     void INetworkRunnerCallbacks.OnObjectEnterAOI(NetworkRunner runner, NetworkObject obj, PlayerRef player) {}
-     void INetworkRunnerCallbacks.OnPlayerJoined(NetworkRunner runner, PlayerRef player) {}
-     void INetworkRunnerCallbacks.OnInput(NetworkRunner runner, NetworkInput input) {}
-     void INetworkRunnerCallbacks.OnInputMissing(NetworkRunner runner, PlayerRef player, NetworkInput input) {}
+    void INetworkRunnerCallbacks.OnObjectEnterAOI(NetworkRunner runner, NetworkObject obj, PlayerRef player) {}
 
-     void INetworkRunnerCallbacks.OnShutdown(NetworkRunner runner, ShutdownReason shutdownReason)
-     {
-         ErrorSingleton.Instance.ShowErrorPanel(ErrorType.NetworkConnectFailed);
-         SceneManager.LoadScene("Home");
+    async void INetworkRunnerCallbacks.OnPlayerJoined(NetworkRunner runner, PlayerRef player)
+    {
+        Debug.Log("プレイヤー入室");
+        if (HasStateAuthority)
+        {
+            _startButton.interactable = false;
+            await UniTask.Delay(TimeSpan.FromSeconds(1.5f), cancellationToken: _token);
+            _startButton.interactable = true;
+        }
+    }
+    void INetworkRunnerCallbacks.OnInput(NetworkRunner runner, NetworkInput input) {}
+    void INetworkRunnerCallbacks.OnInputMissing(NetworkRunner runner, PlayerRef player, NetworkInput input) {}
+
+    void INetworkRunnerCallbacks.OnShutdown(NetworkRunner runner, ShutdownReason shutdownReason)
+    {
+         if (shutdownReason != ShutdownReason.Ok)
+         {
+             ErrorSingleton.Instance.ShowErrorPanel(ErrorType.NetworkConnectFailed);
+             SceneManager.LoadScene("Home");
+         }
+         
          Debug.Log($"OnShutdown．{shutdownReason}");
-     }
-     void INetworkRunnerCallbacks.OnConnectedToServer(NetworkRunner runner) {}
+    }
+    void INetworkRunnerCallbacks.OnConnectedToServer(NetworkRunner runner) {}
 
-     void INetworkRunnerCallbacks.OnDisconnectedFromServer(NetworkRunner runner, NetDisconnectReason reason)
-     {
+    void INetworkRunnerCallbacks.OnDisconnectedFromServer(NetworkRunner runner, NetDisconnectReason reason)
+    {
          ErrorSingleton.Instance.ShowErrorPanel(ErrorType.DisconnectedFromServer);
          SceneManager.LoadScene("Home");
          Debug.Log($"OnDisconnectedFromServer．{reason}");
-     }
-     void INetworkRunnerCallbacks.OnConnectRequest(NetworkRunner runner, NetworkRunnerCallbackArgs.ConnectRequest request, byte[] token) {}
+    }
+    void INetworkRunnerCallbacks.OnConnectRequest(NetworkRunner runner, NetworkRunnerCallbackArgs.ConnectRequest request, byte[] token) {}
 
-     void INetworkRunnerCallbacks.OnConnectFailed(NetworkRunner runner, NetAddress remoteAddress,
+    void INetworkRunnerCallbacks.OnConnectFailed(NetworkRunner runner, NetAddress remoteAddress,
          NetConnectFailedReason reason)
-     {
+    {
          ErrorSingleton.Instance.ShowErrorPanel(ErrorType.NetworkConnectFailed);
          SceneManager.LoadScene("Home");
          Debug.Log($"OnConnectFailed．{reason}");
-     }
-     void INetworkRunnerCallbacks.OnUserSimulationMessage(NetworkRunner runner, SimulationMessagePtr message) {}
-     void INetworkRunnerCallbacks.OnSessionListUpdated(NetworkRunner runner, List<SessionInfo> sessionList) {}
-     void INetworkRunnerCallbacks.OnCustomAuthenticationResponse(NetworkRunner runner, Dictionary<string, object> data) {}
-     void INetworkRunnerCallbacks.OnHostMigration(NetworkRunner runner, HostMigrationToken hostMigrationToken) {}
-     void INetworkRunnerCallbacks.OnReliableDataReceived(NetworkRunner runner, PlayerRef player, ReliableKey key, ArraySegment<byte> data) {}
-     void INetworkRunnerCallbacks.OnReliableDataProgress(NetworkRunner runner, PlayerRef player, ReliableKey key, float progress) {}
-     void INetworkRunnerCallbacks.OnSceneLoadDone(NetworkRunner runner) {}
-     void INetworkRunnerCallbacks.OnSceneLoadStart(NetworkRunner runner) {}
+    }
+    void INetworkRunnerCallbacks.OnUserSimulationMessage(NetworkRunner runner, SimulationMessagePtr message) {}
+    void INetworkRunnerCallbacks.OnSessionListUpdated(NetworkRunner runner, List<SessionInfo> sessionList) {}
+    void INetworkRunnerCallbacks.OnCustomAuthenticationResponse(NetworkRunner runner, Dictionary<string, object> data) {}
+    void INetworkRunnerCallbacks.OnHostMigration(NetworkRunner runner, HostMigrationToken hostMigrationToken) {}
+    void INetworkRunnerCallbacks.OnReliableDataReceived(NetworkRunner runner, PlayerRef player, ReliableKey key, ArraySegment<byte> data) {}
+    void INetworkRunnerCallbacks.OnReliableDataProgress(NetworkRunner runner, PlayerRef player, ReliableKey key, float progress) {}
+    void INetworkRunnerCallbacks.OnSceneLoadDone(NetworkRunner runner) {}
+    void INetworkRunnerCallbacks.OnSceneLoadStart(NetworkRunner runner) {}
 }

@@ -258,9 +258,7 @@ GameObject:
   m_Component:
   - component: {fileID: 3005067202899516348}
   - component: {fileID: 6251997583045122450}
-  - component: {fileID: 7644993262302970713}
   - component: {fileID: 4012298972810677766}
-  - component: {fileID: 8573951722104227367}
   m_Layer: 0
   m_Name: GameManager
   m_TagString: Untagged
@@ -301,55 +299,8 @@ MonoBehaviour:
   Flags: 131073
   NestedObjects: []
   NetworkedBehaviours:
-  - {fileID: 7644993262302970713}
   - {fileID: 4012298972810677766}
   ForceRemoteRenderTimeframe: 0
---- !u!114 &7644993262302970713
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3282298811039112028}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c0416c72643424fc4838bef7cca518b6, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _waveDataSO: {fileID: 11400000, guid: b68cfbac1a2d0448db006cfccd302e56, type: 2}
-  _spawnPosObj:
-  - {fileID: 5634903689393831388}
-  - {fileID: 386842469647384519}
-  - {fileID: 7539804965777030591}
-  - {fileID: 7917932473458839012}
-  - {fileID: 9127862010399598719}
-  - {fileID: 8241787465034108267}
-  - {fileID: 6812997662771524776}
-  - {fileID: 631799632107227823}
-  - {fileID: 794452501408577962}
-  - {fileID: 4841987026840010217}
-  - {fileID: 7362776646427318528}
-  - {fileID: 652969784111421239}
-  - {fileID: 8569932464833481262}
-  - {fileID: 4482035786335908767}
-  - {fileID: 5274944264467898478}
-  - {fileID: 1531708455126019823}
-  - {fileID: 6112202856991321278}
-  - {fileID: 2975255320200400632}
-  - {fileID: 4070396951189989519}
-  - {fileID: 8148828475518287279}
-  - {fileID: 4999495773583010924}
-  - {fileID: 8044707457606325083}
-  - {fileID: 7377765528700867700}
-  - {fileID: 7490073680629930794}
-  - {fileID: 7823908023091721751}
-  - {fileID: 4114508176023680792}
-  - {fileID: 6923880497062631309}
-  - {fileID: 1094717230340704721}
-  - {fileID: 715323682765241460}
-  - {fileID: 7247654124161028412}
-  _howSpawnDistance: 5
-  _gameManager: {fileID: 4012298972810677766}
 --- !u!114 &4012298972810677766
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -362,25 +313,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 47b5144786dbb43bc9b142dbc9688e7b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _AllPlayerHP: 0
-  _BossHP: 0
-  _playerHealthBar: {fileID: 0}
-  _bossHealthBar: {fileID: 0}
-  _preText: {fileID: 0}
---- !u!114 &8573951722104227367
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3282298811039112028}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 1541381998, guid: e725a070cec140c4caffb81624c8c787, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  Guid:
-    RawGuidValue: 305c934f8a5294902a7a03cf13d15b3e
+  _CurrentGameState: 0
+  _isTestMode: 0
+  _playerHpGaugeSlider: {fileID: 0}
+  _bossHpGaugeSlider: {fileID: 0}
+  _transitionProgressController: {fileID: 0}
+  _showImageManager: {fileID: 0}
+  IsSpawned: 0
 --- !u!1 &4070396951189989519
 GameObject:
   m_ObjectHideFlags: 0
