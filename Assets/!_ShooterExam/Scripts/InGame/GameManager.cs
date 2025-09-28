@@ -182,7 +182,8 @@ public class GameManager : NetworkBehaviour
     private async void RpcMoveResultScene(float clearTime)
     {
         ClearTime = clearTime;
-        RemainHpPercentage = AllPlayerHP / MaxPlayersHP;
+        RemainHpPercentage = AllPlayerHP / MaxPlayersHP * 100f;
+        Debug.Log($"{AllPlayerHP}と{MaxPlayersHP}と{RemainHpPercentage}");
         await _transitionProgressController.FadeIn();
         
         if (HasStateAuthority)

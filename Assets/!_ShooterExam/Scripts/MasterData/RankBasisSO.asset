@@ -13,5 +13,5 @@ MonoBehaviour:
   m_Name: RankBasisSO
   m_EditorClassIdentifier: 
   StageRankDatas:
-  - MaxPointClearTime: 40
-    MinPointClearTime: 80
+  - MaxPointClearTime: 10
+    MinPointClearTime: 25

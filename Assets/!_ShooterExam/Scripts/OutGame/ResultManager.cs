@@ -45,9 +45,9 @@ public class ResultManager : NetworkBehaviour
         _stageNameText.text = $"Stage{_stageNumber}";
         int clearTime = (int)Math.Floor(GameManager.ClearTime);
         _clearTimeText.text = $"{clearTime / 60:D2} : {clearTime % 60:D2}";
-        _remainHpText.text = $"{(int)GameManager.RemainHpPercentage * 100}%";
+        _remainHpText.text = $"{(int)GameManager.RemainHpPercentage}%";
         
-        ShowRank(CalucScore(clearTime, (int)GameManager.RemainHpPercentage * 100));
+        ShowRank(CalucScore(clearTime, (int)GameManager.RemainHpPercentage));
     }
 
     private void ShowRank(int score)
@@ -103,7 +103,7 @@ public class ResultManager : NetworkBehaviour
         else
         {
             float rate = remainHp / 60f;
-            remainHpScore = (int)Math.Ceiling(remainHpScore * rate);
+            remainHpScore = (int)Math.Ceiling(20 * rate);
         }
         
         Debug.Log($"クリアスコア{clearTimeScore}，HPスコア{remainHpScore}，計{clearTimeScore + remainHpScore}");

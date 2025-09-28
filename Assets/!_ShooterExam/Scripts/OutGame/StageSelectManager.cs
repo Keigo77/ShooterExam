@@ -5,7 +5,7 @@ using UnityEngine;
 
 public class StageSelectManager : NetworkBehaviour
 {
-    public static int StageNumber;
+    public static int StageNumber = 1;
     [SerializeField] private TransitionProgressController _transitionProgressController;
     [SerializeField] private AudioClip _stageSelectBgm;
     [SerializeField] private TextMeshProUGUI _waitText;
@@ -35,6 +35,7 @@ public class StageSelectManager : NetworkBehaviour
     public async void RpcSelectStage(int stageNumber)
     {
         StageNumber = stageNumber;
+        Debug.Log(StageNumber);
         await _transitionProgressController.FadeIn();
         if (HasStateAuthority)
         {
