@@ -109,23 +109,21 @@ public class WaitInRoom : NetworkBehaviour, INetworkRunnerCallbacks
     public async void RpcMoveScene()
     {
         await _transitionProgressController.FadeIn();
-        await GetPlayerNames();
+        GetPlayerNames();
         if (HasStateAuthority)
         {
             Runner.SessionInfo.IsVisible = false;
             JoinedPlayerCount = Runner.SessionInfo.PlayerCount;
             await UniTask.Delay(TimeSpan.FromSeconds(2.0f), cancellationToken: _token);
-            Runner.LoadScene(_nextSceneName);
+            await Runner.LoadScene(_nextSceneName);
         }
     }
 
-    private async UniTask GetPlayerNames()
+    private void GetPlayerNames()
     {
         foreach (var player in _playerNames)
         {
             ErrorSingleton.Instance.PlayerNames.Add(player.Key, player.Value);
-            Debug.Log(player.Key);
-            Debug.Log(player.Value);
         }
     }
     

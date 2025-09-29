@@ -34,7 +34,7 @@ public class StopButton : NetworkBehaviour
     public async void RpcStageSelectButtonClicked()
     {
         await _transitionProgressController.FadeIn();
-        Runner.LoadScene("StageSelect");
+        await Runner.LoadScene("StageSelect");
     }
     
 }

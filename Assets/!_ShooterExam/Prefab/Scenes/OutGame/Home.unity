@@ -1248,6 +1248,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _errorPanel: {fileID: 2041437419}
   _errorMessageText: {fileID: 1233043266}
+  _playerLeftSe: {fileID: 8300000, guid: 8e8309dde5f6645d5a5856b55bb580e1, type: 3}
   _leftPlayerNameText: {fileID: 1743348507}
 --- !u!1 &1101326010
 GameObject:

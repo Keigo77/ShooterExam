@@ -40,7 +40,7 @@ public class StageSelectManager : NetworkBehaviour
         if (HasStateAuthority)
         {
             WaitInRoom.JoinedPlayerCount = Runner.SessionInfo.PlayerCount;
-            Runner.LoadScene($"Stage{stageNumber}");
+            await Runner.LoadScene($"Stage{stageNumber}");
         }
     }
 

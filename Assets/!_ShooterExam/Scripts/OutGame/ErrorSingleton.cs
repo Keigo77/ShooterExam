@@ -21,6 +21,7 @@ public class ErrorSingleton : MonoBehaviour
     [SerializeField] private TextMeshProUGUI _errorMessageText;
     
     // 退出したプレイヤーの名前を表示する
+    [SerializeField] private AudioClip _playerLeftSe;
     [SerializeField] private TextMeshProUGUI _leftPlayerNameText;
     public Dictionary<int, string> PlayerNames = new Dictionary<int, string>();
     public ReactiveCollection<string> _leftPlayerNames = new ReactiveCollection<string>();
@@ -72,11 +73,10 @@ public class ErrorSingleton : MonoBehaviour
     
     public async UniTaskVoid UpdateLeftPlayerName(int playerId)
     {
-        Debug.Log(PlayerNames[playerId]);
+        AudioSingleton.Instance.PlaySe(_playerLeftSe);
         _leftPlayerNames.Add(PlayerNames[playerId]);
         await UniTask.Delay(TimeSpan.FromSeconds(3.0f), cancellationToken: _token);
         _leftPlayerNames.Remove(PlayerNames[playerId]);
-        Debug.Log("削除");
     }
 
     private void ShowLeftPlayer()
