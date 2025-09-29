@@ -866,7 +866,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8092951486683815489, guid: f9fa53e136334421f8ad4eb4bf27f703, type: 3}
       propertyPath: m_Name
-      value: BackButton
+      value: ExitButton
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
