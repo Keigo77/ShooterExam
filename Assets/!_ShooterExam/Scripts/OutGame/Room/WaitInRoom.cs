@@ -2,12 +2,9 @@ using System;
 using System.Collections.Generic;
 using System.Threading;
 using Cysharp.Threading.Tasks;
-using DG.Tweening;
 using Fusion;
 using Fusion.Sockets;
 using TMPro;
-using Unity.VisualScripting;
-using UnityEditor.PackageManager;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
@@ -38,6 +35,7 @@ public class WaitInRoom : NetworkBehaviour, INetworkRunnerCallbacks
     private void Awake()
     {
         _transitionProgressController.Progress = 1f;
+        ErrorSingleton.Instance.PlayerNames = new();
     }
 
     public override void Spawned()
@@ -58,7 +56,7 @@ public class WaitInRoom : NetworkBehaviour, INetworkRunnerCallbacks
             _token = this.GetCancellationTokenOnDestroy();
             _battleStartButton.SetActive(true);
         }
-        
+
         // 各色のプレイヤーを，手前からスポーンさせる．
         for (int i = 0; i < _hasEmpties.Length; i++)
         {
@@ -111,10 +109,10 @@ public class WaitInRoom : NetworkBehaviour, INetworkRunnerCallbacks
     public async void RpcMoveScene()
     {
         await _transitionProgressController.FadeIn();
+        await GetPlayerNames();
         if (HasStateAuthority)
         {
             Runner.SessionInfo.IsVisible = false;
-            await GetPlayerNames();
             JoinedPlayerCount = Runner.SessionInfo.PlayerCount;
             await UniTask.Delay(TimeSpan.FromSeconds(2.0f), cancellationToken: _token);
             Runner.LoadScene(_nextSceneName);
@@ -126,6 +124,8 @@ public class WaitInRoom : NetworkBehaviour, INetworkRunnerCallbacks
         foreach (var player in _playerNames)
         {
             ErrorSingleton.Instance.PlayerNames.Add(player.Key, player.Value);
+            Debug.Log(player.Key);
+            Debug.Log(player.Value);
         }
     }
     
@@ -134,6 +134,7 @@ public class WaitInRoom : NetworkBehaviour, INetworkRunnerCallbacks
         // 退出したプレイヤーがホストなら，全員が退出する
         if (player.PlayerId == 1)
         {
+            Runner.Shutdown();
             SceneManager.LoadScene("Home");
             ErrorSingleton.Instance.ShowErrorPanel(ErrorType.HostDisconnected);
             return;
@@ -147,12 +148,9 @@ public class WaitInRoom : NetworkBehaviour, INetworkRunnerCallbacks
         }
         else
         {
-            ErrorSingleton.Instance.ShowExitPlayerName(player.PlayerId).Forget();
+            ErrorSingleton.Instance.UpdateLeftPlayerName(player.PlayerId);
         }
     }
-    
-    void INetworkRunnerCallbacks.OnObjectExitAOI(NetworkRunner runner, NetworkObject obj, PlayerRef player) {}
-    void INetworkRunnerCallbacks.OnObjectEnterAOI(NetworkRunner runner, NetworkObject obj, PlayerRef player) {}
 
     async void INetworkRunnerCallbacks.OnPlayerJoined(NetworkRunner runner, PlayerRef player)
     {
@@ -164,36 +162,39 @@ public class WaitInRoom : NetworkBehaviour, INetworkRunnerCallbacks
             _startButton.interactable = true;
         }
     }
-    void INetworkRunnerCallbacks.OnInput(NetworkRunner runner, NetworkInput input) {}
-    void INetworkRunnerCallbacks.OnInputMissing(NetworkRunner runner, PlayerRef player, NetworkInput input) {}
-
+    
     void INetworkRunnerCallbacks.OnShutdown(NetworkRunner runner, ShutdownReason shutdownReason)
     {
-         if (shutdownReason != ShutdownReason.Ok)
-         {
-             ErrorSingleton.Instance.ShowErrorPanel(ErrorType.NetworkConnectFailed);
-             SceneManager.LoadScene("Home");
-         }
+        if (shutdownReason != ShutdownReason.Ok)
+        {
+            ErrorSingleton.Instance.ShowErrorPanel(ErrorType.NetworkConnectFailed);
+            SceneManager.LoadScene("Home");
+        }
          
-         Debug.Log($"OnShutdown．{shutdownReason}");
+        Debug.Log($"OnShutdown．{shutdownReason}");
     }
-    void INetworkRunnerCallbacks.OnConnectedToServer(NetworkRunner runner) {}
-
+    
     void INetworkRunnerCallbacks.OnDisconnectedFromServer(NetworkRunner runner, NetDisconnectReason reason)
     {
-         ErrorSingleton.Instance.ShowErrorPanel(ErrorType.DisconnectedFromServer);
-         SceneManager.LoadScene("Home");
-         Debug.Log($"OnDisconnectedFromServer．{reason}");
+        ErrorSingleton.Instance.ShowErrorPanel(ErrorType.DisconnectedFromServer);
+        SceneManager.LoadScene("Home");
+        Debug.Log($"OnDisconnectedFromServer．{reason}");
     }
-    void INetworkRunnerCallbacks.OnConnectRequest(NetworkRunner runner, NetworkRunnerCallbackArgs.ConnectRequest request, byte[] token) {}
-
+    
     void INetworkRunnerCallbacks.OnConnectFailed(NetworkRunner runner, NetAddress remoteAddress,
-         NetConnectFailedReason reason)
+        NetConnectFailedReason reason)
     {
-         ErrorSingleton.Instance.ShowErrorPanel(ErrorType.NetworkConnectFailed);
-         SceneManager.LoadScene("Home");
-         Debug.Log($"OnConnectFailed．{reason}");
+        ErrorSingleton.Instance.ShowErrorPanel(ErrorType.NetworkConnectFailed);
+        SceneManager.LoadScene("Home");
+        Debug.Log($"OnConnectFailed．{reason}");
     }
+    
+    void INetworkRunnerCallbacks.OnObjectExitAOI(NetworkRunner runner, NetworkObject obj, PlayerRef player) {}
+    void INetworkRunnerCallbacks.OnObjectEnterAOI(NetworkRunner runner, NetworkObject obj, PlayerRef player) {}
+    void INetworkRunnerCallbacks.OnInput(NetworkRunner runner, NetworkInput input) {}
+    void INetworkRunnerCallbacks.OnInputMissing(NetworkRunner runner, PlayerRef player, NetworkInput input) {}
+    void INetworkRunnerCallbacks.OnConnectedToServer(NetworkRunner runner) {}
+    void INetworkRunnerCallbacks.OnConnectRequest(NetworkRunner runner, NetworkRunnerCallbackArgs.ConnectRequest request, byte[] token) {}
     void INetworkRunnerCallbacks.OnUserSimulationMessage(NetworkRunner runner, SimulationMessagePtr message) {}
     void INetworkRunnerCallbacks.OnSessionListUpdated(NetworkRunner runner, List<SessionInfo> sessionList) {}
     void INetworkRunnerCallbacks.OnCustomAuthenticationResponse(NetworkRunner runner, Dictionary<string, object> data) {}

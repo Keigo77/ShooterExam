@@ -3,7 +3,9 @@ using System.Collections.Generic;
 using System.Threading;
 using Cysharp.Threading.Tasks;
 using TMPro;
+using UniRx;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 public enum ErrorType
 {
@@ -19,8 +21,9 @@ public class ErrorSingleton : MonoBehaviour
     [SerializeField] private TextMeshProUGUI _errorMessageText;
     
     // 退出したプレイヤーの名前を表示する
-    [SerializeField] private TextMeshProUGUI _exitPlayerNameText;
+    [SerializeField] private TextMeshProUGUI _leftPlayerNameText;
     public Dictionary<int, string> PlayerNames = new Dictionary<int, string>();
+    public ReactiveCollection<string> _leftPlayerNames = new ReactiveCollection<string>();
     private CancellationToken _token;
     
 
@@ -36,6 +39,12 @@ public class ErrorSingleton : MonoBehaviour
         {
             Destroy(this.gameObject);
         }
+
+        _leftPlayerNames.ObserveAdd().Subscribe(
+            _ => ShowLeftPlayer());
+        
+        _leftPlayerNames.ObserveRemove().Subscribe(
+            _ => ShowLeftPlayer());
     }
 
     public void ShowErrorPanel(ErrorType errorType)
@@ -61,12 +70,21 @@ public class ErrorSingleton : MonoBehaviour
         _errorPanel.SetActive(false);
     }
     
-    public async UniTask ShowExitPlayerName(int playerId)
+    public async UniTaskVoid UpdateLeftPlayerName(int playerId)
     {
-        _exitPlayerNameText.text = $"{PlayerNames[playerId]} has left";
-        _exitPlayerNameText.gameObject.SetActive(true);
-        PlayerNames.Remove(playerId);
+        Debug.Log(PlayerNames[playerId]);
+        _leftPlayerNames.Add(PlayerNames[playerId]);
         await UniTask.Delay(TimeSpan.FromSeconds(3.0f), cancellationToken: _token);
-        _exitPlayerNameText.gameObject.SetActive(false);
+        _leftPlayerNames.Remove(PlayerNames[playerId]);
+        Debug.Log("削除");
+    }
+
+    private void ShowLeftPlayer()
+    {
+        _leftPlayerNameText.text = "";
+        foreach (var leftPlayerName in _leftPlayerNames)
+        {
+            _leftPlayerNameText.text += $"{leftPlayerName} has left\n";
+        }
     }
 }
