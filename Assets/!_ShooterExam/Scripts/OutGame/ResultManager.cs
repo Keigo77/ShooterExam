@@ -37,6 +37,10 @@ public class ResultManager : NetworkBehaviour
             _retryButton.SetActive(true);
             _returnStageSelectButton.SetActive(true);
         }
+        else
+        {
+            _clientTextObj.SetActive(true);
+        }
         
         AudioSingleton.Instance.PlayBgm(_resultBgm);
         _transitionProgressController.FadeOut().Forget();
