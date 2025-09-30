@@ -10,7 +10,7 @@ public class Witch : AttackerSmallEnemyBase, ICharacter
     {
         if (HasStateAuthority)
         {
-            this.transform.localPosition = SpawnPos;
+            MoveInScreen().Forget();
             IsSpawned = true;
             AttackLoop().Forget();
         }

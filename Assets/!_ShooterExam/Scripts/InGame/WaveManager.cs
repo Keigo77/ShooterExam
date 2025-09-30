@@ -37,7 +37,7 @@ public class WaveManager : NetworkBehaviour
     
     private async UniTask StartWaveLoop()
     {
-        while (_currentWave < _maxWave)
+        while (_currentWave < _maxWave && GameManager.Instance.CurrentGameState != GameState.GameOver)
         {
             Debug.Log($"ウェーブ{_currentWave}の開始");
             await UpdateWave(_currentWave);
@@ -73,10 +73,10 @@ public class WaveManager : NetworkBehaviour
             enemySpawnPos.x += _howSpawnDistance;
             Runner.Spawn(enemyPrefab, enemySpawnPos, onBeforeSpawned: (_, enemyObj) =>
             {
-                var enemy = enemyObj.GetComponent<EnemyBase>();
+                var enemyBase = enemyObj.GetComponent<EnemyBase>();
                 // 定位置のpositionを敵に伝える
-                enemy.SpawnPos = _spawnPosObj[index].transform.position;
-                enemyList.Add(enemy);
+                enemyBase.SpawnPos = _spawnPosObj[index].transform.position;
+                enemyList.Add(enemyBase);
             });
             
             index++;

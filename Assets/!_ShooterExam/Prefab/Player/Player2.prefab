@@ -16,6 +16,14 @@ PrefabInstance:
       propertyPath: 'Guid.RawGuidValue.Array.data[1]'
       value: -6823727074082835589
       objectReference: {fileID: 0}
+    - target: {fileID: 324610275942370652, guid: a265870592f4447479985602745b4877, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: -0.3826
+      objectReference: {fileID: 0}
+    - target: {fileID: 324610275942370652, guid: a265870592f4447479985602745b4877, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0.153
+      objectReference: {fileID: 0}
     - target: {fileID: 690830879421445988, guid: a265870592f4447479985602745b4877, type: 3}
       propertyPath: SortKey
       value: 1452022656
@@ -71,6 +79,10 @@ PrefabInstance:
     - target: {fileID: 2329245545268173950, guid: a265870592f4447479985602745b4877, type: 3}
       propertyPath: m_LocalScale.x
       value: 2.8
+      objectReference: {fileID: 0}
+    - target: {fileID: 3890879582719789338, guid: a265870592f4447479985602745b4877, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: -0.066
       objectReference: {fileID: 0}
     - target: {fileID: 4761751485146938828, guid: a265870592f4447479985602745b4877, type: 3}
       propertyPath: _bulletPrefab

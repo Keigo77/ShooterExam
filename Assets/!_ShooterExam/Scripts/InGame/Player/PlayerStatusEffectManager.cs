@@ -86,5 +86,5 @@ public class PlayerStatusEffectManager : NetworkBehaviour
         PlayerStatusEffects = StatusEffect.None;
         _showStatusEffectsPos.sprite = null;
     }
-    
+
 }

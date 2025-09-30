@@ -8,6 +8,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 324610275942370652, guid: a265870592f4447479985602745b4877, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0.16
+      objectReference: {fileID: 0}
     - target: {fileID: 690830879421445988, guid: a265870592f4447479985602745b4877, type: 3}
       propertyPath: SortKey
       value: 2343774913
@@ -60,6 +64,10 @@ PrefabInstance:
       propertyPath: m_Sprite
       value: 
       objectReference: {fileID: 21300000, guid: 5500a4eb7184fed4eb5b5e505ffecd91, type: 3}
+    - target: {fileID: 3890879582719789338, guid: a265870592f4447479985602745b4877, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: -0.064
+      objectReference: {fileID: 0}
     - target: {fileID: 4761751485146938828, guid: a265870592f4447479985602745b4877, type: 3}
       propertyPath: _bulletPrefab
       value: 
