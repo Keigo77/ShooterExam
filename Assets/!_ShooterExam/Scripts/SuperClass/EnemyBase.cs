@@ -8,27 +8,39 @@ using UnityEngine;
 
 public class EnemyBase : NetworkBehaviour
 {
-    [Networked] public float Hp { get; set; }
+    [Networked, UnitySerializeField] protected float Hp { get; set; }
+    
+    // スポーン処理が終わってから，ダメージを受けるようにするため．
     [Networked] protected NetworkBool IsSpawned { get; set; } = false;
     public Vector2 SpawnPos { get; set; }
+    
+    // WaveManagerで，敵がデスポーンしたか(倒したか)を取得する．
     public IObservable<Unit> OnDeath => _onDeath;
-    [SerializeField] private AudioClip _deathSeClip;
+    private readonly Subject<Unit> _onDeath = new Subject<Unit>();
     [SerializeField] private float _moveInScreenTime;
     protected CancellationToken _token;
-    private readonly Subject<Unit> _onDeath = new Subject<Unit>();
     private NetworkObject _networkObject;
     
+    // アニメーション
     protected Animator _animator;
     protected int _animatorIsAttack;
     protected int _animatorIsDead;
+    [SerializeField] private AudioClip _deathSeClip;
+    
+    // プレイ人数に応じて，Hpを増やす．
+    protected float[] _increaseHpList = { 1.0f, 1.8f, 2.6f, 3.4f };
 
-    private void Awake()
+    private async UniTaskVoid Awake()
     {
         _token = this.GetCancellationTokenOnDestroy();
         _networkObject = this.GetComponent<NetworkObject>();
         _animator = this.GetComponent<Animator>();
         _animatorIsAttack = Animator.StringToHash("IsAttack");
         _animatorIsDead = Animator.StringToHash("IsDead");
+        
+        await UniTask.WaitUntil(() => IsSpawned, cancellationToken: _token);
+        Hp *= _increaseHpList[Runner.SessionInfo.PlayerCount - 1];
+        Debug.Log($"敵のHPが{_increaseHpList[Runner.SessionInfo.PlayerCount - 1]}倍で，{Hp}");
     }
     
 
