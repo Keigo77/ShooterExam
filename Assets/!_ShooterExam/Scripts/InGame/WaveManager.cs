@@ -29,15 +29,8 @@ public class WaveManager : NetworkBehaviour
         _maxWave = _waveDataSO.WaveDatas.Count;
         _token = this.GetCancellationTokenOnDestroy();
 
-        try
-        {
-            await UniTask.WaitUntil(() => GameManager.Instance.CurrentGameState == GameState.Playing,
+        await UniTask.WaitUntil(() => GameManager.Instance.CurrentGameState == GameState.Playing,
                 cancellationToken: _token);
-        }
-        catch (Exception e)
-        {
-            Debug.LogWarning($"{e}　ゲーム開始待ちをキャンセルしました");
-        }
         
         StartWaveLoop().Forget();
     }
@@ -82,7 +75,7 @@ public class WaveManager : NetworkBehaviour
             {
                 var enemy = enemyObj.GetComponent<EnemyBase>();
                 // 定位置のpositionを敵に伝える
-                enemy.spawnPos = _spawnPosObj[index].transform.position;
+                enemy.SpawnPos = _spawnPosObj[index].transform.position;
                 enemyList.Add(enemy);
             });
             

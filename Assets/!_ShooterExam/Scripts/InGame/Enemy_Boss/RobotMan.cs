@@ -32,17 +32,9 @@ public class RobotMan : BossBase, ICharacter
     private GameObject _nowBullet;
     private List<NetworkObject> _playerObjects = new List<NetworkObject>();
     
-    // アニメーション
-    private Animator _animator;
-    private int _animatorIsAttack;
-    private int _animatorIsDead;
-
     public override async void Spawned()
     {
         _maxBossHp = Hp;
-        _animator = this.GetComponent<Animator>();
-        _animatorIsAttack = Animator.StringToHash("IsAttack");
-        _animatorIsDead = Animator.StringToHash("IsDead");
         
         if (!HasStateAuthority)
         {
@@ -67,7 +59,6 @@ public class RobotMan : BossBase, ICharacter
 
         IsSpawned = true;
         GameManager.Instance.RpcInitializeBossHpGauge(Hp);
-        GetToken();
         AttackLoop().Forget();
     }
 

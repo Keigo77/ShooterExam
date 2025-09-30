@@ -20,6 +20,14 @@ PrefabInstance:
       propertyPath: m_Name
       value: Boss_Robot_NormalBullet
       objectReference: {fileID: 0}
+    - target: {fileID: 3371886778226909018, guid: 8b5f49078d69245588eee323ac32d32a, type: 3}
+      propertyPath: m_Layer
+      value: 8
+      objectReference: {fileID: 0}
+    - target: {fileID: 3371886778226909018, guid: 8b5f49078d69245588eee323ac32d32a, type: 3}
+      propertyPath: m_TagString
+      value: EnemyBullet
+      objectReference: {fileID: 0}
     - target: {fileID: 3477576733170612203, guid: 8b5f49078d69245588eee323ac32d32a, type: 3}
       propertyPath: m_LocalScale.x
       value: 1
@@ -83,6 +91,14 @@ PrefabInstance:
     - target: {fileID: 3936882555826167705, guid: 8b5f49078d69245588eee323ac32d32a, type: 3}
       propertyPath: m_WasSpriteAssigned
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6534464758790163915, guid: 8b5f49078d69245588eee323ac32d32a, type: 3}
+      propertyPath: m_Layer
+      value: 8
+      objectReference: {fileID: 0}
+    - target: {fileID: 6534464758790163915, guid: 8b5f49078d69245588eee323ac32d32a, type: 3}
+      propertyPath: m_TagString
+      value: EnemyBullet
       objectReference: {fileID: 0}
     - target: {fileID: 9118331813716803884, guid: 8b5f49078d69245588eee323ac32d32a, type: 3}
       propertyPath: SortKey

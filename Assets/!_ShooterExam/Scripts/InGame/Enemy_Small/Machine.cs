@@ -10,34 +10,18 @@ public class Machine : AttackerSmallEnemyBase, ICharacter
 {
     [SerializeField] private float _rotateDuration;
     
-    private Animator _animator;
-    private int _animatorIsAttack;
-    private int _animatorIsDead;
-    
     public override async void Spawned()
     {
-        GetToken();
-        _animator = this.GetComponent<Animator>();
-        _animatorIsAttack = Animator.StringToHash("IsAttack");
-        _animatorIsDead = Animator.StringToHash("IsDead");
-
         if (HasStateAuthority)
         {
-            try
-            {
-                await MoveInScreen();
-            }
-            catch (Exception e)
-            {
-                Debug.Log($"{e}　MoveInScreen()がキャンセルされました");
-            }
+            await MoveInScreen();
 
             IsSpawned = true;
             AttackLoop().Forget();
         }
     }
 
-    protected override async UniTask AttackLoop()
+    protected override async UniTaskVoid AttackLoop()
     {
         while (!_token.IsCancellationRequested && Hp > 0)
         {
@@ -49,7 +33,7 @@ public class Machine : AttackerSmallEnemyBase, ICharacter
 
     protected override void Attack()
     {
-        if (Runner.IsRunning && HasStateAuthority)
+        if (Runner.IsRunning)
         {
             GenerateBullet(new Vector2(-1, 1).normalized);
             GenerateBullet(new Vector2(-1, 0).normalized);

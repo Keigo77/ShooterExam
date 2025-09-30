@@ -10,28 +10,34 @@ public class EnemyBase : NetworkBehaviour
 {
     [Networked] public float Hp { get; set; }
     [Networked] protected NetworkBool IsSpawned { get; set; } = false;
-    public Vector2 spawnPos { get; set; }
+    public Vector2 SpawnPos { get; set; }
     public IObservable<Unit> OnDeath => _onDeath;
     [SerializeField] private AudioClip _deathSeClip;
-    [SerializeField] private int _enemyId;
     [SerializeField] private float _moveInScreenTime;
     protected CancellationToken _token;
     private readonly Subject<Unit> _onDeath = new Subject<Unit>();
     private NetworkObject _networkObject;
     
+    protected Animator _animator;
+    protected int _animatorIsAttack;
+    protected int _animatorIsDead;
 
-    protected void GetToken()
+    private void Awake()
     {
         _token = this.GetCancellationTokenOnDestroy();
         _networkObject = this.GetComponent<NetworkObject>();
+        _animator = this.GetComponent<Animator>();
+        _animatorIsAttack = Animator.StringToHash("IsAttack");
+        _animatorIsDead = Animator.StringToHash("IsDead");
     }
+    
 
     /// <summary>
     /// 画面外にスポーンしてから，画面内に横移動で登場させる関数
     /// </summary>
     protected async UniTask MoveInScreen()
     {
-        NetworkDOTween.MyDOMove(this.transform, spawnPos, _moveInScreenTime, _token).Forget();
+        NetworkDOTween.MyDOMove(this.transform, SpawnPos, _moveInScreenTime, _token).Forget();
         await UniTask.Delay(TimeSpan.FromSeconds(_moveInScreenTime), cancellationToken: _token);
     }
     

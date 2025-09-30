@@ -8,6 +8,6 @@ public abstract class AttackerSmallEnemyBase : EnemyBase
     [SerializeField] protected float _bulletSpeed;
     [SerializeField] protected float _attackSpan;
     
-    protected abstract UniTask AttackLoop();
+    protected abstract UniTaskVoid AttackLoop();
     protected abstract void Attack();
 }
