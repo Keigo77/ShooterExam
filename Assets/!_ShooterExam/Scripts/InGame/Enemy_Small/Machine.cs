@@ -33,11 +33,10 @@ public class Machine : AttackerSmallEnemyBase, ICharacter
 
     protected override void Attack()
     {
-        if (Runner.IsRunning)
+        if (Runner.IsRunning && HasStateAuthority)
         {
-            GenerateBullet(new Vector2(-1, 1).normalized);
-            GenerateBullet(new Vector2(-1, 0).normalized);
-            GenerateBullet(new Vector2(-1, -1).normalized);
+            GenerateBullet(new Vector2(-1, 0.7f).normalized);
+            GenerateBullet(new Vector2(-1, -0.7f).normalized);
         }
     }
 

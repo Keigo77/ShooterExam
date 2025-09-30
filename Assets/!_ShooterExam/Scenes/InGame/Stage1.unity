@@ -1024,11 +1024,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4002116518396155058, guid: ccd5a247683454b49aa39ab8244d4047, type: 3}
       propertyPath: m_AnchorMax.x
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 4002116518396155058, guid: ccd5a247683454b49aa39ab8244d4047, type: 3}
       propertyPath: m_AnchorMax.y
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 4390240236048891233, guid: ccd5a247683454b49aa39ab8244d4047, type: 3}
       propertyPath: m_Color.b
@@ -1060,7 +1060,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8457220895930970225, guid: ccd5a247683454b49aa39ab8244d4047, type: 3}
       propertyPath: m_IsActive
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8915566935424259432, guid: ccd5a247683454b49aa39ab8244d4047, type: 3}
       propertyPath: m_Color.b
@@ -4125,20 +4125,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &2271297085385534287
-MonoBehaviour:
-  m_ObjectHideFlags: 59
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4647525530311198545}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 1541381998, guid: e725a070cec140c4caffb81624c8c787, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  Guid:
-    RawGuidValue: 305c934f8a5294902a7a03cf13d15b3e
 --- !u!1 &2275149799060558182
 GameObject:
   m_ObjectHideFlags: 0
@@ -4530,7 +4516,6 @@ GameObject:
   - component: {fileID: 4919731841913505713}
   - component: {fileID: 4265414713374868895}
   - component: {fileID: 6511305729778242059}
-  - component: {fileID: 2271297085385534287}
   m_Layer: 0
   m_Name: GameManager
   m_TagString: Untagged

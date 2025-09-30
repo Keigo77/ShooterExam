@@ -132,7 +132,7 @@ public class WaitInRoom : NetworkBehaviour, INetworkRunnerCallbacks
         // 退出したプレイヤーがホストなら，全員が退出する
         if (player.PlayerId == 1)
         {
-            Runner.Shutdown();
+            runner.Shutdown();
             SceneManager.LoadScene("Home");
             ErrorSingleton.Instance.ShowErrorPanel(ErrorType.HostDisconnected);
             return;
