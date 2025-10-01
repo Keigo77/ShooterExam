@@ -126,6 +126,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _speed: 5
+  _spriteRenderer: {fileID: 2264411861185244609}
 --- !u!50 &3797569404614997903
 Rigidbody2D:
   serializedVersion: 5

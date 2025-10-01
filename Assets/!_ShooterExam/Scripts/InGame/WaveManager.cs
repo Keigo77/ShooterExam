@@ -16,6 +16,7 @@ public class WaveManager : NetworkBehaviour
     [SerializeField] private AudioClip _bossBgm;
     [SerializeField] private ShowImageManager  _showImageManager;
      
+    private GameManager _gameManager;
     private int _currentWave = 0;
     private int _maxWave;
     
@@ -29,7 +30,8 @@ public class WaveManager : NetworkBehaviour
         _maxWave = _waveDataSO.WaveDatas.Count;
         _token = this.GetCancellationTokenOnDestroy();
 
-        await UniTask.WaitUntil(() => GameManager.Instance.CurrentGameState == GameState.Playing,
+        _gameManager = GameManager.Instance;
+        await UniTask.WaitUntil(() => _gameManager.CurrentGameState == GameState.Playing,
                 cancellationToken: _token);
         
         StartWaveLoop().Forget();
@@ -37,7 +39,7 @@ public class WaveManager : NetworkBehaviour
     
     private async UniTask StartWaveLoop()
     {
-        while (_currentWave < _maxWave && GameManager.Instance.CurrentGameState != GameState.GameOver)
+        while (_currentWave < _maxWave && _gameManager.CurrentGameState != GameState.GameOver)
         {
             Debug.Log($"ウェーブ{_currentWave}の開始");
             await UpdateWave(_currentWave);
@@ -45,7 +47,7 @@ public class WaveManager : NetworkBehaviour
         }
         
         Debug.Log("すべてのウェーブが終了しました！");
-        GameManager.Instance.CurrentGameState = GameState.Clear;
+        _gameManager.CurrentGameState = GameState.Clear;
     }
 
     private async UniTask UpdateWave(int waveNumber)

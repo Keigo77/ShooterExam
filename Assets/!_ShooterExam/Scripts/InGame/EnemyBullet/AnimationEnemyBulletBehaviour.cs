@@ -42,6 +42,7 @@ public class AnimationEnemyBulletBehaviour : EnemyBulletBase
         {
             _rigidbody.linearVelocity = Vector2.zero;
             _animator.SetBool(_animatorIsHit, true);
+            collision.GetComponent<PlayerController>().ChangeDamageColor().Forget();
             if (collision.GetComponent<NetworkObject>().HasStateAuthority)
             {
                 collision.GetComponent<ICharacter>().Damage(BulletPower);

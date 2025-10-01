@@ -1,4 +1,5 @@
 using System;
+using System.Threading;
 using Cysharp.Threading.Tasks;
 using Fusion;
 using UnityEngine;
@@ -7,26 +8,29 @@ using UnityEngine.InputSystem;
 public class PlayerController : NetworkBehaviour, ICharacter
 {
     [SerializeField] private float _speed;
+    private GameManager _gameManager;
     private PlayerStatusEffectManager _playerStatusEffectManager;
     private float _hp = 100;
     private Rigidbody2D _rigidbody;
     private InputActions _inputActions;
     private Vector2 _moveDirection;
+    [SerializeField] private SpriteRenderer _spriteRenderer;
+    private CancellationToken _token;
     
     public override async void Spawned()
     {
         _rigidbody = this.GetComponent<Rigidbody2D>();
         _playerStatusEffectManager = this.GetComponent<PlayerStatusEffectManager>();
+        _token = this.GetCancellationTokenOnDestroy();
         
         // 上下左右移動のInputActionを取得
         _inputActions = new InputActions();
         _inputActions.Enable();
         _inputActions.Player.Move.started += OnMove;
         _inputActions.Player.Move.performed += OnMove;
-        _inputActions.Player.Move.canceled += OnMove;
-
-        await UniTask.WaitUntil(() => GameManager.Instance != null && GameManager.Instance.IsSpawned);
-        GameManager.Instance.AddPlayerHp(_hp);
+        
+        _gameManager = GameManager.Instance;
+        _gameManager.AddPlayerHp(_hp);
     }
 
     private void OnMove(InputAction.CallbackContext context)
@@ -36,7 +40,7 @@ public class PlayerController : NetworkBehaviour, ICharacter
 
     public override void FixedUpdateNetwork()
     {
-        if (GameManager.Instance.CurrentGameState != GameState.Playing || _playerStatusEffectManager.PlayerStatusEffects == StatusEffect.Paralysis)
+        if (!_gameManager.IsAllPlayerJoined || _playerStatusEffectManager.PlayerStatusEffects == StatusEffect.Paralysis)
         {
             _rigidbody.linearVelocity = Vector2.zero;
             return;
@@ -54,9 +58,19 @@ public class PlayerController : NetworkBehaviour, ICharacter
 
     public void Damage(float damage)
     {
-        if (HasStateAuthority && GameManager.Instance.CurrentGameState == GameState.Playing)
+        if (HasStateAuthority && _gameManager.CurrentGameState == GameState.Playing)
         {
-            GameManager.Instance.RpcDecreasePlayerHpGauge(damage);
+            _gameManager.RpcDecreasePlayerHpGauge(damage);
         }
+    }
+
+    /// <summary>
+    /// ダメージを喰らった時に，赤色にする
+    /// </summary>
+    public async UniTaskVoid ChangeDamageColor()
+    {
+        _spriteRenderer.color = Color.red;
+        await UniTask.Delay(TimeSpan.FromSeconds(0.1f), cancellationToken: _token);
+        _spriteRenderer.color = Color.white;
     }
 }

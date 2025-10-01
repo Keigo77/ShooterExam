@@ -29,8 +29,9 @@ public class EnemyBulletBehaviour : EnemyBulletBase
     
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        if (collision.CompareTag("Player"))
+        if (collision.CompareTag("Player") && GameManager.Instance.CurrentGameState == GameState.Playing)
         {
+            collision.GetComponent<PlayerController>().ChangeDamageColor().Forget();
             if (collision.GetComponent<NetworkObject>().HasStateAuthority)
             {
                 collision.GetComponent<ICharacter>().Damage(BulletPower);

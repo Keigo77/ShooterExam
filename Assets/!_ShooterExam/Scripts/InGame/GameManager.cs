@@ -23,6 +23,7 @@ public class GameManager : NetworkBehaviour
 {
     public static GameManager Instance { get; private set; }
     [Networked] public GameState CurrentGameState { get; set; } = GameState.Stopping;
+    [Networked] public NetworkBool IsAllPlayerJoined { get; set; } = false;
 
     // Hp
     [Networked, OnChangedRender(nameof(UpdatePlayerHpGauge))]
@@ -84,11 +85,11 @@ public class GameManager : NetworkBehaviour
         await UniTask.WaitUntil(() =>
             (_nowPlayerCount == WaitInRoom.JoinedPlayerCount || _isTimeOut), cancellationToken: _token);
         RpcDeleteTransition();
-        await UniTask.WaitUntil(() => _transitionProgressController.Progress == 0f, cancellationToken: _token);
+        IsAllPlayerJoined = true;
         await _showImageManager.ShowImage(ImageType.StartImage, 1.5f);
-
-        Debug.Log("ゲーム開始");
         CurrentGameState = GameState.Playing;
+        Debug.Log("ゲーム開始");
+        
         _startTick = Runner.Tick;
         AllPlayerHP = MaxPlayersHP;
 
@@ -106,9 +107,9 @@ public class GameManager : NetworkBehaviour
     }
 
     [Rpc(RpcSources.StateAuthority, RpcTargets.All)]
-    private void RpcDeleteTransition()
+    private async void RpcDeleteTransition()
     {
-        _transitionProgressController.FadeOut().Forget();
+        await _transitionProgressController.FadeOut();
     }
 
     private async UniTaskVoid StartTimeoutCount()
