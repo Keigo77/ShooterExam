@@ -74,9 +74,12 @@ public class PlayerController : NetworkBehaviour, ICharacter
     /// </summary>
     public async UniTaskVoid ChangeDamageColor()
     {
+        /*
+        Debug.Log("red");
         _cts.Cancel();
         _cts = new CancellationTokenSource();
         _token = _cts.Token;
+        */
         
         _spriteRenderer.color = Color.red;
         await UniTask.Delay(TimeSpan.FromSeconds(0.1f), cancellationToken: _token);

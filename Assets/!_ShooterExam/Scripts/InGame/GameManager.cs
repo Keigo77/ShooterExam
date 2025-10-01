@@ -141,7 +141,6 @@ public class GameManager : NetworkBehaviour
         if (HasStateAuthority && AllPlayerHP > 0)
         {
             AllPlayerHP -= damage;
-            Debug.Log(AllPlayerHP);
             AllPlayerHP = Math.Max(AllPlayerHP, 0f);
         }
         

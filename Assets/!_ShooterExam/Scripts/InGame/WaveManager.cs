@@ -6,10 +6,11 @@ using Cysharp.Threading.Tasks;
 using Fusion;
 using TMPro;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 public class WaveManager : NetworkBehaviour
 {
-    [SerializeField] private WaveDataSO _waveDataSO;
+    [FormerlySerializedAs("_waveDataSO")] [SerializeField] private StageDataSO _stageDataSo;
     [SerializeField] private GameObject[] _spawnPosObj = new GameObject[30];
     [SerializeField] private float _howSpawnDistance;   // どれだけ画面外にスポーンさせるか
     [SerializeField] private AudioClip _smallEnemyBgm;
@@ -17,7 +18,8 @@ public class WaveManager : NetworkBehaviour
     [SerializeField] private ShowImageManager  _showImageManager;
      
     private GameManager _gameManager;
-    private int _currentWave = 0;
+    private int _stageNumber = 1;
+    private int _currentWave = 1;
     private int _maxWave;
     
    private CancellationToken _token;
@@ -25,9 +27,10 @@ public class WaveManager : NetworkBehaviour
     public override async void Spawned()
     {
         AudioSingleton.Instance.PlayBgm(_smallEnemyBgm);
+        _stageNumber = StageSelectManager.StageNumber;
         if (!HasStateAuthority) { return; }
         
-        _maxWave = _waveDataSO.WaveDatas.Count;
+        _maxWave = _stageDataSo.StageDatas[_stageNumber - 1].WaveDatas.Length;
         _token = this.GetCancellationTokenOnDestroy();
 
         _gameManager = GameManager.Instance;
@@ -39,7 +42,7 @@ public class WaveManager : NetworkBehaviour
     
     private async UniTask StartWaveLoop()
     {
-        while (_currentWave < _maxWave && _gameManager.CurrentGameState != GameState.GameOver)
+        while (_currentWave <= _maxWave && _gameManager.CurrentGameState != GameState.GameOver)
         {
             Debug.Log($"ウェーブ{_currentWave}の開始");
             await UpdateWave(_currentWave);
@@ -52,11 +55,11 @@ public class WaveManager : NetworkBehaviour
 
     private async UniTask UpdateWave(int waveNumber)
     {
-        NetworkObject[] enemyPrefabs = _waveDataSO.WaveDatas[waveNumber].Enemies;
+        NetworkObject[] enemyPrefabs = _stageDataSo.StageDatas[_stageNumber - 1].WaveDatas[waveNumber - 1].Enemies;
         var enemyList = new List<EnemyBase>();
         int index = 0;
 
-        if (_waveDataSO.WaveDatas[waveNumber].IsBoss)
+        if (_stageDataSo.StageDatas[_stageNumber - 1].WaveDatas[waveNumber - 1].IsBoss)
         {
             RpcChangeBossBgm();
             await _showImageManager.ShowImage(ImageType.WaringImage, 2.0f);

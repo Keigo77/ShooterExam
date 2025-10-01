@@ -53,7 +53,7 @@ public class ResultManager : NetworkBehaviour
     /// </summary>
     private void ShowResultDetail()
     {
-        _stageNameText.text = $"Stage{_stageNumber}";
+        _stageNameText.text = $"Stage";
         int clearTime = (int)Math.Floor(GameManager.ClearTime);
         _clearTimeText.text = $"{clearTime / 60:D2} : {clearTime % 60:D2}";
         _remainHpText.text = $"{(int)GameManager.RemainHpPercentage}%";
@@ -135,7 +135,7 @@ public class ResultManager : NetworkBehaviour
         await _transitionProgressController.FadeIn();
         if (HasStateAuthority)
         {
-            Runner.LoadScene($"Stage{_stageNumber}");
+            Runner.LoadScene($"Stage");
         }
     }
     
