@@ -28,7 +28,7 @@ public class RobotMan : BossBase, ICharacter
     [SerializeField] private GameObject _normalBulletPrefab;
     [SerializeField] private GameObject _paralysisBulletPrefab;
     [SerializeField] private float _bulletSpeed;
-    [SerializeField] private AudioClip _attackClip;
+    [SerializeField] private AudioClip _attackSe;
     private GameObject _nowBullet;
     private List<NetworkObject> _playerObjects = new List<NetworkObject>();
     
@@ -143,7 +143,7 @@ public class RobotMan : BossBase, ICharacter
     /// </summary>
     private void Attack()
     {
-        AudioSingleton.Instance.PlaySe(_attackClip);
+        AudioSingleton.Instance.PlaySe(_attackSe);
         if (!HasStateAuthority) { return; }
         
         var bulletSpawnPos = new Vector2(this.transform.position.x - 2.0f, this.transform.position.y);
@@ -159,24 +159,12 @@ public class RobotMan : BossBase, ICharacter
         _animator.SetBool(_animatorIsAttack, false);
     }
     
-    public void Damage(float damage)
-    {
-        if (IsSpawned && Hp > 0)
-        {
-            RpcBossDamage(damage);
-        }
-    }
     
     [Rpc(RpcSources.All, RpcTargets.StateAuthority)]
-    private void RpcBossDamage(float damage)
+    protected override void RpcDamage(float damage)
     {
-        Hp -= damage;
-        GameManager.Instance.RpcUpdateBossHpGauge(_maxBossHp, Hp);
-        if (Hp <= 0)
-        {
-            // 死亡アニメーションの再生
-            _animator.SetBool(_animatorIsDead, true);
-        }
+        GameManager.Instance.RpcUpdateBossHpGauge(_maxBossHp, Hp - damage);
+        base.RpcDamage(damage);
     }
     
 }

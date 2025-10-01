@@ -62,25 +62,4 @@ public class Machine : AttackerSmallEnemyBase, ICharacter
     {
         _animator.SetBool(_animatorIsAttack, false);
     }
-    
-    /// <summary>
-    /// プレイヤーの弾が当たったら，HPを減らす
-    /// </summary>
-    public void Damage(float damage)
-    {
-        if (IsSpawned && Hp > 0)
-        {
-            RpcDamage(damage);
-        }
-    }
-
-    [Rpc(RpcSources.All, RpcTargets.StateAuthority)]
-    private void RpcDamage(float damage)
-    {
-        Hp -= damage;
-        if (Hp <= 0)
-        {
-            _animator.SetBool(_animatorIsDead, true);
-        }
-    }
 }

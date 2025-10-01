@@ -11,9 +11,16 @@ public class Witch : AttackerSmallEnemyBase, ICharacter
         if (HasStateAuthority)
         {
             MoveInScreen().Forget();
-            IsSpawned = true;
             AttackLoop().Forget();
         }
+    }
+
+    /// <summary>
+    /// witchは，スポーンアニメーションが終わったら，ダメージを受けるようにする
+    /// </summary>
+    private void FinishSpawnAnimation()
+    {
+        IsSpawned = true;
     }
     
     protected override async UniTaskVoid AttackLoop()
@@ -33,27 +40,9 @@ public class Witch : AttackerSmallEnemyBase, ICharacter
             bullet.GetComponent<Rigidbody2D>().AddForce(randDirection * _bulletSpeed, ForceMode2D.Impulse);
         });
     }
-
+    
     private void FinishAttack()
     {
         _animator.SetBool(_animatorIsAttack, false);
-    }
-
-    public void Damage(float damage)
-    {
-        if (IsSpawned && Hp > 0)
-        {
-            RpcDamage(damage);
-        }
-    }
-    
-    [Rpc(RpcSources.All, RpcTargets.StateAuthority)]
-    private void RpcDamage(float damage)
-    {
-        Hp -= damage;
-        if (Hp <= 0)
-        {
-            _animator.SetBool(_animatorIsDead, true);
-        }
     }
 }

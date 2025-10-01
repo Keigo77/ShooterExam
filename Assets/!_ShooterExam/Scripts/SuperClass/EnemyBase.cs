@@ -52,6 +52,24 @@ public class EnemyBase : NetworkBehaviour
         NetworkDOTween.MyDOMove(this.transform, SpawnPos, _moveInScreenTime, _token).Forget();
         await UniTask.Delay(TimeSpan.FromSeconds(_moveInScreenTime), cancellationToken: _token);
     }
+
+    public void Damage(float damage)
+    {
+        if (IsSpawned && Hp > 0)
+        {
+            RpcDamage(damage);
+        }
+    }
+    
+    [Rpc(RpcSources.All, RpcTargets.StateAuthority)]
+    protected virtual void RpcDamage(float damage)
+    {
+        Hp -= damage;
+        if (Hp <= 0)
+        {
+            _animator.SetBool(_animatorIsDead, true);
+        }
+    }
     
     /// <summary>
     /// HPが0になったら実行．WaveManagerに死亡を通知し，デスポーンする
