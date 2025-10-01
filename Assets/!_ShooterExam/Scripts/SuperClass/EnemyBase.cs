@@ -88,6 +88,18 @@ public class EnemyBase : NetworkBehaviour
         }
     }
 
+    private void OnCollisionStay2D(Collision2D collision)
+    {
+        if (collision.gameObject.CompareTag("Player") && GameManager.Instance.CurrentGameState == GameState.Playing)
+        {
+            collision.gameObject.GetComponent<PlayerController>().ChangeDamageColor().Forget();
+            if (collision.gameObject.GetComponent<NetworkObject>().HasStateAuthority)
+            {
+                collision.gameObject.GetComponent<ICharacter>().Damage(0.5f);
+            }
+        }
+    }
+
     private void PlayDeathSe()
     {
         AudioSingleton.Instance.PlaySe(_deathSeClip);

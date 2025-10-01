@@ -141,6 +141,7 @@ public class GameManager : NetworkBehaviour
         if (HasStateAuthority && AllPlayerHP > 0)
         {
             AllPlayerHP -= damage;
+            Debug.Log(AllPlayerHP);
             AllPlayerHP = Math.Max(AllPlayerHP, 0f);
         }
         
@@ -169,7 +170,6 @@ public class GameManager : NetworkBehaviour
     public void RpcUpdateBossHpGauge(float maxBossHp, float bossHp)
     {
         _bossHpGaugeSlider.value = bossHp / maxBossHp;
-        Debug.Log($"{bossHp}，{maxBossHp}，{bossHp / maxBossHp}");
         if (bossHp <= 0)
         {
             _bossHpGaugeSlider.gameObject.SetActive(false);
