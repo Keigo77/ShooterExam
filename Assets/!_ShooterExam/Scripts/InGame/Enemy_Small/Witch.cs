@@ -6,13 +6,10 @@ using Random = UnityEngine.Random;
 
 public class Witch : AttackerSmallEnemyBase, ICharacter
 {
-    public override void Spawned()
+
+    private void SetTransformInScreen()
     {
-        if (HasStateAuthority)
-        {
-            MoveInScreen().Forget();
-            AttackLoop().Forget();
-        }
+        this.GetComponent<NetworkTransform>().Teleport(SpawnPos);
     }
 
     /// <summary>
@@ -22,6 +19,11 @@ public class Witch : AttackerSmallEnemyBase, ICharacter
     {
         IsSpawned = true;
         UpdateMaxHp();
+        
+        if (HasStateAuthority)
+        {
+            AttackLoop().Forget();
+        }
     }
     
     protected override async UniTaskVoid AttackLoop()
