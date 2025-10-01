@@ -4743,7 +4743,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _CurrentGameState: 0
-  _isTestMode: 0
+  _IsAllPlayerJoined:
+    _value: 0
+  _isTestMode: 1
   _playerHpGaugeSlider: {fileID: 405786228}
   _bossHpGaugeSlider: {fileID: 675982391}
   _transitionProgressController: {fileID: 569200907}

@@ -34,11 +34,14 @@ public class Witch : AttackerSmallEnemyBase, ICharacter
     
     protected override void Attack()
     {
-        var randDirection = new Vector2(-1f, Random.Range(-1f, 1f)).normalized;
-        Runner.Spawn(_bulletPrefab, this.transform.position, onBeforeSpawned: (_, bullet) =>
+        if (HasStateAuthority)
         {
-            bullet.GetComponent<Rigidbody2D>().AddForce(randDirection * _bulletSpeed, ForceMode2D.Impulse);
-        });
+            var randDirection = new Vector2(-1f, Random.Range(-1f, 1f)).normalized;
+            Runner.Spawn(_bulletPrefab, this.transform.position, onBeforeSpawned: (_, bullet) =>
+            {
+                bullet.GetComponent<Rigidbody2D>().AddForce(randDirection * _bulletSpeed, ForceMode2D.Impulse);
+            });
+        }
     }
     
     private void FinishAttack()

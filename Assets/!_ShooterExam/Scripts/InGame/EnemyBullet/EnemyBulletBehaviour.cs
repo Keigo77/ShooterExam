@@ -5,8 +5,13 @@ using UnityEngine;
 
 public class EnemyBulletBehaviour : EnemyBulletBase
 {
+    private SpriteRenderer _renderer;
+    
     public override void Spawned()
     {
+        _networkObject = this.GetComponent<NetworkObject>();
+        _rigidbody = this.GetComponent<Rigidbody2D>();
+        _renderer = this.GetComponent<SpriteRenderer>();
         if (HasStateAuthority)
         {
             Invoke(nameof(RpcDespawnBullet), _existTime);
@@ -27,16 +32,21 @@ public class EnemyBulletBehaviour : EnemyBulletBase
         }
     }
     
+    /// <summary>
+    /// 
+    /// </summary>
     private void OnTriggerEnter2D(Collider2D collision)
     {
         if (collision.CompareTag("Player") && GameManager.Instance.CurrentGameState == GameState.Playing)
         {
-            collision.GetComponent<PlayerController>().ChangeDamageColor().Forget();
+            _renderer.enabled = false;
+            collision.GetComponent<PlayerController>().RpcChangeDamageColor();
+            
             if (collision.GetComponent<NetworkObject>().HasStateAuthority)
             {
                 collision.GetComponent<ICharacter>().Damage(BulletPower);
-                RpcDespawnBullet();
             }
+            RpcDespawnBullet();
         }
     }
 }

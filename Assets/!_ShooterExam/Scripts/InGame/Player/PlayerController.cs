@@ -28,8 +28,10 @@ public class PlayerController : NetworkBehaviour, ICharacter
         _inputActions.Enable();
         _inputActions.Player.Move.started += OnMove;
         _inputActions.Player.Move.performed += OnMove;
+        _inputActions.Player.Move.canceled += OnMove;
         
         _gameManager = GameManager.Instance;
+        await UniTask.WaitUntil(() => _gameManager.IsSpawned, cancellationToken: _token);
         _gameManager.AddPlayerHp(_hp);
     }
 
@@ -67,7 +69,7 @@ public class PlayerController : NetworkBehaviour, ICharacter
     /// <summary>
     /// ダメージを喰らった時に，赤色にする
     /// </summary>
-    public async UniTaskVoid ChangeDamageColor()
+    public async UniTaskVoid RpcChangeDamageColor()
     {
         _spriteRenderer.color = Color.red;
         await UniTask.Delay(TimeSpan.FromSeconds(0.1f), cancellationToken: _token);

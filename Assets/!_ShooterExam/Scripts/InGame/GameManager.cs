@@ -85,6 +85,8 @@ public class GameManager : NetworkBehaviour
         await UniTask.WaitUntil(() =>
             (_nowPlayerCount == WaitInRoom.JoinedPlayerCount || _isTimeOut), cancellationToken: _token);
         RpcDeleteTransition();
+        await UniTask.WaitUntil(() =>
+            (_transitionProgressController.Progress == 0f), cancellationToken: _token);
         IsAllPlayerJoined = true;
         await _showImageManager.ShowImage(ImageType.StartImage, 1.5f);
         CurrentGameState = GameState.Playing;

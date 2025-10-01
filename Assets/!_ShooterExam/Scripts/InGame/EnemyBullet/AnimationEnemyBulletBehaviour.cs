@@ -4,17 +4,16 @@ using UnityEngine;
 
 public class AnimationEnemyBulletBehaviour : EnemyBulletBase
 {
-    [SerializeField] private NetworkRigidbody2D _networkRigidbody;
-    [SerializeField] private Rigidbody2D _rigidbody;
     private Animator _animator;
     private int _animatorIsHit;
     
     public override void Spawned()
     {
+       _rigidbody = GetComponent<Rigidbody2D>();
+        _networkObject = this.GetComponent<NetworkObject>();
         _animator = this.GetComponent<Animator>();
         _animatorIsHit = Animator.StringToHash("IsHit");
-        // trueのまま速度を0にすると，他プレイヤーのも0になるため，enableをflaseにする
-        _networkRigidbody.enabled = false;
+        
         Invoke(nameof(RpcDespawnBullet), _existTime);
     }
     
@@ -38,17 +37,16 @@ public class AnimationEnemyBulletBehaviour : EnemyBulletBase
     /// </summary>
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        if (collision.CompareTag("Player"))
+        if (collision.CompareTag("Player") && GameManager.Instance.CurrentGameState == GameState.Playing)
         {
             _rigidbody.linearVelocity = Vector2.zero;
             _animator.SetBool(_animatorIsHit, true);
-            collision.GetComponent<PlayerController>().ChangeDamageColor().Forget();
+            collision.GetComponent<PlayerController>().RpcChangeDamageColor();
+            
             if (collision.GetComponent<NetworkObject>().HasStateAuthority)
             {
                 collision.GetComponent<ICharacter>().Damage(BulletPower);
             }
         }
     }
-    
-    
 }

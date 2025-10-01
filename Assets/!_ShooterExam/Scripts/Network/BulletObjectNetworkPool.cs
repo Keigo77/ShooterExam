@@ -18,6 +18,7 @@ public class BulletObjectNetworkPool : NetworkObjectProviderDefault
             var instance = GetObjectFromPool(prefab);
 
             instance.transform.position = Vector3.zero;
+            instance.gameObject.GetComponent<SpriteRenderer>().enabled = true;
 
             return instance;
         }
