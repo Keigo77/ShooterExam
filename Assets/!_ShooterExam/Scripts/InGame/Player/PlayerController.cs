@@ -43,6 +43,9 @@ public class PlayerController : NetworkBehaviour, ICharacter
         _moveDirection = context.ReadValue<Vector2>();
     }
 
+    /// <summary>
+    /// プレイヤーが全員入室していないか，麻痺状態なら移動ができない．
+    /// </summary>
     public override void FixedUpdateNetwork()
     {
         if (!_gameManager.IsAllPlayerJoined || _playerStatusEffectManager.PlayerStatusEffects == StatusEffect.Paralysis)

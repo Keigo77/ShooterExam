@@ -33,7 +33,8 @@ public class EnemyBulletBehaviour : EnemyBulletBase
     }
     
     /// <summary>
-    /// 
+    /// 他プレイヤーが弾に当たっていたら，非表示にする．
+    /// 本人が当たっていたら，ダメージを反映させる．
     /// </summary>
     private void OnTriggerEnter2D(Collider2D collision)
     {

@@ -32,7 +32,7 @@ public class AnimationEnemyBulletBehaviour : EnemyBulletBase
     }
     
     /// <summary>
-    /// 他プレオヤーがたまに当たっていたら，アニメーションを再生し，非表示にする．
+    /// 他プレイヤーが弾に当たっていたら，アニメーションを再生し，非表示にする．
     /// 本人が当たっていたら，ダメージを反映させる．
     /// </summary>
     private void OnTriggerEnter2D(Collider2D collision)

@@ -59,6 +59,7 @@ public class WaveManager : NetworkBehaviour
         var enemyList = new List<EnemyBase>();
         int index = 0;
 
+        // ボスウェーブの場合，BGMを変更し，WARNINGを表示．
         if (_stageDataSo.StageDatas[_stageNumber - 1].WaveDatas[waveNumber - 1].IsBoss)
         {
             RpcChangeBossBgm();

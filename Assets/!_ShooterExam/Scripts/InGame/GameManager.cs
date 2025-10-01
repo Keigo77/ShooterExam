@@ -81,13 +81,16 @@ public class GameManager : NetworkBehaviour
         _token = this.GetCancellationTokenOnDestroy();
         // プレイヤー全員が揃うか，10秒経つまで待つ
         StartTimeoutCount().Forget();
-        
         await UniTask.WaitUntil(() =>
             (_nowPlayerCount == WaitInRoom.JoinedPlayerCount || _isTimeOut), cancellationToken: _token);
+        
+        // フェードアウトさせる
         RpcDeleteTransition();
         await UniTask.WaitUntil(() =>
             (_transitionProgressController.Progress == 0f), cancellationToken: _token);
         IsAllPlayerJoined = true;
+        
+        // Startと表示
         await _showImageManager.ShowImage(ImageType.StartImage, 1.5f);
         CurrentGameState = GameState.Playing;
         Debug.Log("ゲーム開始");
@@ -100,6 +103,9 @@ public class GameManager : NetworkBehaviour
         StageClear().Forget();
     }
 
+    /// <summary>
+    /// クリアタイムの計測
+    /// </summary>
     public override void Render()
     {
         if (CurrentGameState == GameState.Playing)
@@ -158,6 +164,9 @@ public class GameManager : NetworkBehaviour
         _playerHpGaugeSlider.value = AllPlayerHP / MaxPlayersHP;
     }
 
+    /// <summary>
+    /// ボス側から実行．ボス用のHPの値を初期化する．
+    /// </summary>
     [Rpc(RpcSources.StateAuthority, RpcTargets.All)]
     public void RpcInitializeBossHpGauge(float bossHp)
     {

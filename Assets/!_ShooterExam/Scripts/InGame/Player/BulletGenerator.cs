@@ -26,6 +26,7 @@ public class BulletGenerator : MonoBehaviour
         {
             await UniTask.Delay(TimeSpan.FromSeconds(_generateSpan), cancellationToken: _token);
             
+            // 麻痺状態なら弾を発射できない．
             if (_playerStatusEffectManager.PlayerStatusEffects == StatusEffect.Paralysis)
             {
                 continue;
