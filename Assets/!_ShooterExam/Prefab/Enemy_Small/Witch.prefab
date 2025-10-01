@@ -132,7 +132,7 @@ MonoBehaviour:
   _deathSeClip: {fileID: 0}
   _bulletPrefab: {fileID: 8921717778874572445, guid: 8ba43ad082ef946508bc600257edb800, type: 3}
   _bulletSpeed: 5
-  _attackSpan: 5
+  _attackSpan: 6
 --- !u!114 &8123090328470059083
 MonoBehaviour:
   m_ObjectHideFlags: 0
