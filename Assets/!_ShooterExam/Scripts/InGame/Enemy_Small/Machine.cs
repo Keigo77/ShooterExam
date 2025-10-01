@@ -17,6 +17,7 @@ public class Machine : AttackerSmallEnemyBase, ICharacter
             await MoveInScreen();
 
             IsSpawned = true;
+            UpdateMaxHp();
             AttackLoop().Forget();
         }
     }

@@ -34,8 +34,6 @@ public class RobotMan : BossBase, ICharacter
     
     public override async void Spawned()
     {
-        _maxBossHp = Hp;
-        
         if (!HasStateAuthority)
         {
             return;
@@ -58,6 +56,8 @@ public class RobotMan : BossBase, ICharacter
         await MoveInScreen();
 
         IsSpawned = true;
+        UpdateMaxHp();
+        _maxBossHp = Hp;
         GameManager.Instance.RpcInitializeBossHpGauge(Hp);
         AttackLoop().Forget();
     }
@@ -131,8 +131,7 @@ public class RobotMan : BossBase, ICharacter
     /// </summary>
     private async UniTask MoveAndAttack(Vector3 playerPos)
     {
-        NetworkDOTween.MyDOMove(this.transform, new Vector2(this.transform.position.x, playerPos.y), 0.3f, _token).Forget();
-        await UniTask.Delay(TimeSpan.FromSeconds(0.3f), cancellationToken: _token);
+        await NetworkDOTween.MyDOMove(this.transform, new Vector2(this.transform.position.x, playerPos.y), 0.3f, _token);
         
         _animator.SetBool(_animatorIsAttack, true);
         await UniTask.WaitUntil(() => !_animator.GetBool(_animatorIsAttack), cancellationToken: _token);
@@ -155,7 +154,10 @@ public class RobotMan : BossBase, ICharacter
                 bullet.GetComponent<Rigidbody2D>().AddForce(new Vector2(-1, 0).normalized * _bulletSpeed, ForceMode2D.Impulse);
             });
         }
-        
+    }
+    
+    private void FinishAttack()
+    {
         _animator.SetBool(_animatorIsAttack, false);
     }
     
@@ -163,8 +165,9 @@ public class RobotMan : BossBase, ICharacter
     [Rpc(RpcSources.All, RpcTargets.StateAuthority)]
     protected override void RpcDamage(float damage)
     {
-        GameManager.Instance.RpcUpdateBossHpGauge(_maxBossHp, Hp - damage);
         base.RpcDamage(damage);
+        GameManager.Instance.RpcUpdateBossHpGauge(_maxBossHp, Hp);
+        Debug.Log(_maxBossHp);
     }
     
 }

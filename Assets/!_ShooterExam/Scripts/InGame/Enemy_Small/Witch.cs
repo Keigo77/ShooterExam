@@ -21,6 +21,7 @@ public class Witch : AttackerSmallEnemyBase, ICharacter
     private void FinishSpawnAnimation()
     {
         IsSpawned = true;
+        UpdateMaxHp();
     }
     
     protected override async UniTaskVoid AttackLoop()

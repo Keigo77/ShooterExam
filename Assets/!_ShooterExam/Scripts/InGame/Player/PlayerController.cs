@@ -15,10 +15,13 @@ public class PlayerController : NetworkBehaviour, ICharacter
     private InputActions _inputActions;
     private Vector2 _moveDirection;
     [SerializeField] private SpriteRenderer _spriteRenderer;
+    private CancellationTokenSource _cts;
     private CancellationToken _token;
     
     public override async void Spawned()
     {
+        _cts = new CancellationTokenSource();
+        _token = _cts.Token;
         _rigidbody = this.GetComponent<Rigidbody2D>();
         _playerStatusEffectManager = this.GetComponent<PlayerStatusEffectManager>();
         _token = this.GetCancellationTokenOnDestroy();
@@ -69,8 +72,12 @@ public class PlayerController : NetworkBehaviour, ICharacter
     /// <summary>
     /// ダメージを喰らった時に，赤色にする
     /// </summary>
-    public async UniTaskVoid RpcChangeDamageColor()
+    public async UniTaskVoid ChangeDamageColor()
     {
+        _cts.Cancel();
+        _cts = new CancellationTokenSource();
+        _token = _cts.Token;
+        
         _spriteRenderer.color = Color.red;
         await UniTask.Delay(TimeSpan.FromSeconds(0.1f), cancellationToken: _token);
         _spriteRenderer.color = Color.white;

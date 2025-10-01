@@ -39,10 +39,13 @@ public class EnemyBase : NetworkBehaviour
         _animatorIsDead = Animator.StringToHash("IsDead");
         
         await UniTask.WaitUntil(() => IsSpawned, cancellationToken: _token);
+    }
+
+    protected void UpdateMaxHp()
+    {
         Hp *= _increaseHpList[Runner.SessionInfo.PlayerCount - 1];
         Debug.Log($"敵のHPが{_increaseHpList[Runner.SessionInfo.PlayerCount - 1]}倍で，{Hp}");
     }
-    
 
     /// <summary>
     /// 画面外にスポーンしてから，画面内に横移動で登場させる関数

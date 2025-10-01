@@ -12,7 +12,7 @@ public class NetworkDOTween : MonoBehaviour
         float elapsedTime = 0f;
 
         // 指定された時間が経過するまでループ
-        while (elapsedTime < duration || !token.IsCancellationRequested)
+        while (elapsedTime < duration && !token.IsCancellationRequested)
         {
             elapsedTime = Time.time - startTime;
             
@@ -39,7 +39,7 @@ public class NetworkDOTween : MonoBehaviour
         float elapsedTime = 0f;
 
         // 指定された時間が経過するまでループ
-        while (elapsedTime < duration || !token.IsCancellationRequested)
+        while (elapsedTime < duration && !token.IsCancellationRequested)
         {
             elapsedTime = Time.time - startTime;
             

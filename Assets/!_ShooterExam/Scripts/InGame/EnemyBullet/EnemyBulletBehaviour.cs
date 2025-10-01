@@ -39,8 +39,8 @@ public class EnemyBulletBehaviour : EnemyBulletBase
     {
         if (collision.CompareTag("Player") && GameManager.Instance.CurrentGameState == GameState.Playing)
         {
+            collision.GetComponent<PlayerController>().ChangeDamageColor().Forget();
             _renderer.enabled = false;
-            collision.GetComponent<PlayerController>().RpcChangeDamageColor();
             
             if (collision.GetComponent<NetworkObject>().HasStateAuthority)
             {

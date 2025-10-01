@@ -68,10 +68,8 @@ public class PlayerStatusEffectManager : NetworkBehaviour
         {
             try
             {
-                NetworkDOTween.MyDOFade(_showStatusEffectsPos, 0.0f, effectTime * 0.03f, _token).Forget();
-                await UniTask.Delay(TimeSpan.FromSeconds(effectTime * 0.03f), cancellationToken: _token);
-                NetworkDOTween.MyDOFade(_showStatusEffectsPos, 1.0f, effectTime * 0.03f, _token).Forget();
-                await UniTask.Delay(TimeSpan.FromSeconds(effectTime * 0.03f), cancellationToken: _token);
+                await NetworkDOTween.MyDOFade(_showStatusEffectsPos, 0.0f, effectTime * 0.03f, _token);
+                await NetworkDOTween.MyDOFade(_showStatusEffectsPos, 1.0f, effectTime * 0.03f, _token);
             }
             catch (Exception e)
             {
