@@ -129,7 +129,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _Hp: 20
   _moveInScreenTime: 0.1
-  _deathSeClip: {fileID: 0}
+  _deathSeClip: {fileID: 8300000, guid: b752518d9440b44b7ac2dd2d421b9c1e, type: 3}
   _bulletPrefab: {fileID: 8921717778874572445, guid: 8ba43ad082ef946508bc600257edb800, type: 3}
   _bulletSpeed: 5
   _attackSpan: 6
