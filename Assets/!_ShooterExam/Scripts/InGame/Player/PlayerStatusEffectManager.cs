@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Threading;
 using Cysharp.Threading.Tasks;
+using DG.Tweening;
 using Fusion;
 using UnityEngine;
 using UniRx;
@@ -68,8 +69,8 @@ public class PlayerStatusEffectManager : NetworkBehaviour
         {
             try
             {
-                await NetworkDOTween.MyDOFade(_showStatusEffectsPos, 0.0f, effectTime * 0.03f, _token);
-                await NetworkDOTween.MyDOFade(_showStatusEffectsPos, 1.0f, effectTime * 0.03f, _token);
+                await _showStatusEffectsPos.DOFade(0.0f, effectTime * 0.03f).SetUpdate(UpdateType.Late);
+                await _showStatusEffectsPos.DOFade(1.0f, effectTime * 0.03f).SetUpdate(UpdateType.Late);
             }
             catch (Exception e)
             {

@@ -47,7 +47,8 @@ public class Machine : AttackerSmallEnemyBase, ICharacter
     private void RandomRotate()
     {
         var resultAngle = this.transform.localRotation.eulerAngles + new Vector3(0, 0, Random.Range(-20, 20));
-        NetworkDOTween.MyDORotate(this.transform, resultAngle, _rotateDuration, _token).Forget();
+        this.transform.DORotate(resultAngle, _rotateDuration).SetUpdate(UpdateType.Late);
+        //NetworkDOTween.MyDORotate(this.transform, resultAngle, _rotateDuration, _token).Forget();
     }
 
     private void GenerateBullet(Vector2 direction)

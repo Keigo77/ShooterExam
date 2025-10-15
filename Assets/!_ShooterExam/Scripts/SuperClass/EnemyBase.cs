@@ -52,8 +52,9 @@ public class EnemyBase : NetworkBehaviour
     /// </summary>
     protected async UniTask MoveInScreen()
     {
-        NetworkDOTween.MyDOMove(this.transform, SpawnPos, _moveInScreenTime, _token).Forget();
-        await UniTask.Delay(TimeSpan.FromSeconds(_moveInScreenTime), cancellationToken: _token);
+        await this.transform.DOMove(SpawnPos, _moveInScreenTime).SetUpdate(UpdateType.Late);
+        //NetworkDOTween.MyDOMove(this.transform, SpawnPos, _moveInScreenTime, _token).Forget();
+        //await UniTask.Delay(TimeSpan.FromSeconds(_moveInScreenTime), cancellationToken: _token);
     }
 
     public void Damage(float damage)

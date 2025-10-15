@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using Cysharp.Threading.Tasks;
+using DG.Tweening;
 using Fusion;
 using Fusion.Addons.Physics;
 using UnityEngine;
@@ -131,8 +132,8 @@ public class RobotMan : BossBase, ICharacter
     /// </summary>
     private async UniTask MoveAndAttack(Vector3 playerPos)
     {
-        await NetworkDOTween.MyDOMove(this.transform, new Vector2(this.transform.position.x, playerPos.y), 0.3f, _token);
-        
+        //await NetworkDOTween.MyDOMove(this.transform, new Vector2(this.transform.position.x, playerPos.y), 0.3f, _token);
+        await this.transform.DOMove(new Vector2(this.transform.position.x, playerPos.y), 0.3f).SetUpdate(UpdateType.Late);
         _animator.SetBool(_animatorIsAttack, true);
         await UniTask.WaitUntil(() => !_animator.GetBool(_animatorIsAttack), cancellationToken: _token);
     }
