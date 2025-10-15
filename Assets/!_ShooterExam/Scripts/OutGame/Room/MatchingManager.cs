@@ -17,6 +17,7 @@ public class MatchingManager : MonoBehaviour
     [SerializeField] private TMP_InputField _inputRoomNameField;
     [SerializeField] private int _matchingSceneIndex;
     [SerializeField] private int _testSceneIndex;
+    [SerializeField] private int _stageSelectSceneIndex;
     [SerializeField] private string _matchingSceneName;
     
     [SerializeField] private GameObject _loadingPanel;
@@ -92,6 +93,26 @@ public class MatchingManager : MonoBehaviour
         CheckResult(networkRunner, result);
     }
 
+    /// <summary>
+    /// シングルプレイ用ボタン
+    /// </summary>
+    public async void SinglePlay() {
+        var networkRunner = Instantiate(_networkRunnerPrefab);
+        await _transitionProgressController.FadeIn();
+        _loadingPanel.SetActive(true);
+        PlayerInfo.PlayerColor = PlayerColorEnum.Purple;
+        
+        var result = await networkRunner.StartGame(new StartGameArgs {
+            GameMode = GameMode.Shared,
+            SessionName = _inputRoomNameField.text,
+            Scene = SceneRef.FromIndex(_stageSelectSceneIndex),
+            IsVisible = false,
+            PlayerCount = 1,
+        });
+        Debug.Log(result);
+        CheckResult(networkRunner, result);
+    }
+    
     /// <summary>
     /// 部屋の作成を実行し，成功したらマッチングルームへ，失敗したら，エラーパネルを表示する．
     /// </summary>
