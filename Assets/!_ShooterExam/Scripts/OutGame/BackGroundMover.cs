@@ -2,6 +2,9 @@ using UnityEngine;
 using UnityEngine.Assertions;
 using UnityEngine.UI;
 
+// https://note.com/what_is_picky/n/nf9b5dca6e5b6
+// 2025/10/15アクセス
+
 public class BackGroundMover : MonoBehaviour
 {
     private const float k_maxLength = 1f;
