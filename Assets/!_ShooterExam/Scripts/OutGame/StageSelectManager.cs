@@ -20,6 +20,10 @@ public class StageSelectManager : NetworkBehaviour
     public override void Spawned()
     {
         AudioSingleton.Instance.PlayBgm(_stageSelectBgm);
+        if (Runner.SessionInfo.PlayerCount == 1)
+        {
+            _waitText.gameObject.SetActive(false);
+        }
         _transitionProgressController.FadeOut().Forget();
         if (HasStateAuthority)
         {

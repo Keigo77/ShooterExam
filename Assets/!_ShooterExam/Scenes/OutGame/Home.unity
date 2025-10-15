@@ -2129,7 +2129,7 @@ MonoBehaviour:
   _inputRoomNameField: {fileID: 1584759394}
   _matchingSceneIndex: 1
   _testSceneIndex: 3
-  _stageSelectSceneIndex: 0
+  _stageSelectSceneIndex: 2
   _matchingSceneName: MatchingRoom
   _loadingPanel: {fileID: 129298084}
   _transitionProgressController: {fileID: 323345494}
